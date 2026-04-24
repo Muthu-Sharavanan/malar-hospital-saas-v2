@@ -438,33 +438,33 @@ export default function ReceptionDashboard() {
                     <div className="flex gap-4 items-center">
                        <div className="flex-1 flex gap-3">
                           <select 
-                            className="form-input !bg-white !h-14 font-bold border-2 border-slate-100 rounded-2xl flex-1 text-center text-lg focus:border-primary transition-all shadow-sm"
+                            className="form-input !bg-white !h-14 font-bold border-2 border-slate-100 rounded-full flex-1 text-center text-lg focus:border-primary transition-all shadow-sm cursor-pointer"
                             value={timeHour} onChange={e => setTimeHour(e.target.value)}
                           >
                             {Array.from({length: 12}, (_, i) => (i + 1).toString().padStart(2, '0')).map(h => (
-                              <option key={h} value={h}>{h} Hr</option>
+                              <option key={h} value={h}>{h}</option>
                             ))}
                           </select>
                           <select 
-                            className="form-input !bg-white !h-14 font-bold border-2 border-slate-100 rounded-2xl flex-1 text-center text-lg focus:border-primary transition-all shadow-sm"
+                            className="form-input !bg-white !h-14 font-bold border-2 border-slate-100 rounded-full flex-1 text-center text-lg focus:border-primary transition-all shadow-sm cursor-pointer"
                             value={timeMinute} onChange={e => setTimeMinute(e.target.value)}
                           >
                             {['00', '15', '30', '45'].map(m => (
-                              <option key={m} value={m}>{m} Min</option>
+                              <option key={m} value={m}>{m}</option>
                             ))}
                           </select>
                        </div>
                        
-                       <div className="flex bg-slate-100/80 p-1.5 rounded-2xl h-14 w-32 border border-slate-200">
+                       <div className="flex bg-slate-100/80 p-1.5 rounded-full h-14 w-32 border border-slate-200">
                           <button 
                             type="button"
                             onClick={() => setTimePeriod('AM')}
-                            className={`flex-1 rounded-xl text-xs font-black transition-all ${timePeriod === 'AM' ? 'bg-white text-primary shadow-md scale-105' : 'text-slate-400 opacity-60 hover:opacity-100'}`}
+                            className={`flex-1 rounded-full text-xs font-black transition-all ${timePeriod === 'AM' ? 'bg-white text-primary shadow-md' : 'text-slate-400 opacity-60 hover:opacity-100'}`}
                           >AM</button>
                           <button 
                             type="button"
                             onClick={() => setTimePeriod('PM')}
-                            className={`flex-1 rounded-xl text-xs font-black transition-all ${timePeriod === 'PM' ? 'bg-white text-primary shadow-md scale-105' : 'text-slate-400 opacity-60 hover:opacity-100'}`}
+                            className={`flex-1 rounded-full text-xs font-black transition-all ${timePeriod === 'PM' ? 'bg-white text-primary shadow-md' : 'text-slate-400 opacity-60 hover:opacity-100'}`}
                           >PM</button>
                        </div>
                     </div>

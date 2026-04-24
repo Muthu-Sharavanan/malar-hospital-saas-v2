@@ -92,9 +92,15 @@ export default function PrescriptionPrint() {
               <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Chief Complaints</small>
               <p style={{ margin: '4px 0', fontSize: '14px' }}>{visit.chiefComplaints || 'N/A'}</p>
            </div>
+           {visit.history && (
+             <div>
+                <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Clinical History</small>
+                <p style={{ margin: '4px 0', fontSize: '14px', whiteSpace: 'pre-wrap' }}>{visit.history}</p>
+             </div>
+           )}
            {visit.examination && (
              <div>
-                <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>History & Examination</small>
+                <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Physical Examination</small>
                 <p style={{ margin: '4px 0', fontSize: '14px', whiteSpace: 'pre-wrap' }}>{visit.examination}</p>
              </div>
            )}
@@ -102,6 +108,12 @@ export default function PrescriptionPrint() {
               <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Provisional Diagnosis</small>
               <p style={{ margin: '4px 0', fontSize: '15px', fontWeight: 700 }}>{visit.diagnosis || 'Clinical evaluation pending'}</p>
            </div>
+           {visit.investigationAdvised && (
+             <div>
+                <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Investigation Advised</small>
+                <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: 700, color: 'var(--primary)' }}>{visit.investigationAdvised}</p>
+             </div>
+           )}
         </div>
       </div>
 

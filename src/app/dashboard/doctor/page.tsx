@@ -70,7 +70,8 @@ export default function DoctorDashboard() {
     chiefComplaints: '',
     history: '',
     examination: '',
-    diagnosis: ''
+    diagnosis: '',
+    investigationAdvised: ''
   });
 
   const [selectedTests, setSelectedTests] = useState<any[]>([]);
@@ -250,7 +251,7 @@ export default function DoctorDashboard() {
       if (data.success) {
         window.open(`/dashboard/doctor/prescription/${selectedVisit.id}`, 'prescription_print');
         setSelectedVisit(null);
-        setConsultation({ chiefComplaints: '', history: '', examination: '', diagnosis: '' });
+        setConsultation({ chiefComplaints: '', history: '', examination: '', diagnosis: '', investigationAdvised: '' });
         setDrugs([]);
         fetchDoctorQueue();
         fetchAllAppointments();
@@ -640,64 +641,85 @@ export default function DoctorDashboard() {
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                          {/* Left Side: Clinical Findings */}
                          <div className="flex flex-col gap-6">
-                            <div className="form-group relative">
-                               <div className="flex justify-between items-center mb-2">
-                                  <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Chief Complaints</label>
-                                  <button type="button" onClick={() => startListening('chiefComplaints')} className={`p-2 rounded-full transition-all ${isListening === 'chiefComplaints' ? 'bg-rose-100 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-400 hover:text-primary'}`}>
-                                     {isListening === 'chiefComplaints' ? <MicOff size={16} /> : <Mic size={16} />}
-                                  </button>
-                               </div>
-                               <textarea 
-                                 className="form-input !h-24 !bg-slate-50 border-none transition-all focus:!bg-white focus:!ring-2 font-medium" 
-                                 placeholder="Dictate complaints..." required
-                                 value={consultation.chiefComplaints} 
-                                 onChange={e => setConsultation({...consultation, chiefComplaints: e.target.value})}
-                                 onKeyDown={(e) => {
-                                   if (e.key === 'Enter') {
-                                     e.stopPropagation();
-                                   }
-                                 }}
-                               />
-                            </div>
+                             {/* Box 1: Chief Complaints */}
+                             <div className="form-group relative">
+                                <div className="flex justify-between items-center mb-2">
+                                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Chief Complaints</label>
+                                   <button type="button" onClick={() => startListening('chiefComplaints')} className={`p-2 rounded-full transition-all ${isListening === 'chiefComplaints' ? 'bg-rose-100 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-400 hover:text-primary'}`}>
+                                      {isListening === 'chiefComplaints' ? <MicOff size={16} /> : <Mic size={16} />}
+                                   </button>
+                                </div>
+                                <textarea 
+                                  className="form-input !h-24 !bg-slate-50 border-none transition-all focus:!bg-white focus:!ring-2 font-medium" 
+                                  placeholder="Dictate complaints..." required
+                                  value={consultation.chiefComplaints} 
+                                  onChange={e => setConsultation({...consultation, chiefComplaints: e.target.value})}
+                                />
+                             </div>
 
-                            <div className="form-group relative">
-                               <div className="flex justify-between items-center mb-2">
-                                  <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Examination & History</label>
-                                  <button type="button" onClick={() => startListening('examination')} className={`p-2 rounded-full transition-all ${isListening === 'examination' ? 'bg-rose-100 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-400 hover:text-primary'}`}>
-                                     {isListening === 'examination' ? <MicOff size={16} /> : <Mic size={16} />}
-                                  </button>
-                               </div>
-                               <textarea 
-                                 className="form-input !h-32 !bg-slate-50 border-none transition-all focus:!bg-white focus:!ring-2 font-medium" 
-                                 placeholder="Patient clinical history..." 
-                                 value={consultation.examination} 
-                                 onChange={e => setConsultation({...consultation, examination: e.target.value})}
-                                 onKeyDown={(e) => {
-                                   if (e.key === 'Enter') {
-                                     e.stopPropagation();
-                                   }
-                                 }}
-                               />
-                            </div>
-                            <div className="form-group relative">
-                               <div className="flex justify-between items-center mb-2">
-                                  <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Provisional Diagnosis</label>
-                                  <button type="button" onClick={() => startListening('diagnosis')} className={`p-2 rounded-full transition-all ${isListening === 'diagnosis' ? 'bg-rose-100 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-400 hover:text-primary'}`}>
-                                     {isListening === 'diagnosis' ? <MicOff size={16} /> : <Mic size={16} />}
-                                  </button>
-                               </div>
-                               <textarea 
-                                 className="form-input !h-24 !bg-slate-50 border-none transition-all focus:!bg-white focus:!ring-2 font-bold" 
-                                 placeholder="Clinical diagnosis..." required
-                                 value={consultation.diagnosis} 
-                                 onChange={e => setConsultation({...consultation, diagnosis: e.target.value.toUpperCase()})}
-                                 onKeyDown={(e) => {
-                                   if (e.key === 'Enter') {
-                                     e.stopPropagation();
-                                   }
-                                 }}
-                               />
-                            </div>
+                             {/* Box 2: History */}
+                             <div className="form-group relative">
+                                <div className="flex justify-between items-center mb-2">
+                                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Clinical History</label>
+                                   <button type="button" onClick={() => startListening('history')} className={`p-2 rounded-full transition-all ${isListening === 'history' ? 'bg-rose-100 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-400 hover:text-primary'}`}>
+                                      {isListening === 'history' ? <MicOff size={16} /> : <Mic size={16} />}
+                                   </button>
+                                </div>
+                                <textarea 
+                                  className="form-input !h-24 !bg-slate-50 border-none transition-all focus:!bg-white focus:!ring-2 font-medium" 
+                                  placeholder="Patient history..." 
+                                  value={consultation.history} 
+                                  onChange={e => setConsultation({...consultation, history: e.target.value})}
+                                />
+                             </div>
+
+                             {/* Box 3: Examination */}
+                             <div className="form-group relative">
+                                <div className="flex justify-between items-center mb-2">
+                                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Physical Examination</label>
+                                   <button type="button" onClick={() => startListening('examination')} className={`p-2 rounded-full transition-all ${isListening === 'examination' ? 'bg-rose-100 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-400 hover:text-primary'}`}>
+                                      {isListening === 'examination' ? <MicOff size={16} /> : <Mic size={16} />}
+                                   </button>
+                                </div>
+                                <textarea 
+                                  className="form-input !h-24 !bg-slate-50 border-none transition-all focus:!bg-white focus:!ring-2 font-medium" 
+                                  placeholder="Examination findings..." 
+                                  value={consultation.examination} 
+                                  onChange={e => setConsultation({...consultation, examination: e.target.value})}
+                                />
+                             </div>
+
+                             {/* Box 4: Provisional Diagnosis */}
+                             <div className="form-group relative">
+                                <div className="flex justify-between items-center mb-2">
+                                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Provisional Diagnosis</label>
+                                   <button type="button" onClick={() => startListening('diagnosis')} className={`p-2 rounded-full transition-all ${isListening === 'diagnosis' ? 'bg-rose-100 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-400 hover:text-primary'}`}>
+                                      {isListening === 'diagnosis' ? <MicOff size={16} /> : <Mic size={16} />}
+                                   </button>
+                                </div>
+                                <textarea 
+                                  className="form-input !h-24 !bg-slate-50 border-none transition-all focus:!bg-white focus:!ring-2 font-bold" 
+                                  placeholder="Clinical diagnosis..." required
+                                  value={consultation.diagnosis} 
+                                  onChange={e => setConsultation({...consultation, diagnosis: e.target.value.toUpperCase()})}
+                                />
+                             </div>
+
+                             {/* Box 5: Investigation Advised */}
+                             <div className="form-group relative">
+                                <div className="flex justify-between items-center mb-2">
+                                   <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest">Investigation Advised</label>
+                                   <button type="button" onClick={() => startListening('investigationAdvised')} className={`p-2 rounded-full transition-all ${isListening === 'investigationAdvised' ? 'bg-rose-100 text-rose-600 animate-pulse' : 'bg-slate-100 text-slate-400 hover:text-primary'}`}>
+                                      {isListening === 'investigationAdvised' ? <MicOff size={16} /> : <Mic size={16} />}
+                                   </button>
+                                </div>
+                                <textarea 
+                                  className="form-input !h-24 !bg-slate-50 border-none transition-all focus:!bg-white focus:!ring-2 font-bold text-primary" 
+                                  placeholder="Scans, X-rays, etc..." 
+                                  value={consultation.investigationAdvised} 
+                                  onChange={e => setConsultation({...consultation, investigationAdvised: e.target.value.toUpperCase()})}
+                                />
+                             </div>
                          </div>
 
                          {/* Right Side: Rx & Labs */}

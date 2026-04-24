@@ -20,7 +20,7 @@ export async function PATCH(req: Request) {
 export async function POST(req: Request) {
   try {
     const { 
-      visitId, chiefComplaints, history, examination, diagnosis 
+      visitId, chiefComplaints, history, examination, diagnosis, investigationAdvised 
     } = await req.json();
 
     const visitSearch = await prisma.visit.findUnique({ where: { id: visitId } });
@@ -33,6 +33,7 @@ export async function POST(req: Request) {
         history,
         examination,
         diagnosis,
+        investigationAdvised,
         status: 'COMPLETED'
       }
     });

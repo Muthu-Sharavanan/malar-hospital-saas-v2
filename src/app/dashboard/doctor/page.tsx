@@ -321,18 +321,46 @@ export default function DoctorDashboard() {
       let interimTranscript = '';
       let finalTranscript = '';
 
+      const medicalAutoCorrect: { [key: string]: string } = {
+        'diabetes': 'Diabetes Mellitus',
+        'bp': 'Blood Pressure',
+        'sugar': 'Blood Glucose',
+        'pressure': 'Blood Pressure',
+        'paracetmol': 'Paracetamol',
+        'pan 40': 'Pantoprazole 40mg',
+        'panto': 'Pantoprazole',
+        'metformin': 'Metformin',
+        'hypertension': 'Hypertension',
+        'hyper': 'Hypertension',
+        'thyroid': 'Hypothyroidism',
+        'asthma': 'Bronchial Asthma',
+        'infection': 'Infection',
+        'gastritis': 'Gastritis',
+        'acidity': 'GERD / Gastritis',
+        'fever': 'Fever',
+        'cough': 'Cough',
+        'vomiting': 'Vomiting',
+        'diarrhea': 'Diarrhea',
+        'weakness': 'General Weakness',
+        'dizziness': 'Dizziness',
+        'headache': 'Headache',
+        'anemia': 'Anemia',
+        'arthritis': 'Osteoarthritis',
+        'mi': 'Myocardial Infarction',
+        'cad': 'Coronary Artery Disease',
+        'ckd': 'Chronic Kidney Disease',
+        'uti': 'Urinary Tract Infection'
+      };
+
       for (let i = 0; i < event.results.length; ++i) {
         let txt = event.results[i][0].transcript;
         
-        // Punctuation auto-correction
+        // 1. Initial Cleanup & Acronyms
         txt = txt
           .replace(/\b(full stop|period)\b/gi, '.')
           .replace(/\b(comma)\b/gi, ',')
           .replace(/\b(question mark)\b/gi, '?')
-          .replace(/\b(next line|new line)\b/gi, '\n');
-
-        // Comprehensive Smart Expansion for Medical Acronyms
-        txt = txt
+          .replace(/\b(next line|new line)\b/gi, '\n')
           .replace(/\b(bd|b d)\b/gi, 'Twice a day')
           .replace(/\b(od|o d)\b/gi, 'Once a day')
           .replace(/\b(tds|t d s)\b/gi, 'Thrice a day')
@@ -342,13 +370,26 @@ export default function DoctorDashboard() {
           .replace(/\b(hs|h s)\b/gi, 'At bedtime')
           .replace(/\b(ac|a c)\b/gi, 'Before meals')
           .replace(/\b(pc|p c)\b/gi, 'After meals')
-          .replace(/\b(wnl|w n l)\b/gi, 'Within normal limits')
-          .replace(/\b(c\/?o|c o)\b/gi, 'Complains of')
-          .replace(/\b(o\/?e|o e)\b/gi, 'On examination')
-          .replace(/\b(h\/?o|h o)\b/gi, 'History of')
-          .replace(/\b(bp|b p)\b/gi, 'Blood Pressure')
           .replace(/\brx\b/gi, 'Prescription')
           .replace(/\b(cbc|c b c)\b/gi, 'Complete Blood Count');
+
+        // 2. Anti-Stutter & Medical Auto-Correct
+        const words = txt.split(/\s+/);
+        const cleanedWords: string[] = [];
+        
+        for (let j = 0; j < words.length; j++) {
+          let word = words[j].toLowerCase();
+          
+          // Remove consecutive duplicates (e.g., "patient patient" -> "patient")
+          if (j > 0 && word === words[j-1].toLowerCase() && word.length > 1) {
+            continue; 
+          }
+          
+          // Apply Medical Auto-Correct
+          const corrected = medicalAutoCorrect[word];
+          cleanedWords.push(corrected || words[j]);
+        }
+        txt = cleanedWords.join(' ');
 
         if (event.results[i].isFinal) {
           finalTranscript += txt;

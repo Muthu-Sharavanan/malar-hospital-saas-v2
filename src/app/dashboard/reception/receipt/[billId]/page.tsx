@@ -31,7 +31,7 @@ export default function ReceiptPrint() {
       <div style={{ textAlign: 'center', marginBottom: '30px' }}>
         <h1 style={{ margin: 0, color: '#0A4D68' }}>MALAR HOSPITAL</h1>
         <p style={{ margin: 0, fontSize: '14px' }}>12 Alagesapuram Main road Thoothukudi-628002</p>
-        <p style={{ margin: 0, fontSize: '14px' }}>Phone: 0461-231234, 230987</p>
+        <p style={{ margin: 0, fontSize: '14px' }}>Phone: 0461-2360380</p>
         <div style={{ margin: '15px 0', borderBottom: '2px solid #0A4D68' }}></div>
         <h3 style={{ margin: 0, textDecoration: 'underline' }}>PAYMENT RECEIPT</h3>
       </div>

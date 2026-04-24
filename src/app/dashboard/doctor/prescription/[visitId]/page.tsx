@@ -39,8 +39,7 @@ export default function PrescriptionPrint() {
         </div>
          <div style={{ textAlign: 'right', fontSize: '13px' }}>
             <p style={{ margin: 0 }}>12 Alagesapuram Main road Thoothukudi-628002</p>
-            <p style={{ margin: 0 }}>Tel: 0461-231234, 230987</p>
-            <p style={{ margin: 0, fontWeight: 600 }}>Emergency: 9876543210</p>
+            <p style={{ margin: 0 }}>Tel: 0461-2360380</p>
          </div>
       </div>
 

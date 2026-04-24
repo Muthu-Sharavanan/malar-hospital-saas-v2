@@ -62,6 +62,20 @@ export default function ReceptionDashboard() {
   const [selectedPatient, setSelectedPatient] = useState<any>(null);
   const [doctors, setDoctors] = useState<any[]>([]);
 
+  // Time Picker State
+  const [timePeriod, setTimePeriod] = useState<'AM' | 'PM'>('AM');
+  const [timeHour, setTimeHour] = useState('10');
+  const [timeMinute, setTimeMinute] = useState('00');
+
+  // Sync custom time to visitTime (24h format)
+  useEffect(() => {
+    let h = parseInt(timeHour);
+    if (timePeriod === 'PM' && h < 12) h += 12;
+    if (timePeriod === 'AM' && h === 12) h = 0;
+    const formattedTime = `${h.toString().padStart(2, '0')}:${timeMinute}`;
+    setFormData(prev => ({ ...prev, visitTime: formattedTime }));
+  }, [timeHour, timeMinute, timePeriod]);
+
   const fetchDoctors = async () => {
     setIsRefreshing(true);
     try {
@@ -420,8 +434,37 @@ export default function ReceptionDashboard() {
                 </div>
                 {formData.visitDate && (
                   <div className="form-group animate-in slide-in-from-right-4">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">TimeSlot</label>
-                    <input type="time" className="form-input !bg-slate-50 !h-14 font-bold border-none" required value={formData.visitTime} onChange={e => setFormData({...formData, visitTime: e.target.value})} />
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">TimeSlot (AM/PM)</label>
+                    <div className="flex gap-2">
+                       <select 
+                        className="form-input !bg-slate-50 !h-14 font-bold border-none flex-1 text-center"
+                        value={timeHour} onChange={e => setTimeHour(e.target.value)}
+                       >
+                         {Array.from({length: 12}, (_, i) => (i + 1).toString().padStart(2, '0')).map(h => (
+                           <option key={h} value={h}>{h}</option>
+                         ))}
+                       </select>
+                       <select 
+                        className="form-input !bg-slate-50 !h-14 font-bold border-none flex-1 text-center"
+                        value={timeMinute} onChange={e => setTimeMinute(e.target.value)}
+                       >
+                         {['00', '15', '30', '45'].map(m => (
+                           <option key={m} value={m}>{m}</option>
+                         ))}
+                       </select>
+                       <div className="flex bg-slate-100 rounded-xl p-1 h-14">
+                          <button 
+                            type="button"
+                            onClick={() => setTimePeriod('AM')}
+                            className={`px-4 rounded-lg text-[10px] font-black transition-all ${timePeriod === 'AM' ? 'bg-white text-primary shadow-sm' : 'text-slate-400'}`}
+                          >AM</button>
+                          <button 
+                            type="button"
+                            onClick={() => setTimePeriod('PM')}
+                            className={`px-4 rounded-lg text-[10px] font-black transition-all ${timePeriod === 'PM' ? 'bg-white text-primary shadow-sm' : 'text-slate-400'}`}
+                          >PM</button>
+                       </div>
+                    </div>
                   </div>
                 )}
                 <div className="form-group">

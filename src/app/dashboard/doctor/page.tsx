@@ -536,11 +536,61 @@ export default function DoctorDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Waiting List */}
             <div className="lg:col-span-1 flex flex-col gap-6">
-               <div className="flex items-center justify-between">
-                  <h3 className="text-lg font-bold flex items-center gap-2">
-                    <Clock className="text-secondary" size={20} /> Shift Waiting List
-                  </h3>
-                  <span className="badge badge-primary">{queue.length} Ready</span>
+               <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between">
+                     <h3 className="text-lg font-bold flex items-center gap-2 text-[#0A4D68]">
+                       <Clock size={20} /> Shift Waiting List
+                     </h3>
+                     <span className="badge bg-[#088395] text-white border-none font-bold px-4 py-3">{queue.length} Ready</span>
+                  </div>
+
+                  {/* Pill Hero Session Toggle */}
+                  <div className="flex items-center gap-3 mb-2">
+                    <button 
+                      type="button"
+                      onClick={() => setSessionFilter('morning')}
+                      style={{
+                        backgroundColor: sessionFilter === 'morning' ? '#088395' : '#f8fafc',
+                        color: sessionFilter === 'morning' ? 'white' : '#94a3b8',
+                        padding: '8px 16px',
+                        borderRadius: '9999px',
+                        fontSize: '12px',
+                        fontWeight: '900',
+                        border: 'none',
+                        boxShadow: sessionFilter === 'morning' ? '0 4px 10px rgba(8,131,149,0.2)' : 'none',
+                        transition: 'all 0.4s ease',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transform: sessionFilter === 'morning' ? 'scale(1.02)' : 'scale(1)'
+                      }}
+                    >
+                      <Sun size={14} /> MORNING
+                    </button>
+                    <button 
+                      type="button"
+                      onClick={() => setSessionFilter('evening')}
+                      style={{
+                        backgroundColor: sessionFilter === 'evening' ? '#088395' : '#f8fafc',
+                        color: sessionFilter === 'evening' ? 'white' : '#94a3b8',
+                        padding: '8px 16px',
+                        borderRadius: '9999px',
+                        fontSize: '12px',
+                        fontWeight: '900',
+                        border: 'none',
+                        boxShadow: sessionFilter === 'evening' ? '0 4px 10px rgba(8,131,149,0.2)' : 'none',
+                        transition: 'all 0.4s ease',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transform: sessionFilter === 'evening' ? 'scale(1.02)' : 'scale(1)'
+                      }}
+                    >
+                      <Moon size={14} /> EVENING
+                    </button>
+                  </div>
                </div>
 
                <div className="flex flex-col gap-4 overflow-y-auto pr-2" style={{ maxHeight: '65vh' }}>
@@ -713,13 +763,28 @@ export default function DoctorDashboard() {
                                       <div className="w-px h-8 bg-slate-200 mx-1"></div>
                                       {[
                                         { label: 'OD', val: '1-0-0' },
+                                        { label: 'MIDDAY', val: '0-1-0' },
                                         { label: 'BD', val: '1-0-1' },
-                                        { label: 'TDS', val: '1-1-1' }
+                                        { label: 'TDS', val: '1-1-1' },
+                                        { label: 'NIGHT', val: '0-0-1' }
                                       ].map(opt => (
                                         <button 
                                           key={opt.label} type="button" 
                                           onClick={() => setCurrentDrug({...currentDrug, dosage: opt.val})} 
-                                          className={`btn !px-4 !py-2.5 !text-[10px] font-black tracking-widest transition-all ${((currentDrug.dosage === '1-0-0' && opt.label === 'OD') || (currentDrug.dosage === '1-0-1' && opt.label === 'BD') || (currentDrug.dosage === '1-1-1' && opt.label === 'TDS')) ? 'btn-primary shadow-lg scale-105' : 'bg-white text-slate-500 border border-slate-200 hover:border-[#088395] hover:text-[#088395]'}`}>
+                                          style={{
+                                            backgroundColor: currentDrug.dosage === opt.val ? '#088395' : 'white',
+                                            color: currentDrug.dosage === opt.val ? 'white' : '#64748B',
+                                            padding: '10px 16px',
+                                            borderRadius: '12px',
+                                            fontSize: '10px',
+                                            fontWeight: '900',
+                                            border: '1px solid #E2E8F0',
+                                            boxShadow: currentDrug.dosage === opt.val ? '0 10px 25px rgba(8,131,149,0.3)' : 'none',
+                                            transition: 'all 0.3s ease',
+                                            cursor: 'pointer',
+                                            transform: currentDrug.dosage === opt.val ? 'scale(1.05)' : 'scale(1)'
+                                          }}
+                                        >
                                           {opt.label}
                                         </button>
                                       ))}
@@ -737,22 +802,32 @@ export default function DoctorDashboard() {
                                         <option>1-0-1</option>
                                         <option>1-1-1</option>
                                         <option>1-0-0</option>
+                                        <option>0-1-0</option>
                                         <option>0-0-1</option>
                                         <option>SOS</option>
                                      </select>
-                                     <select className="form-input !py-1 !px-3 !bg-white !text-xs font-bold" value={currentDrug.duration} onChange={e => setCurrentDrug({...currentDrug, duration: e.target.value})}>
-                                        <option>2 Days</option>
-                                        <option>3 Days</option>
-                                        <option>5 Days</option>
-                                        <option>1 Week</option>
-                                        <option>10 Days</option>
-                                        <option>15 Days</option>
-                                        <option>21 Days</option>
-                                        <option>1 Month</option>
-                                        <option>2 Months</option>
-                                        <option>3 Months</option>
-                                        <option>Until next review</option>
-                                     </select>
+                                     <div className="relative">
+                                       <input 
+                                         list="durations"
+                                         className="form-input !py-1 !px-3 !bg-white !text-xs font-bold w-full" 
+                                         placeholder="Duration..."
+                                         value={currentDrug.duration} 
+                                         onChange={e => setCurrentDrug({...currentDrug, duration: e.target.value})}
+                                       />
+                                       <datalist id="durations">
+                                          <option value="2 Days" />
+                                          <option value="3 Days" />
+                                          <option value="5 Days" />
+                                          <option value="1 Week" />
+                                          <option value="10 Days" />
+                                          <option value="15 Days" />
+                                          <option value="21 Days" />
+                                          <option value="1 Month" />
+                                          <option value="2 Months" />
+                                          <option value="3 Months" />
+                                          <option value="Until next review" />
+                                       </datalist>
+                                     </div>
                                   </div>
                                   <button type="button" className="btn btn-primary h-12 w-full !rounded-xl font-black text-sm" onClick={handleAddDrug}>
                                      <PlusCircle size={18} className="mr-2" /> Commit Drug

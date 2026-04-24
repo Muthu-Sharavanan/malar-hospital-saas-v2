@@ -455,16 +455,16 @@ export default function ReceptionDashboard() {
                           </select>
                        </div>
                        
-                       <div className="flex bg-slate-100/50 p-2 rounded-full h-16 w-64 border-2 border-slate-200 ml-4 shadow-inner">
+                       <div className="flex bg-slate-100 p-1.5 rounded-full h-16 w-64 border-2 border-slate-200 ml-4 shadow-inner">
                           <button 
                             type="button"
                             onClick={() => setTimePeriod('AM')}
-                            className={`flex-1 rounded-full text-[13px] font-black transition-all duration-300 ${timePeriod === 'AM' ? 'bg-primary text-white shadow-[0_8px_20px_rgba(8,131,149,0.4)] scale-105' : 'text-slate-400 hover:text-slate-600'}`}
+                            className={`flex-1 rounded-full text-sm font-black transition-all duration-300 ${timePeriod === 'AM' ? 'bg-[#088395] text-white shadow-[0_10px_20px_rgba(8,131,149,0.4)] scale-105' : 'text-slate-400 hover:text-slate-600'}`}
                           >AM</button>
                           <button 
                             type="button"
                             onClick={() => setTimePeriod('PM')}
-                            className={`flex-1 rounded-full text-[13px] font-black transition-all duration-300 ${timePeriod === 'PM' ? 'bg-primary text-white shadow-[0_8px_20px_rgba(8,131,149,0.4)] scale-105' : 'text-slate-400 hover:text-slate-600'}`}
+                            className={`flex-1 rounded-full text-sm font-black transition-all duration-300 ${timePeriod === 'PM' ? 'bg-[#088395] text-white shadow-[0_10px_20px_rgba(8,131,149,0.4)] scale-105' : 'text-slate-400 hover:text-slate-600'}`}
                           >PM</button>
                        </div>
                     </div>

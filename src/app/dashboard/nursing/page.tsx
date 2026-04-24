@@ -176,28 +176,28 @@ export default function NursingDashboard() {
                   Active Queue
                 </h3>
                 
-                <div className="flex items-center gap-4 mt-6 mb-6 ml-4">
+                <div className="flex items-center gap-2 mt-4 mb-4 ml-2">
                   <button 
                     type="button"
                     onClick={() => setSessionFilter('morning')}
                     style={{
                       backgroundColor: sessionFilter === 'morning' ? '#088395' : '#f8fafc',
                       color: sessionFilter === 'morning' ? 'white' : '#94a3b8',
-                      padding: '10px 24px',
+                      padding: '8px 16px',
                       borderRadius: '9999px',
-                      fontSize: '14px',
+                      fontSize: '12px',
                       fontWeight: '900',
                       border: 'none',
-                      boxShadow: sessionFilter === 'morning' ? '0 4px 12px rgba(8,131,149,0.2)' : 'none',
+                      boxShadow: sessionFilter === 'morning' ? '0 4px 10px rgba(8,131,149,0.2)' : 'none',
                       transition: 'all 0.4s ease',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '10px',
+                      gap: '6px',
                       transform: sessionFilter === 'morning' ? 'scale(1.02)' : 'scale(1)'
                     }}
                   >
-                    <Sun size={18} /> MORNING
+                    <Sun size={14} /> MORNING
                   </button>
                   <button 
                     type="button"
@@ -205,21 +205,21 @@ export default function NursingDashboard() {
                     style={{
                       backgroundColor: sessionFilter === 'evening' ? '#088395' : '#f8fafc',
                       color: sessionFilter === 'evening' ? 'white' : '#94a3b8',
-                      padding: '10px 24px',
+                      padding: '8px 16px',
                       borderRadius: '9999px',
-                      fontSize: '14px',
+                      fontSize: '12px',
                       fontWeight: '900',
                       border: 'none',
-                      boxShadow: sessionFilter === 'evening' ? '0 4px 12px rgba(8,131,149,0.2)' : 'none',
+                      boxShadow: sessionFilter === 'evening' ? '0 4px 10px rgba(8,131,149,0.2)' : 'none',
                       transition: 'all 0.4s ease',
                       cursor: 'pointer',
                       display: 'flex',
                       alignItems: 'center',
-                      gap: '10px',
+                      gap: '6px',
                       transform: sessionFilter === 'evening' ? 'scale(1.02)' : 'scale(1)'
                     }}
                   >
-                    <Moon size={18} /> EVENING
+                    <Moon size={14} /> EVENING
                   </button>
                 </div>
               </div>

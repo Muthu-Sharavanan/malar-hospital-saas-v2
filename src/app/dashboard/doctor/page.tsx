@@ -575,7 +575,12 @@ export default function DoctorDashboard() {
                       <div className="flex justify-between items-start mb-3">
                          <div className="flex flex-col">
                            <span className="text-xs text-secondary font-bold uppercase tracking-wider mb-1">Token #{v.tokenNumber}</span>
-                           <h4 className="text-base font-bold text-slate-800">{v.patient.name}</h4>
+                           <div className="flex items-center gap-2">
+                             <h4 className="text-base font-bold text-slate-800">{v.patient.name}</h4>
+                             {v.isReview && (
+                               <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-tight">Review Case</span>
+                             )}
+                           </div>
                          </div>
                          <div className={`p-2 rounded-lg ${selectedVisit?.id === v.id ? 'bg-secondary text-white' : 'bg-slate-50 text-slate-400'} transition-all`}>
                            <ChevronRight size={16} />
@@ -603,7 +608,47 @@ export default function DoctorDashboard() {
                   )}
                </div>
 
-                {/* Finished Consultations List */}
+                {/* Section 2: Review / Follow-up Cases */}
+                <div className="flex flex-col gap-6 mt-8 pt-8 border-t border-slate-100">
+                   <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-bold flex items-center gap-2 text-[#088395]">
+                        <Activity size={20} /> Review Cases
+                      </h3>
+                      <span className="badge bg-[#088395]/10 text-[#088395] border-none font-bold px-3 py-1 text-[10px]">
+                        {queue.filter(v => v.isReview).length} REPEAT
+                      </span>
+                   </div>
+
+                   <div className="flex flex-col gap-4 overflow-y-auto pr-2" style={{ maxHeight: '35vh' }}>
+                      {queue.filter(v => v.isReview).length > 0 ? (
+                        queue.filter(v => v.isReview).map((v: any) => (
+                          <div 
+                            key={v.id} 
+                            className={`glass-card !p-5 cursor-pointer group relative overflow-hidden transition-all duration-500 border-2 ${selectedVisit?.id === v.id ? 'border-[#088395] bg-[#088395]/5 shadow-xl shadow-[#088395]/10' : 'bg-white hover:border-[#088395]/30'}`}
+                            onClick={() => setSelectedVisit(v)}
+                          >
+                            <div className="flex justify-between items-start">
+                               <div className="flex flex-col">
+                                 <h4 className="text-sm font-bold text-slate-700">{v.patient.name}</h4>
+                                 <p className="text-[10px] font-bold text-[#088395] mt-1 uppercase tracking-widest">Follow-up Patient</p>
+                               </div>
+                               <button 
+                                 onClick={(e) => { e.stopPropagation(); setCalendarVisitDetail(v.lastVisitSummary); }}
+                                 className="p-1.5 rounded-lg bg-[#088395] text-white hover:bg-[#0A4D68] transition-colors"
+                                 title="View Previous Record"
+                               >
+                                 <ArrowUpRight size={14} />
+                               </button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-center text-[10px] font-bold text-slate-300 uppercase py-4">No review cases currently</p>
+                      )}
+                   </div>
+                </div>
+
+                {/* Section 3: Finished Consultations List */}
                 <div className="flex flex-col gap-6 mt-8 pt-8 border-t border-slate-100">
                    <div className="flex items-center justify-between">
                       <h3 className="text-lg font-bold flex items-center gap-2 text-[#64748B]">

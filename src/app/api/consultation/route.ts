@@ -129,12 +129,34 @@ export async function GET(req: Request) {
       }
     });
 
-    const enrichedQueue = doctorsQueue.map(v => {
+    // Fetch previous visit history for each patient to identify "Review" cases
+    const enrichedQueue = await Promise.all(doctorsQueue.map(async (v) => {
       const istDate = new Date(new Date(v.visitDate).getTime() + 5.5 * 60 * 60 * 1000);
       const hours = istDate.getUTCHours();
       const sessionLabel = hours < 12 ? 'morning' : 'evening';
-      return { ...v, session: sessionLabel };
-    });
+
+      // Find the most recent COMPLETED visit for this patient (excluding the current one)
+      const lastVisit = await prisma.visit.findFirst({
+        where: {
+          patientId: v.patientId,
+          status: 'COMPLETED',
+          id: { not: v.id }
+        },
+        include: {
+          prescriptions: true,
+          labOrders: true,
+          doctor: true
+        },
+        orderBy: { visitDate: 'desc' }
+      });
+
+      return { 
+        ...v, 
+        session: sessionLabel,
+        isReview: !!lastVisit,
+        lastVisitSummary: lastVisit
+      };
+    }));
 
     // Doctors should see the entire day's queue, ignoring session filters
     const filteredQueue = (session.role === 'DOCTOR' || !sessionType)

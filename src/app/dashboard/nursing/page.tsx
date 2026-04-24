@@ -176,19 +176,19 @@ export default function NursingDashboard() {
                   Active Queue
                 </h3>
                 
-                {/* Redesigned Session Toggle - Catchy Perfect Style */}
-                <div className="flex bg-slate-50 p-2.5 rounded-full h-24 w-[500px] border-2 border-slate-200 mt-12 mb-14 ml-12 items-center gap-6">
+                {/* Redesigned Session Toggle - Ultra Contrast Style */}
+                <div className="flex bg-slate-200/50 p-2.5 rounded-full h-24 w-[520px] mt-12 mb-14 ml-12 items-center gap-6">
                   <button 
                     type="button"
                     onClick={() => setSessionFilter('morning')}
-                    className={`flex-1 h-18 py-4 rounded-full text-lg font-black transition-all duration-500 flex items-center justify-center gap-4 ${sessionFilter === 'morning' ? 'bg-gradient-to-r from-[#088395] to-[#0A4D68] text-white shadow-[0_15px_35px_rgba(8,131,149,0.5)] scale-105' : 'bg-white text-slate-400 hover:text-[#088395] shadow-sm'}`}
+                    className={`flex-1 h-18 py-4 rounded-full text-xl font-black transition-all duration-400 flex items-center justify-center gap-4 ${sessionFilter === 'morning' ? 'bg-[#088395] text-white shadow-[0_15px_35px_rgba(8,131,149,0.4)] scale-105' : 'bg-transparent text-slate-500 hover:bg-white/50'}`}
                   >
                     <Sun size={28} /> MORNING
                   </button>
                   <button 
                     type="button"
                     onClick={() => setSessionFilter('evening')}
-                    className={`flex-1 h-18 py-4 rounded-full text-lg font-black transition-all duration-500 flex items-center justify-center gap-4 ${sessionFilter === 'evening' ? 'bg-gradient-to-r from-[#088395] to-[#0A4D68] text-white shadow-[0_15px_35px_rgba(8,131,149,0.5)] scale-105' : 'bg-white text-slate-400 hover:text-[#088395] shadow-sm'}`}
+                    className={`flex-1 h-18 py-4 rounded-full text-xl font-black transition-all duration-400 flex items-center justify-center gap-4 ${sessionFilter === 'evening' ? 'bg-[#088395] text-white shadow-[0_15px_35px_rgba(8,131,149,0.4)] scale-105' : 'bg-transparent text-slate-500 hover:bg-white/50'}`}
                   >
                     <Moon size={28} /> EVENING
                   </button>

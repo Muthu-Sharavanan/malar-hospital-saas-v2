@@ -455,16 +455,16 @@ export default function ReceptionDashboard() {
                           </select>
                        </div>
                        
-                       <div className="flex bg-slate-50 p-2.5 rounded-full h-24 w-[450px] border-2 border-slate-200 mt-12 mb-12 ml-10 shadow-inner items-center gap-6">
+                       <div className="flex bg-slate-200/50 p-2.5 rounded-full h-24 w-[460px] mt-12 mb-12 ml-10 shadow-inner items-center gap-6">
                           <button 
                             type="button"
                             onClick={() => setTimePeriod('AM')}
-                            className={`flex-1 h-18 py-4 rounded-full text-lg font-black transition-all duration-500 ${timePeriod === 'AM' ? 'bg-gradient-to-r from-[#088395] to-[#0A4D68] text-white shadow-[0_15px_35px_rgba(8,131,149,0.5)] scale-105' : 'bg-white text-slate-400 hover:text-[#088395] shadow-sm'}`}
+                            className={`flex-1 h-18 py-4 rounded-full text-xl font-black transition-all duration-400 ${timePeriod === 'AM' ? 'bg-[#088395] text-white shadow-[0_15px_35px_rgba(8,131,149,0.4)] scale-105' : 'bg-transparent text-slate-500 hover:bg-white/50'}`}
                           >AM</button>
                           <button 
                             type="button"
                             onClick={() => setTimePeriod('PM')}
-                            className={`flex-1 h-18 py-4 rounded-full text-lg font-black transition-all duration-500 ${timePeriod === 'PM' ? 'bg-gradient-to-r from-[#088395] to-[#0A4D68] text-white shadow-[0_15px_35px_rgba(8,131,149,0.5)] scale-105' : 'bg-white text-slate-400 hover:text-[#088395] shadow-sm'}`}
+                            className={`flex-1 h-18 py-4 rounded-full text-xl font-black transition-all duration-400 ${timePeriod === 'PM' ? 'bg-[#088395] text-white shadow-[0_15px_35px_rgba(8,131,149,0.4)] scale-105' : 'bg-transparent text-slate-500 hover:bg-white/50'}`}
                           >PM</button>
                        </div>
                     </div>

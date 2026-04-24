@@ -177,20 +177,19 @@ export default function NursingDashboard() {
                 </h3>
                 
                 {/* Enhanced Catchy Session Toggle */}
-                <div className="flex gap-3">
+                {/* Redesigned Session Toggle - Premium Pill Style */}
+                <div className="flex bg-white p-1 rounded-full border border-slate-200 shadow-tiny w-fit">
                   <button 
                     onClick={() => setSessionFilter('morning')}
-                    className={`btn !text-xs !px-6 !py-2.5 transition-all flex items-center gap-2 ${sessionFilter === 'morning' ? 'btn-primary' : 'bg-white text-slate-500 border border-slate-200 hover:border-[#088395] hover:text-[#088395]'}`}
+                    className={`flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-black transition-all duration-300 ${sessionFilter === 'morning' ? 'bg-primary text-white shadow-md scale-105' : 'text-slate-400 hover:text-slate-600'}`}
                   >
-                    <Sun size={16} className={sessionFilter === 'morning' ? 'text-white' : 'text-slate-400'} />
-                    MORNING
+                    <Sun size={14} /> MORNING
                   </button>
                   <button 
                     onClick={() => setSessionFilter('evening')}
-                    className={`btn !text-xs !px-6 !py-2.5 transition-all flex items-center gap-2 ${sessionFilter === 'evening' ? 'btn-primary' : 'bg-white text-slate-500 border border-slate-200 hover:border-[#088395] hover:text-[#088395]'}`}
+                    className={`flex items-center gap-2 px-6 py-2 rounded-full text-[10px] font-black transition-all duration-300 ${sessionFilter === 'evening' ? 'bg-primary text-white shadow-md scale-105' : 'text-slate-400 hover:text-slate-600'}`}
                   >
-                    <Moon size={16} className={sessionFilter === 'evening' ? 'text-white' : 'text-slate-400'} />
-                    EVENING
+                    <Moon size={14} /> EVENING
                   </button>
                 </div>
               </div>
@@ -223,7 +222,7 @@ export default function NursingDashboard() {
               <input 
                 type="text" 
                 placeholder="Search UHID / Name..." 
-                className="form-input !pl-12 !h-12 !bg-white border-none shadow-tiny"
+                className="form-input !pl-12 !h-12 !bg-white border-none shadow-tiny !rounded-2xl"
                 value={searchTerm}
                 onChange={e => setSearchTerm(e.target.value)}
               />
@@ -241,7 +240,13 @@ export default function NursingDashboard() {
                 >
                   <div className="flex justify-between items-start mb-3">
                     <div>
-                           <span className="text-xs text-primary font-bold uppercase tracking-wider mb-1">Token #{v.tokenNumber}</span>
+                           <div className="flex items-center gap-2 mb-1">
+                              <span className="text-[10px] text-primary font-black uppercase tracking-wider bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">Token #{v.tokenNumber}</span>
+                              <span className="text-[10px] text-slate-400 font-black flex items-center gap-1">
+                                 <Clock size={10} /> 
+                                 {new Date(v.visitDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                              </span>
+                           </div>
                            <h4 className="text-base font-bold text-slate-800">{v.patient.name}</h4>
                            {new Date(v.visitDate).toLocaleDateString() !== new Date().toLocaleDateString() && (
                              <span className="text-[9px] font-black text-rose-500 bg-rose-50 px-2 py-0.5 rounded-full mt-1 w-fit border border-rose-100">PREVIOUS DAY</span>
@@ -254,7 +259,7 @@ export default function NursingDashboard() {
                     <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-50">
                        <span className="text-[10px] font-bold text-slate-400">{v.patient.age}Y | {v.patient.gender} | {v.doctor?.name || v.assignedDoctorName}</span>
                        <span className={`text-[10px] font-black px-2 py-1 rounded bg-secondary/10 text-secondary uppercase tracking-[1px]`}>
-                          T#{v.tokenNumber}
+                          READY
                        </span>
                     </div>
                 </div>

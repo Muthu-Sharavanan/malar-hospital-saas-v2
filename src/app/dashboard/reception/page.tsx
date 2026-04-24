@@ -455,16 +455,16 @@ export default function ReceptionDashboard() {
                           </select>
                        </div>
                        
-                       <div className="flex bg-slate-100/80 p-1.5 rounded-full h-14 w-32 border border-slate-200">
+                       <div className="flex bg-slate-100/50 p-1 rounded-full h-14 w-48 border border-slate-200 ml-2">
                           <button 
                             type="button"
                             onClick={() => setTimePeriod('AM')}
-                            className={`flex-1 rounded-full text-xs font-black transition-all ${timePeriod === 'AM' ? 'bg-white text-primary shadow-md' : 'text-slate-400 opacity-60 hover:opacity-100'}`}
+                            className={`flex-1 rounded-full text-xs font-black transition-all duration-300 ${timePeriod === 'AM' ? 'bg-primary text-white shadow-lg scale-105' : 'text-slate-400 hover:text-slate-600'}`}
                           >AM</button>
                           <button 
                             type="button"
                             onClick={() => setTimePeriod('PM')}
-                            className={`flex-1 rounded-full text-xs font-black transition-all ${timePeriod === 'PM' ? 'bg-white text-primary shadow-md' : 'text-slate-400 opacity-60 hover:opacity-100'}`}
+                            className={`flex-1 rounded-full text-xs font-black transition-all duration-300 ${timePeriod === 'PM' ? 'bg-primary text-white shadow-lg scale-105' : 'text-slate-400 hover:text-slate-600'}`}
                           >PM</button>
                        </div>
                     </div>

@@ -688,7 +688,8 @@ export default function DoctorDashboard() {
                        </div>
                    </div>
 
-                   <form onSubmit={handleSubmitConsult} className="flex flex-col gap-6                       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                   <form onSubmit={handleSubmitConsult} className="flex flex-col gap-6">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                           {/* Left Side: Clinical Findings */}
                           <div className="flex flex-col gap-6">
                               {/* Box 1: Chief Complaints */}

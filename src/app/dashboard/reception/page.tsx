@@ -569,7 +569,8 @@ export default function ReceptionDashboard() {
                 <thead>
                   <tr className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] text-left">
                     <th className="pb-4 pl-4">Date & Time</th>
-                    <th className="pb-4">Patient Narrative</th>
+                    <th className="pb-4">Patient</th>
+                    <th className="pb-4">Consultation Reason</th>
                     <th className="pb-4">Scheduled Consultant</th>
                     <th className="pb-4 pr-4 text-right">Action</th>
                   </tr>
@@ -587,20 +588,30 @@ export default function ReceptionDashboard() {
                       </td>
                       <td className="p-4 bg-slate-50 border-y border-slate-100">
                         <div className="font-bold text-slate-800">{v.patient.name}</div>
-                        <div className="text-[10px] text-slate-400 font-bold">{v.chiefComplaints || 'General Checkup'}</div>
+                        <div className="text-[10px] font-black text-slate-400 mt-1 uppercase tracking-tight">{v.patient.uhid} • {v.patient.age}Y</div>
                       </td>
                       <td className="p-4 bg-slate-50 border-y border-slate-100">
-                        <div className="text-xs font-bold text-slate-600">Dr. {v.doctor?.name.replace(/^(dr\.?\s*)+/i, '') || 'Consultant'}</div>
+                         <div className="max-w-[200px] truncate text-[11px] font-bold text-slate-500 italic bg-white/50 px-3 py-1.5 rounded-lg border border-slate-100">
+                            {v.chiefComplaints || 'General Consultation'}
+                         </div>
+                      </td>
+                      <td className="p-4 bg-slate-50 border-y border-slate-100">
+                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-[10px] font-black uppercase tracking-wider">
+                           <Stethoscope size={10} />
+                           Dr. {v.doctor?.name.replace(/^(dr\.?\s*)+/i, '') || 'Consultant'}
+                        </div>
                       </td>
                       <td className="p-4 bg-slate-50 rounded-r-2xl border-y border-r border-slate-100 text-right">
-                         <button className="btn btn-primary h-9 px-4 text-[10px] !bg-emerald-500 !shadow-none" onClick={() => {
-                            const msg = `Reminder: Appointment for ${v.patient.name} on ${new Date(v.visitDate).toLocaleDateString()} with Dr. ${v.doctor.name} at Malar Hospital.`;
+                         <button className="btn btn-primary h-10 px-6 text-[10px] !bg-emerald-500 !shadow-lg shadow-emerald-200/50 !rounded-xl" onClick={() => {
+                            const formattedDate = new Date(v.visitDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
+                            const time = new Date(v.visitDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
+                            const msg = `*REMAINDER - MALAR HOSPITAL*\n\nPatient: ${v.patient.name}\nDate: ${formattedDate}\nTime: ${time}\nDoctor: Dr. ${v.doctor?.name}\n${v.chiefComplaints ? `Reason: ${v.chiefComplaints}\n` : ''}\nWe look forward to seeing you.`;
                             window.open(`https://web.whatsapp.com/send?phone=91${v.patient.phone}&text=${encodeURIComponent(msg)}`, '_blank');
                          }}>Remind</button>
                       </td>
                     </tr>
                   )) : (
-                    <tr><td colSpan={4} className="py-20 text-center font-bold text-slate-300">No future appointments scheduled.</td></tr>
+                    <tr><td colSpan={5} className="py-20 text-center font-bold text-slate-300">No future appointments scheduled.</td></tr>
                   )}
                 </tbody>
               </table>

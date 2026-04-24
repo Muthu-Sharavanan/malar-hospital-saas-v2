@@ -72,7 +72,8 @@ export default function DoctorDashboard() {
     examination: '',
     diagnosis: '',
     investigationAdvised: '',
-    nextReview: ''
+    nextReview: '',
+    isReview: false
   });
 
   const [selectedTests, setSelectedTests] = useState<any[]>([]);
@@ -87,7 +88,8 @@ export default function DoctorDashboard() {
       examination: v.examination || '',
       diagnosis: v.diagnosis || '',
       investigationAdvised: v.investigationAdvised || '',
-      nextReview: v.nextReview || ''
+      nextReview: v.nextReview || '',
+      isReview: v.isReview || false
     });
     if (v.prescriptions) {
       setDrugs(v.prescriptions.map((p: any) => ({
@@ -275,7 +277,7 @@ export default function DoctorDashboard() {
       if (data.success) {
         window.open(`/dashboard/doctor/prescription/${selectedVisit.id}`, 'prescription_print');
         setSelectedVisit(null);
-        setConsultation({ chiefComplaints: '', history: '', examination: '', diagnosis: '', investigationAdvised: '', nextReview: '' });
+        setConsultation({ chiefComplaints: '', history: '', examination: '', diagnosis: '', investigationAdvised: '', nextReview: '', isReview: false });
         setDrugs([]);
         fetchDoctorQueue();
         fetchAllAppointments();
@@ -1121,13 +1123,44 @@ export default function DoctorDashboard() {
                              </div>
 
                              <div className="flex flex-col gap-4 p-6 bg-[#088395]/5 rounded-2xl border border-[#088395]/10">
-                                <label className="text-[11px] font-black uppercase tracking-widest text-[#0A4D68]/60">Review / Follow-up</label>
-                                <textarea 
-                                  className="form-input !h-20 !bg-white border-none shadow-sm transition-all focus:!ring-2 font-bold text-[#0A4D68]" 
-                                  placeholder="E.g., Come and meet me after one week..." 
-                                  value={consultation.nextReview} 
-                                  onChange={e => setConsultation({...consultation, nextReview: e.target.value})}
-                                />
+                                <div className="flex justify-between items-center">
+                                   <label className="text-[11px] font-black uppercase tracking-widest text-[#0A4D68]/60">Review / Follow-up</label>
+                                   <label className="flex items-center gap-2 cursor-pointer select-none" style={{ userSelect: 'none' }}>
+                                      <span style={{ fontSize: '10px', fontWeight: '900', color: '#088395', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Mark as Review Case</span>
+                                      <div
+                                        onClick={() => setConsultation({...consultation, isReview: !consultation.isReview})}
+                                        style={{
+                                          width: '20px', height: '20px',
+                                          borderRadius: '5px',
+                                          border: `2px solid #088395`,
+                                          backgroundColor: consultation.isReview ? '#088395' : 'white',
+                                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                          cursor: 'pointer',
+                                          transition: 'all 0.2s ease',
+                                          flexShrink: 0,
+                                          boxShadow: consultation.isReview ? '0 4px 10px rgba(8,131,149,0.35)' : 'none'
+                                        }}
+                                      >
+                                        {consultation.isReview && (
+                                          <svg width="12" height="10" viewBox="0 0 12 10" fill="none">
+                                            <path d="M1 5L4.5 8.5L11 1.5" stroke="white" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"/>
+                                          </svg>
+                                        )}
+                                      </div>
+                                   </label>
+                                </div>
+                                {consultation.isReview && (
+                                  <textarea 
+                                    className="form-input !h-24 border-none shadow-sm transition-all focus:!ring-2 font-bold text-[#0A4D68] animate-in fade-in slide-in-from-top-2 duration-300"
+                                    style={{ 
+                                      backgroundColor: 'white',
+                                      resize: 'none'
+                                    }}
+                                    placeholder="E.g., Come and meet me after one week..."
+                                    value={consultation.nextReview} 
+                                    onChange={e => setConsultation({...consultation, nextReview: e.target.value})}
+                                  />
+                                )}
                              </div>
                           </div>
                        </div>

@@ -78,6 +78,7 @@ model Visit {
   diagnosis       String?
   investigationAdvised String?
   nextReview      String?
+  isReview        Boolean  @default(false)
 
   bills         Bill[]
   labOrders     LabOrder[]

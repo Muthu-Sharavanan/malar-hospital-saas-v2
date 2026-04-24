@@ -20,7 +20,7 @@ export async function PATCH(req: Request) {
 export async function POST(req: Request) {
   try {
     const { 
-      visitId, chiefComplaints, history, examination, diagnosis, investigationAdvised, nextReview, drugs 
+      visitId, chiefComplaints, history, examination, diagnosis, investigationAdvised, nextReview, isReview, drugs 
     } = await req.json();
 
     const visitSearch = await prisma.visit.findUnique({ where: { id: visitId } });
@@ -53,6 +53,7 @@ export async function POST(req: Request) {
           diagnosis,
           investigationAdvised,
           nextReview,
+          isReview: !!isReview,
           status: 'COMPLETED'
         }
       });
@@ -153,7 +154,7 @@ export async function GET(req: Request) {
       return { 
         ...v, 
         session: sessionLabel,
-        isReview: !!lastVisit,
+        isReview: v.isReview || !!lastVisit,
         lastVisitSummary: lastVisit
       };
     }));

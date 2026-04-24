@@ -399,6 +399,8 @@ export default function DoctorDashboard() {
       }
 
       setConsultation(prev => {
+        const currentVal = prev[field as keyof typeof prev];
+        const sessionBaseText = typeof currentVal === 'string' ? currentVal : '';
         let combined = sessionBaseText + (sessionBaseText && !sessionBaseText.endsWith('\n') ? ' ' : '') + sessionFinal;
         
         // Finalized cleanup

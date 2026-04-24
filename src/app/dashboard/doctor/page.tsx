@@ -38,7 +38,7 @@ export default function DoctorDashboard() {
     new Date().getHours() < 12 ? 'morning' : 'evening'
   );
 
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [currentView, setCurrentView] = useState<'consulting' | 'calendar' | 'reviews' | 'finished'>('consulting');
   const [allAppointments, setAllAppointments] = useState<any[]>([]);
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [calendarVisitDetail, setCalendarVisitDetail] = useState<any>(null);
@@ -99,6 +99,7 @@ export default function DoctorDashboard() {
     } else {
       setDrugs([]);
     }
+    setCurrentView('consulting');
   };
 
   const commonTests = [
@@ -444,21 +445,40 @@ export default function DoctorDashboard() {
           <span style={{ fontSize: '10px', opacity: 0.5, letterSpacing: '2px', textTransform: 'uppercase', color: 'white' }}>Clinical Portal</span>
         </div>
 
-        <nav style={{ padding: '30px 0', flexGrow: 1 }}>
+        <nav style={{ padding: '20px 0', flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '5px' }}>
           <button 
-             onClick={() => setShowCalendar(false)}
-             style={{ width: '100%', padding: '15px 30px', display: 'flex', alignItems: 'center', gap: '15px', background: !showCalendar ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', textAlign: 'left', cursor: 'pointer', transition: '0.2s', fontSize: '15px' }}
+             onClick={() => setCurrentView('consulting')}
+             style={{ width: '100%', padding: '15px 30px', display: 'flex', alignItems: 'center', gap: '15px', background: currentView === 'consulting' ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', textAlign: 'left', cursor: 'pointer', transition: '0.2s', fontSize: '14px' }}
           >
-            <Stethoscope size={20} /> 
-            <span style={{ fontWeight: !showCalendar ? '600' : '400' }}>OPD Consulting</span>
+            <Stethoscope size={18} /> 
+            <span style={{ fontWeight: currentView === 'consulting' ? '700' : '400' }}>OPD Consulting</span>
           </button>
           
           <button 
-             onClick={() => { setShowCalendar(true); fetchAllAppointments(); }}
-             style={{ width: '100%', padding: '15px 30px', display: 'flex', alignItems: 'center', gap: '15px', background: showCalendar ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', textAlign: 'left', cursor: 'pointer', transition: '0.2s', fontSize: '15px' }}
+             onClick={() => { setCurrentView('calendar'); fetchAllAppointments(); }}
+             style={{ width: '100%', padding: '15px 30px', display: 'flex', alignItems: 'center', gap: '15px', background: currentView === 'calendar' ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', textAlign: 'left', cursor: 'pointer', transition: '0.2s', fontSize: '14px' }}
           >
-            <Calendar size={20} /> 
-            <span style={{ fontWeight: showCalendar ? '600' : '400' }}>Calendar View</span>
+            <Calendar size={18} /> 
+            <span style={{ fontWeight: currentView === 'calendar' ? '700' : '400' }}>Calendar View</span>
+          </button>
+
+          <button 
+             onClick={() => setCurrentView('reviews')}
+             style={{ width: '100%', padding: '15px 30px', display: 'flex', alignItems: 'center', gap: '15px', background: currentView === 'reviews' ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', textAlign: 'left', cursor: 'pointer', transition: '0.2s', fontSize: '14px' }}
+          >
+            <Activity size={18} /> 
+            <span style={{ fontWeight: currentView === 'reviews' ? '700' : '400' }}>Review Cases</span>
+            {queue.filter(v => v.isReview).length > 0 && (
+              <span className="ml-auto bg-[#F59E0B] text-[#0A4D68] text-[9px] font-black px-1.5 py-0.5 rounded">{queue.filter(v => v.isReview).length}</span>
+            )}
+          </button>
+
+          <button 
+             onClick={() => setCurrentView('finished')}
+             style={{ width: '100%', padding: '15px 30px', display: 'flex', alignItems: 'center', gap: '15px', background: currentView === 'finished' ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', textAlign: 'left', cursor: 'pointer', transition: '0.2s', fontSize: '14px' }}
+          >
+            <CheckCircle2 size={18} /> 
+            <span style={{ fontWeight: currentView === 'finished' ? '700' : '400' }}>Finished Today</span>
           </button>
         </nav>
 
@@ -539,7 +559,7 @@ export default function DoctorDashboard() {
           />
         </div>
 
-        {showCalendar ? (
+        {currentView === 'calendar' ? (
           <div className="glass-card !p-8 animate-fade-in bg-white border-2 border-white shadow-lg">
              <div className="flex justify-between items-center mb-8">
                 <div>
@@ -599,158 +619,181 @@ export default function DoctorDashboard() {
                    });
                 })()}
              </div>
-
-             {/* Review and Finished sections moved here */}
-             <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mt-12 pt-8 border-t border-slate-200">
-                {/* Section 2: Review / Follow-up Cases */}
-                <div className="flex flex-col gap-6">
-                   <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-bold flex items-center gap-2 text-[#088395]">
-                        <Activity size={20} /> Review Cases
-                      </h3>
-                      <span className="badge bg-[#088395]/10 text-[#088395] border-none font-bold px-3 py-1 text-[10px]">
-                        {queue.filter(v => v.isReview).length} REPEAT
-                      </span>
-                   </div>
-
-                   <div className="flex flex-col gap-4 overflow-y-auto pr-2" style={{ maxHeight: '40vh' }}>
-                      {queue.filter(v => v.isReview).length > 0 ? (
-                        queue.filter(v => v.isReview).map((v: any) => (
-                          <div 
-                            key={v.id} 
-                            className="glass-card !p-5 cursor-pointer bg-white border-2 border-transparent hover:border-[#088395]/30 transition-all duration-300"
-                            onClick={() => { setSelectedVisit(v); setShowCalendar(false); }}
-                          >
-                            <div className="flex justify-between items-start">
-                               <div className="flex flex-col">
-                                 <h4 className="text-sm font-bold text-slate-700">{v.patient.name}</h4>
-                                 <p className="text-[10px] font-bold text-[#088395] mt-1 uppercase tracking-widest">Follow-up Patient</p>
-                               </div>
-                               <button 
-                                 onClick={(e) => { e.stopPropagation(); setCalendarVisitDetail(v.lastVisitSummary); }}
-                                 className="p-1.5 rounded-lg bg-[#088395] text-white hover:bg-[#0A4D68] transition-colors"
-                                 title="View Previous Record"
-                               >
-                                 <ArrowUpRight size={14} />
-                               </button>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-center text-[10px] font-bold text-slate-300 uppercase py-4">No review cases currently</p>
-                      )}
-                   </div>
+          </div>
+        ) : currentView === 'reviews' ? (
+          <div className="glass-card !p-8 animate-fade-in bg-white border-2 border-white shadow-lg">
+             <div className="flex items-center justify-between mb-8">
+                <div>
+                   <h3 className="text-2xl font-black text-slate-800 flex items-center gap-3">
+                      <Activity className="text-[#088395]" size={32} /> Review Case Queue
+                   </h3>
+                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Follow-up Patients Awaiting Consultation</p>
                 </div>
-
-                {/* Section 3: Finished Today */}
-                <div className="flex flex-col gap-6">
-                   <div className="flex items-center justify-between">
-                      <h3 className="text-lg font-bold flex items-center gap-2 text-[#64748B]">
-                        <CheckCircle2 size={20} /> Finished Today
-                      </h3>
-                      <span className="badge bg-slate-100 text-slate-500 border-none font-bold px-3 py-1 text-[10px]">
-                        {allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).length} DONE
-                      </span>
-                   </div>
-
-                   <div className="flex flex-col gap-4 overflow-y-auto pr-2" style={{ maxHeight: '40vh' }}>
-                      {allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).length > 0 ? (
-                        allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).map((v: any) => (
-                          <div 
-                            key={v.id} 
-                            className="glass-card !p-5 cursor-pointer bg-white border-2 border-transparent hover:border-[#088395]/30 transition-all duration-300"
-                            onClick={() => { selectVisit(v); setShowCalendar(false); }}
-                          >
-                            <div className="flex justify-between items-start">
-                               <div className="flex flex-col">
-                                 <h4 className="text-sm font-bold text-slate-700">{v.patient.name}</h4>
-                                 <div className="flex items-center gap-2 mt-1">
-                                    <span className="text-[10px] font-bold text-slate-400">Token #{v.tokenNumber}</span>
-                                    <div className="w-1 h-1 rounded-full bg-slate-300"></div>
-                                    <span className="text-[10px] font-bold text-slate-400">
-                                      {new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
-                                    </span>
-                                 </div>
-                               </div>
-                               <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-500">
-                                 <CheckCircle2 size={14} />
-                               </div>
-                            </div>
-                          </div>
-                        ))
-                      ) : (
-                        <p className="text-center text-[10px] font-bold text-slate-300 uppercase py-4">No patients finished yet</p>
-                      )}
-                   </div>
+                <div className="bg-[#088395]/10 text-[#088395] px-6 py-2 rounded-full font-black text-sm">
+                   {queue.filter(v => v.isReview).length} REPEAT PATIENTS
                 </div>
+             </div>
+
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {queue.filter(v => v.isReview).length > 0 ? (
+                   queue.filter(v => v.isReview).map((v: any) => (
+                     <div 
+                       key={v.id} 
+                       className="glass-card !p-6 cursor-pointer bg-white border-2 border-transparent hover:border-[#088395]/30 transition-all duration-300 group shadow-sm hover:shadow-xl"
+                       onClick={() => selectVisit(v)}
+                     >
+                       <div className="flex justify-between items-start mb-4">
+                          <div className="flex flex-col">
+                            <span className="text-[10px] font-black text-[#088395] uppercase tracking-widest mb-1">Token #{v.tokenNumber}</span>
+                            <h4 className="text-lg font-bold text-slate-800">{v.patient.name}</h4>
+                          </div>
+                          <button 
+                            onClick={(e) => { e.stopPropagation(); setCalendarVisitDetail(v.lastVisitSummary); }}
+                            className="p-2 rounded-xl bg-[#088395]/10 text-[#088395] group-hover:bg-[#088395] group-hover:text-white transition-all shadow-sm"
+                            title="View Previous Record"
+                          >
+                            <ArrowUpRight size={18} />
+                          </button>
+                       </div>
+                       <div className="flex items-center gap-4 pt-4 border-t border-slate-50">
+                          <div className="flex flex-col">
+                             <span className="text-[10px] font-black text-slate-400 uppercase">Age/Gender</span>
+                             <span className="text-xs font-bold text-slate-600">{v.patient.age}Y | {v.patient.gender}</span>
+                          </div>
+                          <div className="flex flex-col ml-auto text-right">
+                             <span className="text-[10px] font-black text-slate-400 uppercase">Registered</span>
+                             <span className="text-xs font-bold text-[#088395]">{new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                          </div>
+                       </div>
+                     </div>
+                   ))
+                ) : (
+                   <div className="col-span-full py-20 text-center flex flex-col items-center">
+                      <Activity className="text-slate-100 mb-4" size={80} />
+                      <h4 className="text-slate-300 font-black text-xl uppercase">No Review Cases Currently</h4>
+                      <p className="text-slate-400 text-sm font-bold">Follow-up patients will appear here automatically.</p>
+                   </div>
+                )}
+             </div>
+          </div>
+        ) : currentView === 'finished' ? (
+          <div className="glass-card !p-8 animate-fade-in bg-white border-2 border-white shadow-lg">
+             <div className="flex items-center justify-between mb-8">
+                <div>
+                   <h3 className="text-2xl font-black text-slate-800 flex items-center gap-3">
+                      <CheckCircle2 className="text-emerald-500" size={32} /> Finished Consultations
+                   </h3>
+                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Successfully Completed Visits Today</p>
+                </div>
+                <div className="bg-emerald-50 text-emerald-600 px-6 py-2 rounded-full font-black text-sm">
+                   {allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).length} DONE
+                </div>
+             </div>
+
+             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).length > 0 ? (
+                   allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).map((v: any) => (
+                     <div 
+                       key={v.id} 
+                       className="glass-card !p-6 cursor-pointer bg-white border-2 border-transparent hover:border-emerald-300 transition-all duration-300 group shadow-sm hover:shadow-xl"
+                       onClick={() => selectVisit(v)}
+                     >
+                       <div className="flex justify-between items-start mb-4">
+                          <div className="flex flex-col">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Token #{v.tokenNumber}</span>
+                            <h4 className="text-lg font-bold text-slate-800">{v.patient.name}</h4>
+                          </div>
+                          <div className="p-2 rounded-xl bg-emerald-50 text-emerald-500 shadow-sm">
+                            <CheckCircle2 size={18} />
+                          </div>
+                       </div>
+                       <div className="flex items-center gap-4 pt-4 border-t border-slate-50">
+                          <div className="flex flex-col">
+                             <span className="text-[10px] font-black text-slate-400 uppercase">Consulted At</span>
+                             <span className="text-xs font-bold text-slate-600">{new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                          </div>
+                          <button className="ml-auto text-[10px] font-black text-primary hover:underline uppercase tracking-widest">Reprint Rx</button>
+                       </div>
+                     </div>
+                   ))
+                ) : (
+                   <div className="col-span-full py-20 text-center flex flex-col items-center">
+                      <CheckCircle2 className="text-slate-100 mb-4" size={80} />
+                      <h4 className="text-slate-300 font-black text-xl uppercase">No Finished Cases Yet</h4>
+                      <p className="text-slate-400 text-sm font-bold">Completed consultations will appear here.</p>
+                   </div>
+                )}
              </div>
           </div>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Waiting List */}
+            {/* Left Column: All Patient Queues */}
             <div className="lg:col-span-1 flex flex-col gap-6">
-                  <div className="flex items-center justify-between mb-4">
+                {/* Section 1: Active Waiting List */}
+                <div className="flex flex-col gap-4">
+                  <div className="flex items-center justify-between mb-2">
                      <h3 className="text-lg font-bold flex items-center gap-2 text-[#0A4D68]">
                        <Clock size={20} /> Shift Waiting List
                      </h3>
                      <span className="badge bg-[#088395] text-white border-none font-bold px-4 py-3">{queue.length} Ready</span>
                   </div>
 
-               <div className="flex flex-col gap-4 overflow-y-auto pr-2" style={{ maxHeight: '65vh' }}>
-                  {queue.length > 0 ? queue.map((v: any) => (
-                    <div 
-                      key={v.id} 
-                      className={`glass-card !p-5 cursor-pointer group hover-scale-102 ${selectedVisit?.id === v.id ? '!border-secondary !shadow-lg bg-secondary/5' : 'bg-white'}`}
-                      onClick={async () => { 
-                        setSelectedVisit(v); 
-                        setSelectedTests([]); 
-                        setDrugs([]);
-                        try {
-                          await fetch('/api/consultation', {
-                            method: 'PATCH',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ visitId: v.id, status: 'CONSULTING' })
-                          });
-                        } catch (err) {}
-                      }}
-                    >
-                      <div className="flex justify-between items-start mb-3">
-                         <div className="flex flex-col">
-                           <span className="text-xs text-secondary font-bold uppercase tracking-wider mb-1">Token #{v.tokenNumber}</span>
-                           <div className="flex items-center gap-2">
-                             <h4 className="text-base font-bold text-slate-800">{v.patient.name}</h4>
-                             {v.isReview && (
-                               <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-tight">Review Case</span>
-                             )}
+                  <div className="flex flex-col gap-4 overflow-y-auto pr-2" style={{ maxHeight: '45vh' }}>
+                    {queue.length > 0 ? queue.map((v: any) => (
+                      <div 
+                        key={v.id} 
+                        className={`glass-card !p-5 cursor-pointer group hover-scale-102 ${selectedVisit?.id === v.id ? '!border-secondary !shadow-lg bg-secondary/5' : 'bg-white'}`}
+                        onClick={async () => { 
+                          setSelectedVisit(v); 
+                          setSelectedTests([]); 
+                          setDrugs([]);
+                          try {
+                            await fetch('/api/consultation', {
+                              method: 'PATCH',
+                              headers: { 'Content-Type': 'application/json' },
+                              body: JSON.stringify({ visitId: v.id, status: 'CONSULTING' })
+                            });
+                          } catch (err) {}
+                        }}
+                      >
+                        <div className="flex justify-between items-start mb-3">
+                           <div className="flex flex-col">
+                             <span className="text-xs text-secondary font-bold uppercase tracking-wider mb-1">Token #{v.tokenNumber}</span>
+                             <div className="flex items-center gap-2">
+                               <h4 className="text-base font-bold text-slate-800">{v.patient.name}</h4>
+                               {v.isReview && (
+                                 <span className="bg-emerald-50 text-emerald-600 text-[9px] font-black px-2 py-0.5 rounded border border-emerald-100 uppercase tracking-tight">Review Case</span>
+                               )}
+                             </div>
                            </div>
-                         </div>
-                         <div className={`p-2 rounded-lg ${selectedVisit?.id === v.id ? 'bg-secondary text-white' : 'bg-slate-50 text-slate-400'} transition-all`}>
-                           <ChevronRight size={16} />
-                         </div>
+                           <div className={`p-2 rounded-lg ${selectedVisit?.id === v.id ? 'bg-secondary text-white' : 'bg-slate-50 text-slate-400'} transition-all`}>
+                             <ChevronRight size={16} />
+                           </div>
+                        </div>
+                        <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
+                           <div className="flex items-center gap-3">
+                              <span className="text-[10px] font-bold text-slate-400">{v.patient.age}Y | {v.patient.gender}</span>
+                              <div className="flex items-center gap-1 text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-full">
+                                 <Clock size={10} />
+                                 {new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                              </div>
+                           </div>
+                           <span className={`text-[10px] font-black px-3 py-1 rounded uppercase tracking-widest ${v.status === 'CONSULTING' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                             {v.status === 'CONSULTING' ? 'Consulting' : 'Ready'}
+                           </span>
+                        </div>
                       </div>
-                      <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-                         <div className="flex items-center gap-3">
-                            <span className="text-[10px] font-bold text-slate-400">{v.patient.age}Y | {v.patient.gender}</span>
-                            <div className="flex items-center gap-1 text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-full">
-                               <Clock size={10} />
-                               {new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
-                            </div>
-                         </div>
-                         <span className={`text-[10px] font-black px-3 py-1 rounded uppercase tracking-widest ${v.status === 'CONSULTING' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
-                           {v.status === 'CONSULTING' ? 'Consulting' : 'Ready'}
-                         </span>
+                    )) : (
+                      <div className="glass-card flex flex-col items-center justify-center p-12 text-center bg-white/50 border-dashed border-2 border-slate-200">
+                         <Users className="text-slate-300 mb-4" size={40} />
+                         <h4 className="text-slate-500 font-bold">Queue is Empty</h4>
+                         <p className="text-xs text-slate-400">Operational token flow will appear here.</p>
                       </div>
-                    </div>
-                  )) : (
-                    <div className="glass-card flex flex-col items-center justify-center p-12 text-center bg-white/50 border-dashed border-2 border-slate-200">
-                       <Users className="text-slate-300 mb-4" size={40} />
-                       <h4 className="text-slate-500 font-bold">Queue is Empty</h4>
-                       <p className="text-xs text-slate-400">Operational token flow will appear here.</p>
-                    </div>
-                  )}
-               </div>
-
+                    )}
+                  </div>
                 </div>
+
+            </div>
 
             {/* Consultation Form */}
             <div className="lg:col-span-2">

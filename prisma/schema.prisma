@@ -77,6 +77,7 @@ model Visit {
   examination     String?
   diagnosis       String?
   investigationAdvised String?
+  nextReview      String?
 
   bills         Bill[]
   labOrders     LabOrder[]

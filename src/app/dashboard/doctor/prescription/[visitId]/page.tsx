@@ -159,8 +159,16 @@ export default function PrescriptionPrint() {
         </div>
       )}
 
+      {/* Follow-up / Review Section */}
+      {visit.nextReview && (
+        <div style={{ marginTop: '20px', padding: '15px', background: '#F0F9FF', border: '1px solid #BAE6FD', borderRadius: '8px' }}>
+           <small style={{ fontWeight: 'bold', color: '#0A4D68', display: 'block', textTransform: 'uppercase', fontSize: '10px', marginBottom: '5px' }}>Review / Follow-up Instructions</small>
+           <p style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: '#0A4D68', whiteSpace: 'pre-wrap' }}>{visit.nextReview}</p>
+        </div>
+      )}
+
       {/* Signature Area */}
-      <div style={{ marginTop: 'auto', display: 'flex', justifyContent: 'flex-end', paddingTop: '40px' }}>
+      <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end', paddingTop: '20px' }}>
          <div style={{ textAlign: 'center', borderTop: '1px solid #000', width: '220px', paddingTop: '5px' }}>
             <p style={{ fontWeight: 700, margin: 0, fontSize: '15px' }}>{visit.doctor.name}</p>
             <small style={{ color: '#64748B', display: 'block', fontSize: '12px' }}>Reg No: {visit.doctor.regNo || 'MC-12345'}</small>

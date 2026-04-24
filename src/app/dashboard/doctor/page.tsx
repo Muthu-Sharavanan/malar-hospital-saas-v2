@@ -78,6 +78,27 @@ export default function DoctorDashboard() {
   const [drugs, setDrugs] = useState<any[]>([]);
   const [currentDrug, setCurrentDrug] = useState({ name: '', dosage: '1-0-1', duration: '5 Days', instructions: 'After food' });
 
+  const selectVisit = (v: any) => {
+    setSelectedVisit(v);
+    setConsultation({
+      chiefComplaints: v.chiefComplaints || '',
+      history: v.history || '',
+      examination: v.examination || '',
+      diagnosis: v.diagnosis || '',
+      investigationAdvised: v.investigationAdvised || ''
+    });
+    if (v.prescriptions) {
+      setDrugs(v.prescriptions.map((p: any) => ({
+        name: p.drugName,
+        dosage: p.dosage,
+        duration: p.duration,
+        instructions: p.instructions
+      })));
+    } else {
+      setDrugs([]);
+    }
+  };
+
   const commonTests = [
     { name: 'CBC (Complete Blood Count)', category: 'Hematology' },
     { name: 'RBS (Random Blood Sugar)', category: 'Biochemistry' },
@@ -245,7 +266,7 @@ export default function DoctorDashboard() {
       const res = await fetch('/api/consultation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...consultation, visitId: selectedVisit.id })
+        body: JSON.stringify({ ...consultation, drugs, visitId: selectedVisit.id })
       });
       const data = await res.json();
       if (data.success) {
@@ -594,14 +615,70 @@ export default function DoctorDashboard() {
                     </div>
                   )}
                </div>
-            </div>
+
+                {/* Finished Consultations List */}
+                <div className="flex flex-col gap-6 mt-8 pt-8 border-t border-slate-100">
+                   <div className="flex items-center justify-between">
+                      <h3 className="text-lg font-bold flex items-center gap-2 text-[#64748B]">
+                        <CheckCircle2 size={20} /> Finished Today
+                      </h3>
+                      <span className="badge bg-slate-100 text-slate-500 border-none font-bold px-3 py-1 text-[10px]">
+                        {allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).length} DONE
+                      </span>
+                   </div>
+
+                <div className="flex flex-col gap-4 overflow-y-auto pr-2" style={{ maxHeight: '35vh' }}>
+                      {allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).length > 0 ? (
+                        allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).map((v: any) => (
+                          <div 
+                            key={v.id} 
+                            className={`glass-card !p-5 cursor-pointer group relative overflow-hidden transition-all duration-500 border-2 ${selectedVisit?.id === v.id ? 'border-[#088395] bg-[#088395]/5 shadow-xl shadow-[#088395]/10' : 'border-transparent bg-white hover:border-[#088395]/30 hover:shadow-lg'}`}
+                            onClick={() => selectVisit(v)}
+                          >
+                            <div className="flex justify-between items-start">
+                               <div className="flex flex-col">
+                                 <h4 className="text-sm font-bold text-slate-700">{v.patient.name}</h4>
+                                 <div className="flex items-center gap-2 mt-1">
+                                    <span className="text-[10px] font-bold text-slate-400">Token #{v.tokenNumber}</span>
+                                    <div className="w-1 h-1 rounded-full bg-slate-300"></div>
+                                    <span className="text-[10px] font-bold text-slate-400">
+                                      {new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                                    </span>
+                                 </div>
+                               </div>
+                               <div className="p-1.5 rounded-lg bg-emerald-50 text-emerald-500">
+                                 <CheckCircle2 size={14} />
+                               </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <p className="text-center text-[10px] font-bold text-slate-300 uppercase py-4">No patients finished yet</p>
+                      )}
+                   </div>
+                </div>
+             </div>
 
             {/* Consultation Form */}
             <div className="lg:col-span-2">
                {selectedVisit ? (
                  <div className="glass-card !p-8 animate-fade-in bg-white h-full border-2 border-white">
-                   {/* Patient Info Header */}
-                   <div style={{ background: '#F0F9FF', borderRadius: '16px', padding: '24px', marginBottom: '30px', border: '1px solid #BAE6FD' }}>
+                  {/* Consultation Form Header */}
+                  <div className="flex justify-between items-center mb-6">
+                    <div className="flex items-center gap-3">
+                       <div className="w-10 h-10 rounded-full bg-[#088395]/10 text-[#088395] flex items-center justify-center">
+                          <Stethoscope size={20} />
+                       </div>
+                       <h2 className="text-xl font-bold text-[#0A4D68]">
+                          {selectedVisit.status === 'COMPLETED' ? 'Review / Edit Consultation' : 'Active Consultation'}
+                       </h2>
+                    </div>
+                    {selectedVisit.status === 'COMPLETED' && (
+                       <span className="badge bg-emerald-500 text-white border-none font-bold px-4 py-2 text-[10px] animate-pulse">EDITING COMPLETED RECORD</span>
+                    )}
+                  </div>
+
+                  <div style={{ background: '#F0F9FF', borderRadius: '16px', padding: '24px', marginBottom: '30px', border: '1px solid #BAE6FD' }}>
                       <div className="flex justify-between items-start mb-6">
                          <div className="flex gap-4 items-center">
                             <div className="w-14 h-14 rounded-xl bg-primary text-white flex items-center justify-center text-2xl font-bold shadow-lg shadow-primary/20">
@@ -619,22 +696,22 @@ export default function DoctorDashboard() {
                          </button>
                       </div>
 
-                      <div className="grid grid-cols-4 sm:grid-cols-7 gap-3 pt-4 border-t border-dashed border-blue-200">
-                         {[
-                           { label: 'BP', value: selectedVisit.bloodPressure },
-                           { label: 'Pulse', value: selectedVisit.pulse },
-                           { label: 'SpO₂', value: selectedVisit.spo2, u: '%' },
-                           { label: 'Temp', value: selectedVisit.temperature, u: '°F' },
-                           { label: 'Weight', value: selectedVisit.weight, u: 'kg' },
-                           { label: 'Height', value: selectedVisit.height, u: 'cm' },
-                           { label: 'BMI', value: selectedVisit.bmi }
-                         ].map(v => (
-                           <div key={v.label} className="text-center p-2 rounded-xl bg-white border border-blue-100/50">
-                              <div className="text-[10px] font-black text-slate-400 uppercase">{v.label}</div>
-                              <div className="text-xs font-black text-primary mt-1">{v.value ? `${v.value}${v.u || ''}` : '---'}</div>
-                           </div>
-                         ))}
-                      </div>
+                       <div className="grid grid-cols-4 sm:grid-cols-7 gap-3 pt-4 border-t border-dashed border-blue-200">
+                          {[
+                            { label: 'BP', value: selectedVisit.bloodPressure },
+                            { label: 'Pulse', value: selectedVisit.pulse },
+                            { label: 'SpO₂', value: selectedVisit.spo2, u: '%' },
+                            { label: 'Temp', value: selectedVisit.temperature, u: '°F' },
+                            { label: 'Weight', value: selectedVisit.weight, u: 'kg' },
+                            { label: 'Height', value: selectedVisit.height, u: 'cm' },
+                            { label: 'BMI', value: selectedVisit.bmi }
+                          ].map(v => (
+                            <div key={v.label} className="text-center p-2 rounded-xl bg-white border border-blue-100/50">
+                               <div className="text-[10px] font-black text-slate-400 uppercase">{v.label}</div>
+                               <div className="text-xs font-black text-primary mt-1">{v.value ? `${v.value}${v.u || ''}` : '---'}</div>
+                            </div>
+                          ))}
+                       </div>
                    </div>
 
                    <form onSubmit={handleSubmitConsult} className="flex flex-col gap-6">
@@ -862,7 +939,7 @@ export default function DoctorDashboard() {
 
                       <div className="pt-6 border-t border-slate-100 flex gap-4">
                          <button type="submit" className="btn btn-primary flex-1 h-16 !rounded-2xl shadow-xl shadow-primary/20 text-lg font-black tracking-tight" disabled={loading}>
-                            {loading ? "Syncing..." : "Finalize Consultation & Print Rx"}
+                            {loading ? "Syncing..." : selectedVisit.status === 'COMPLETED' ? "Update Consultation & Reprint Rx" : "Finalize Consultation & Print Rx"}
                          </button>
                       </div>
                    </form>

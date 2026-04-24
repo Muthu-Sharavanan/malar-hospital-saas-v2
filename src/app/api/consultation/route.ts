@@ -20,25 +20,46 @@ export async function PATCH(req: Request) {
 export async function POST(req: Request) {
   try {
     const { 
-      visitId, chiefComplaints, history, examination, diagnosis, investigationAdvised 
+      visitId, chiefComplaints, history, examination, diagnosis, investigationAdvised, drugs 
     } = await req.json();
 
     const visitSearch = await prisma.visit.findUnique({ where: { id: visitId } });
     if (!visitSearch) throw new Error("Visit not found");
 
-    const visit = await prisma.visit.update({
-      where: { id: visitId },
-      data: {
-        chiefComplaints,
-        history,
-        examination,
-        diagnosis,
-        investigationAdvised,
-        status: 'COMPLETED'
+    const result = await prisma.$transaction(async (tx) => {
+      // 1. Clear existing prescriptions if any (to support "Rewrite")
+      await tx.prescription.deleteMany({ where: { visitId } });
+
+      // 2. Add new prescriptions
+      if (drugs && drugs.length > 0) {
+        await tx.prescription.createMany({
+          data: drugs.map((d: any) => ({
+            visitId,
+            drugName: d.name || d.drugName,
+            dosage: d.dosage,
+            duration: d.duration,
+            instructions: d.instructions || ''
+          }))
+        });
       }
+
+      // 3. Update visit findings
+      const updatedVisit = await tx.visit.update({
+        where: { id: visitId },
+        data: {
+          chiefComplaints,
+          history,
+          examination,
+          diagnosis,
+          investigationAdvised,
+          status: 'COMPLETED'
+        }
+      });
+
+      return updatedVisit;
     });
 
-    return NextResponse.json({ success: true, visit });
+    return NextResponse.json({ success: true, visit: result });
   } catch (error: any) {
     console.error(error);
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

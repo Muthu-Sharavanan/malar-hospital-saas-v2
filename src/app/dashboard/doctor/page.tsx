@@ -560,48 +560,50 @@ export default function DoctorDashboard() {
         </div>
 
         {currentView === 'calendar' ? (
-          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden animate-fade-in flex flex-col h-[75vh]">
+          <div style={{ backgroundColor: 'white', borderRadius: '24px', boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.15)', border: '2px solid white', overflow: 'hidden', display: 'flex', flexDirection: 'column', height: '75vh', animation: 'fade-in 0.5s ease' }}>
              {/* Google Calendar Style Header */}
-             <div className="flex justify-between items-center px-10 py-6 border-b border-slate-100 bg-white">
-                <div className="flex items-center gap-8">
-                   <div className="flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-2xl bg-[#1a73e8]/10 flex items-center justify-center text-[#1a73e8] shadow-sm">
+             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '24px 40px', borderBottom: '1px solid #F1F5F9', background: 'white' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '32px' }}>
+                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                      <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(26, 115, 232, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#1a73e8' }}>
                          <Calendar size={24} />
                       </div>
                       <div>
-                         <h3 className="text-2xl font-bold text-slate-800 tracking-tight">{format(currentMonth, 'MMMM yyyy')}</h3>
-                         <p className="text-[10px] font-black text-[#1a73e8] uppercase tracking-widest">Medical Schedule</p>
+                         <h3 style={{ fontSize: '24px', fontWeight: '800', color: '#1E293B', margin: 0 }}>{format(currentMonth, 'MMMM yyyy')}</h3>
+                         <p style={{ fontSize: '10px', fontWeight: '900', color: '#1a73e8', margin: 0, textTransform: 'uppercase', letterSpacing: '2px' }}>Medical Schedule</p>
                       </div>
                    </div>
                    
-                   <div className="flex items-center bg-slate-50 rounded-xl p-1 border border-slate-100 shadow-sm">
-                      <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-[#1a73e8] hover:shadow-sm transition-all">
+                   <div style={{ display: 'flex', alignItems: 'center', background: '#F8FAFC', borderRadius: '12px', padding: '4px', border: '1px solid #E2E8F0' }}>
+                      <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: 'transparent', color: '#64748B', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                          <ChevronLeft size={20} />
                       </button>
-                      <button onClick={() => setCurrentMonth(new Date())} className="px-6 py-2 rounded-lg text-xs font-black text-slate-600 hover:bg-white hover:text-[#1a73e8] hover:shadow-sm transition-all uppercase tracking-widest">
+                      <button onClick={() => setCurrentMonth(new Date())} style={{ padding: '8px 24px', borderRadius: '8px', border: 'none', background: 'transparent', fontSize: '12px', fontWeight: '900', color: '#475569', cursor: 'pointer', textTransform: 'uppercase' }}>
                          Today
                       </button>
-                      <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-[#1a73e8] hover:shadow-sm transition-all">
+                      <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} style={{ padding: '10px', borderRadius: '8px', border: 'none', background: 'transparent', color: '#64748B', cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
                          <ChevronRight size={20} />
                       </button>
                    </div>
                 </div>
 
-                <div className="flex gap-3">
-                   <button className="btn btn-outline !border-slate-200 !text-slate-600 !px-6 !h-11 !text-xs font-black uppercase tracking-widest hover:!bg-slate-50">Month</button>
-                   <button className="btn btn-primary !bg-[#1a73e8] !border-none !px-8 !h-11 !text-xs font-black uppercase tracking-widest shadow-lg shadow-[#1a73e8]/20">+ Appointment</button>
+                <div style={{ display: 'flex', gap: '12px' }}>
+                   <button style={{ padding: '12px 24px', borderRadius: '12px', border: '1px solid #E2E8F0', background: 'white', color: '#475569', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', cursor: 'pointer' }}>Month</button>
+                   <button style={{ padding: '12px 24px', borderRadius: '12px', border: 'none', background: '#1a73e8', color: 'white', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', cursor: 'pointer', boxShadow: '0 10px 15px -3px rgba(26, 115, 232, 0.3)' }}>+ Appointment</button>
                 </div>
              </div>
 
-             {/* Calendar Grid */}
-             <div className="flex-1 flex flex-col overflow-hidden">
-                <div className="grid grid-cols-7 border-b border-slate-100 bg-slate-50/50">
+             {/* Calendar Grid Container */}
+             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+                {/* Weekday Labels */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', borderBottom: '1px solid #F1F5F9', background: '#F8FAFC' }}>
                    {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                      <div key={day} className="py-3 text-center text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] border-r border-slate-100 last:border-r-0">{day}</div>
+                      <div key={day} style={{ padding: '12px 0', textAlign: 'center', fontSize: '11px', fontWeight: '900', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '1.5px', borderRight: '1px solid #F1F5F9' }}>{day}</div>
                    ))}
                 </div>
 
-                <div className="grid grid-cols-7 flex-1 overflow-y-auto">
+                {/* Day Grid */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', flex: 1, overflowY: 'auto' }}>
                    {(() => {
                       const start = startOfWeek(startOfMonth(currentMonth));
                       const end = endOfWeek(endOfMonth(currentMonth));
@@ -613,27 +615,64 @@ export default function DoctorDashboard() {
                          return (
                             <div 
                               key={day.toString()} 
-                              className={`min-h-[140px] p-2 border-r border-b border-slate-100 transition-all relative hover:bg-slate-50/30 group last:border-r-0 ${!isCurrentMonth ? 'bg-slate-50/30' : 'bg-white'}`}
+                              style={{ 
+                                minHeight: '130px', 
+                                padding: '8px', 
+                                borderRight: '1px solid #F1F5F9', 
+                                borderBottom: '1px solid #F1F5F9', 
+                                background: !isCurrentMonth ? '#F9FAFB' : 'white',
+                                position: 'relative',
+                                display: 'flex',
+                                flexDirection: 'column'
+                              }}
                             >
-                               <div className="flex justify-center mb-2 pt-1">
-                                  <span className={`text-xs font-black w-8 h-8 flex items-center justify-center rounded-full transition-all ${!isCurrentMonth ? 'text-slate-300' : isToday ? 'bg-[#1a73e8] text-white shadow-lg shadow-[#1a73e8]/30' : 'text-slate-600 group-hover:bg-slate-100'}`}>
+                               <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '8px', paddingTop: '4px' }}>
+                                  <span style={{ 
+                                    fontSize: '12px', 
+                                    fontWeight: '900', 
+                                    width: '32px', 
+                                    height: '32px', 
+                                    display: 'flex', 
+                                    alignItems: 'center', 
+                                    justifyContent: 'center', 
+                                    borderRadius: '50%',
+                                    backgroundColor: isToday ? '#1a73e8' : 'transparent',
+                                    color: isToday ? 'white' : !isCurrentMonth ? '#CBD5E1' : '#475569',
+                                    boxShadow: isToday ? '0 4px 6px -1px rgba(26, 115, 232, 0.4)' : 'none'
+                                  }}>
                                      {format(day, 'd')}
                                   </span>
                                </div>
                                
-                               <div className="flex flex-col gap-1.5 overflow-y-hidden max-h-[90px]">
+                               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', overflow: 'hidden' }}>
                                   {dayVisits.slice(0, 3).map((v) => (
                                      <div 
                                        key={v.id} 
                                        onClick={() => setCalendarVisitDetail(v)}
-                                       className={`text-[9px] px-2.5 py-2 rounded-lg font-bold truncate cursor-pointer transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2 border-l-4 shadow-sm ${v.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border-emerald-500' : 'bg-[#1a73e8]/5 text-[#1a73e8] border-[#1a73e8]'}`}
+                                       style={{ 
+                                         fontSize: '9px', 
+                                         padding: '6px 10px', 
+                                         borderRadius: '6px', 
+                                         fontWeight: '700', 
+                                         whiteSpace: 'nowrap',
+                                         overflow: 'hidden',
+                                         textOverflow: 'ellipsis',
+                                         cursor: 'pointer',
+                                         display: 'flex',
+                                         alignItems: 'center',
+                                         gap: '8px',
+                                         borderLeft: `4px solid ${v.status === 'COMPLETED' ? '#10B981' : '#1a73e8'}`,
+                                         backgroundColor: v.status === 'COMPLETED' ? '#F0FDF4' : '#EFF6FF',
+                                         color: v.status === 'COMPLETED' ? '#065F46' : '#1E40AF',
+                                         boxShadow: '0 1px 2px rgba(0,0,0,0.05)'
+                                       }}
                                      >
-                                        <div className={`w-1.5 h-1.5 rounded-full ${v.status === 'COMPLETED' ? 'bg-emerald-500' : 'bg-[#1a73e8]'}`}></div>
+                                        <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: v.status === 'COMPLETED' ? '#10B981' : '#1a73e8' }}></div>
                                         {v.patient.name}
                                      </div>
                                    ))}
                                    {dayVisits.length > 3 && (
-                                      <div className="text-[9px] font-black text-[#1a73e8] text-center uppercase tracking-tighter mt-1 opacity-60 hover:opacity-100 cursor-pointer">+ {dayVisits.length - 3} more</div>
+                                      <div style={{ fontSize: '9px', fontWeight: '900', color: '#1a73e8', textAlign: 'center', textTransform: 'uppercase', marginTop: '4px', opacity: 0.6 }}>+ {dayVisits.length - 3} more</div>
                                    )}
                                </div>
                             </div>

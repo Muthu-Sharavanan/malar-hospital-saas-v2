@@ -230,8 +230,8 @@ export default function ReceptionDashboard() {
         const appointmentTime = formData.visitTime ? ` at ${formData.visitTime}` : '';
 
         const realWaMessage = formData.visitDate 
-          ? `*APPOINTMENT CONFIRMATION*\n\n*Name:* ${formData.name}\n*Age:* ${formData.age}Y\n*UHID:* ${data.uhid}\n*Date:* ${formattedDate}${appointmentTime}\n*Doctor:* Dr. ${docName}\n*Token:* #${data.visit.tokenNumber}`
-          : `*VISIT CONFIRMATION*\n\n*Name:* ${formData.name}\n*Age:* ${formData.age}Y\n*UHID:* ${data.uhid}\n*Doctor:* Dr. ${docName}\n*Token:* #${data.visit.tokenNumber}\n*Status:* Confirmed for Today.`;
+          ? `*APPOINTMENT CONFIRMATION*\n\n*Name:* ${formData.name}\n*Age:* ${formData.age}Y\n*UHID:* ${data.uhid}\n*Date:* ${formattedDate}${appointmentTime}\n*Doctor:* Dr. ${docName}\n*Token:* #${data.visit.tokenNumber}${formData.reason ? `\n*Reason:* ${formData.reason}` : ''}`
+          : `*VISIT CONFIRMATION*\n\n*Name:* ${formData.name}\n*Age:* ${formData.age}Y\n*UHID:* ${data.uhid}\n*Doctor:* Dr. ${docName}\n*Token:* #${data.visit.tokenNumber}\n*Status:* Confirmed for Today.${formData.reason ? `\n*Reason:* ${formData.reason}` : ''}`;
 
         if (formData.phone && formData.visitDate) {
           // In a real scenario, this would be a server-side trigger, but we open WA Web here.
@@ -468,6 +468,17 @@ export default function ReceptionDashboard() {
                           >PM</button>
                        </div>
                     </div>
+                  </div>
+                )}
+                {formData.visitDate && (
+                  <div className="form-group md:col-span-2 animate-in slide-in-from-top-4">
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-3 block">Reason for Appointment (Included in Reminder)</label>
+                    <textarea 
+                      className="form-input !bg-white !h-24 font-bold border-2 border-slate-100 rounded-2xl py-4 focus:border-primary transition-all shadow-sm"
+                      placeholder="e.g. Fever for 2 days, General Checkup, Follow-up..."
+                      value={formData.reason} 
+                      onChange={e => setFormData({...formData, reason: e.target.value.toUpperCase()})}
+                    />
                   </div>
                 )}
                 <div className="form-group">

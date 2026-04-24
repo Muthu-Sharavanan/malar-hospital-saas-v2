@@ -23,7 +23,9 @@ import {
   Clock,
   Trash2,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Sun,
+  Moon
 } from 'lucide-react';
 
 export default function DoctorDashboard() {
@@ -536,62 +538,12 @@ export default function DoctorDashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Waiting List */}
             <div className="lg:col-span-1 flex flex-col gap-6">
-               <div className="flex flex-col gap-4">
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between mb-4">
                      <h3 className="text-lg font-bold flex items-center gap-2 text-[#0A4D68]">
                        <Clock size={20} /> Shift Waiting List
                      </h3>
                      <span className="badge bg-[#088395] text-white border-none font-bold px-4 py-3">{queue.length} Ready</span>
                   </div>
-
-                  {/* Pill Hero Session Toggle */}
-                  <div className="flex items-center gap-3 mb-2">
-                    <button 
-                      type="button"
-                      onClick={() => setSessionFilter('morning')}
-                      style={{
-                        backgroundColor: sessionFilter === 'morning' ? '#088395' : '#f8fafc',
-                        color: sessionFilter === 'morning' ? 'white' : '#94a3b8',
-                        padding: '8px 16px',
-                        borderRadius: '9999px',
-                        fontSize: '12px',
-                        fontWeight: '900',
-                        border: 'none',
-                        boxShadow: sessionFilter === 'morning' ? '0 4px 10px rgba(8,131,149,0.2)' : 'none',
-                        transition: 'all 0.4s ease',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        transform: sessionFilter === 'morning' ? 'scale(1.02)' : 'scale(1)'
-                      }}
-                    >
-                      <Sun size={14} /> MORNING
-                    </button>
-                    <button 
-                      type="button"
-                      onClick={() => setSessionFilter('evening')}
-                      style={{
-                        backgroundColor: sessionFilter === 'evening' ? '#088395' : '#f8fafc',
-                        color: sessionFilter === 'evening' ? 'white' : '#94a3b8',
-                        padding: '8px 16px',
-                        borderRadius: '9999px',
-                        fontSize: '12px',
-                        fontWeight: '900',
-                        border: 'none',
-                        boxShadow: sessionFilter === 'evening' ? '0 4px 10px rgba(8,131,149,0.2)' : 'none',
-                        transition: 'all 0.4s ease',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '6px',
-                        transform: sessionFilter === 'evening' ? 'scale(1.02)' : 'scale(1)'
-                      }}
-                    >
-                      <Moon size={14} /> EVENING
-                    </button>
-                  </div>
-               </div>
 
                <div className="flex flex-col gap-4 overflow-y-auto pr-2" style={{ maxHeight: '65vh' }}>
                   {queue.length > 0 ? queue.map((v: any) => (
@@ -621,7 +573,13 @@ export default function DoctorDashboard() {
                          </div>
                       </div>
                       <div className="flex items-center justify-between mt-4 pt-3 border-t border-slate-100">
-                         <span className="text-[10px] font-bold text-slate-400">{v.patient.age}Y | {v.patient.gender}</span>
+                         <div className="flex items-center gap-3">
+                            <span className="text-[10px] font-bold text-slate-400">{v.patient.age}Y | {v.patient.gender}</span>
+                            <div className="flex items-center gap-1 text-[10px] font-bold text-primary bg-primary/5 px-2 py-0.5 rounded-full">
+                               <Clock size={10} />
+                               {new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                            </div>
+                         </div>
                          <span className={`text-[10px] font-black px-3 py-1 rounded uppercase tracking-widest ${v.status === 'CONSULTING' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
                            {v.status === 'CONSULTING' ? 'Consulting' : 'Ready'}
                          </span>

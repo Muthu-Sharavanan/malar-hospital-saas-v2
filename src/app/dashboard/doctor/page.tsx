@@ -785,13 +785,10 @@ export default function DoctorDashboard() {
                         </div>
 
                         <div className="flex items-center justify-between pt-5 border-t border-slate-50">
-                           <div className="flex flex-col">
+                           <div className="flex flex-col ml-auto text-right">
                               <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Consulted At</span>
                               <span className="text-sm font-black text-slate-600 italic">{new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
                            </div>
-                           <button className="px-5 py-2.5 rounded-xl bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all shadow-sm border border-emerald-100">
-                              Reprint Rx
-                           </button>
                         </div>
                       </div>
                    ))

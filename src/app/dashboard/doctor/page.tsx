@@ -325,40 +325,40 @@ export default function DoctorDashboard() {
       setIsListening(null);
     };
 
+    const medicalAutoCorrect: { [key: string]: string } = {
+      'diabetes': 'Diabetes Mellitus',
+      'bp': 'Blood Pressure',
+      'sugar': 'Blood Glucose',
+      'pressure': 'Blood Pressure',
+      'paracetmol': 'Paracetamol',
+      'pan 40': 'Pantoprazole 40mg',
+      'panto': 'Pantoprazole',
+      'metformin': 'Metformin',
+      'hypertension': 'Hypertension',
+      'hyper': 'Hypertension',
+      'thyroid': 'Hypothyroidism',
+      'asthma': 'Bronchial Asthma',
+      'infection': 'Infection',
+      'gastritis': 'Gastritis',
+      'acidity': 'GERD / Gastritis',
+      'fever': 'Fever',
+      'cough': 'Cough',
+      'vomiting': 'Vomiting',
+      'diarrhea': 'Diarrhea',
+      'weakness': 'General Weakness',
+      'dizziness': 'Dizziness',
+      'headache': 'Headache',
+      'anemia': 'Anemia',
+      'arthritis': 'Osteoarthritis',
+      'mi': 'Myocardial Infarction',
+      'cad': 'Coronary Artery Disease',
+      'ckd': 'Chronic Kidney Disease',
+      'uti': 'Urinary Tract Infection'
+    };
+
     recognition.onresult = (event: any) => {
       let interimTranscript = '';
       let finalTranscript = '';
-
-      const medicalAutoCorrect: { [key: string]: string } = {
-        'diabetes': 'Diabetes Mellitus',
-        'bp': 'Blood Pressure',
-        'sugar': 'Blood Glucose',
-        'pressure': 'Blood Pressure',
-        'paracetmol': 'Paracetamol',
-        'pan 40': 'Pantoprazole 40mg',
-        'panto': 'Pantoprazole',
-        'metformin': 'Metformin',
-        'hypertension': 'Hypertension',
-        'hyper': 'Hypertension',
-        'thyroid': 'Hypothyroidism',
-        'asthma': 'Bronchial Asthma',
-        'infection': 'Infection',
-        'gastritis': 'Gastritis',
-        'acidity': 'GERD / Gastritis',
-        'fever': 'Fever',
-        'cough': 'Cough',
-        'vomiting': 'Vomiting',
-        'diarrhea': 'Diarrhea',
-        'weakness': 'General Weakness',
-        'dizziness': 'Dizziness',
-        'headache': 'Headache',
-        'anemia': 'Anemia',
-        'arthritis': 'Osteoarthritis',
-        'mi': 'Myocardial Infarction',
-        'cad': 'Coronary Artery Disease',
-        'ckd': 'Chronic Kidney Disease',
-        'uti': 'Urinary Tract Infection'
-      };
 
       for (let i = 0; i < event.results.length; ++i) {
         let txt = event.results[i][0].transcript;
@@ -385,10 +385,17 @@ export default function DoctorDashboard() {
       const words = txt.split(/\s+/);
       const cleanedWords: string[] = [];
       let shouldStop = false;
+      let shouldClear = false;
       
       for (let j = 0; j < words.length; j++) {
-        let word = words[j].toLowerCase();
+        let word = words[j].toLowerCase().replace(/[.,!?]/g, '');
         
+        // Voice Command: Clear the box
+        if (word === 'clear') {
+          shouldClear = true;
+          continue;
+        }
+
         // Voice Command: Stop/Next to move to next box
         if (word === 'stop' || word === 'next') {
           shouldStop = true;
@@ -414,6 +421,12 @@ export default function DoctorDashboard() {
           finalTranscript += txt;
         }
         
+        // Handle Clear Command
+        if (shouldClear) {
+          setConsultation(prev => ({ ...prev, [field]: '' }));
+          return;
+        }
+
         // If "Stop" command detected, move to next box
         if (shouldStop) {
           const fieldOrder = ['chiefComplaints', 'history', 'examination', 'diagnosis', 'investigationAdvised'];
@@ -438,22 +451,6 @@ export default function DoctorDashboard() {
       let processedFinal = (initialText + (initialText && !initialText.endsWith('\n') ? ' ' : '') + finalTranscript).trim();
       
       // Global Duplicate Filter (Removes repeated significant words)
-      const allLines = processedFinal.split('\n');
-      const filteredLines = allLines.map(line => {
-        const words = line.split(/\s+/);
-        const seenWordsInLine = new Set<string>();
-        const connectorWords = ['and', 'the', 'of', 'with', 'for', 'to', 'is', 'was', 'in', 'on', 'at', 'by'];
-        
-        return words.filter(word => {
-          const cleanWord = word.toLowerCase().replace(/[.,!?]/g, '');
-          if (cleanWord.length <= 3 || connectorWords.includes(cleanWord)) return true;
-          // We can't easily do global across lines without breaking lists, 
-          // so we'll just keep the line-based uniqueness or similar.
-          // Actually, let's keep the global seenWords but preserve the \n structure.
-          return true; 
-        }).join(' ');
-      });
-      // Re-applying a simpler global filter that respects newlines
       const wordsForFilter = processedFinal.split(/(\s+|\n)/);
       const seenWordsGlobal = new Set<string>();
       const finalWords: string[] = [];
@@ -493,7 +490,7 @@ export default function DoctorDashboard() {
       } catch (err) {
         console.error("Failed to start recognition:", err);
       }
-    }, 50);
+    }, 20);
   };
 
   return (

@@ -696,39 +696,44 @@ export default function DoctorDashboard() {
                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Follow-up Patients Awaiting Consultation</p>
                 </div>
                 <div className="bg-[#088395]/10 text-[#088395] px-6 py-2 rounded-full font-black text-sm">
-                   {queue.filter(v => v.isReview).length} REPEAT PATIENTS
+                   {allAppointments.filter(v => v.isReview).length} TOTAL REVIEWS
                 </div>
              </div>
 
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {queue.filter(v => v.isReview).length > 0 ? (
-                   queue.filter(v => v.isReview).map((v: any) => (
+                {allAppointments.filter(v => v.isReview).length > 0 ? (
+                   allAppointments.filter(v => v.isReview).map((v: any) => (
                      <div 
                        key={v.id} 
                        className="glass-card !p-6 cursor-pointer bg-white border-2 border-transparent hover:border-[#088395]/30 transition-all duration-300 group shadow-sm hover:shadow-xl"
                        onClick={() => selectVisit(v)}
                      >
-                       <div className="flex justify-between items-start mb-4">
+                       <div className="flex justify-between items-start mb-2">
                           <div className="flex flex-col">
                             <span className="text-[10px] font-black text-[#088395] uppercase tracking-widest mb-1">Token #{v.tokenNumber}</span>
                             <h4 className="text-lg font-bold text-slate-800">{v.patient.name}</h4>
                           </div>
-                          <button 
-                            onClick={(e) => { e.stopPropagation(); setCalendarVisitDetail(v.lastVisitSummary); }}
-                            className="p-2 rounded-xl bg-[#088395]/10 text-[#088395] group-hover:bg-[#088395] group-hover:text-white transition-all shadow-sm"
-                            title="View Previous Record"
-                          >
-                            <ArrowUpRight size={18} />
-                          </button>
+                          <div className={`px-3 py-1 rounded-full text-[9px] font-black uppercase ${v.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
+                             {v.status === 'COMPLETED' ? 'Consulted' : 'Awaiting'}
+                          </div>
                        </div>
-                       <div className="flex items-center gap-4 pt-4 border-t border-slate-50">
+
+                       {/* Clinical Note / Follow-up Instructions */}
+                       <div className="bg-[#088395]/5 p-3 rounded-xl mb-4 border border-[#088395]/10">
+                          <p className="text-[10px] font-black text-[#088395] uppercase mb-1">Follow-up Note</p>
+                          <p className="text-xs font-bold text-slate-600 italic">
+                             "{v.nextReview || 'No specific notes'}"
+                          </p>
+                       </div>
+
+                       <div className="flex items-center gap-4 pt-3 border-t border-slate-50">
                           <div className="flex flex-col">
                              <span className="text-[10px] font-black text-slate-400 uppercase">Age/Gender</span>
                              <span className="text-xs font-bold text-slate-600">{v.patient.age}Y | {v.patient.gender}</span>
                           </div>
                           <div className="flex flex-col ml-auto text-right">
-                             <span className="text-[10px] font-black text-slate-400 uppercase">Registered</span>
-                             <span className="text-xs font-bold text-[#088395]">{new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                             <span className="text-[10px] font-black text-slate-400 uppercase">Visit Date</span>
+                             <span className="text-xs font-bold text-[#088395]">{new Date(v.visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}</span>
                           </div>
                        </div>
                      </div>

@@ -764,28 +764,36 @@ export default function DoctorDashboard() {
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).length > 0 ? (
                    allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).map((v: any) => (
-                     <div 
-                       key={v.id} 
-                       className="glass-card !p-6 cursor-pointer bg-white border-2 border-transparent hover:border-emerald-300 transition-all duration-300 group shadow-sm hover:shadow-xl"
-                       onClick={() => selectVisit(v)}
-                     >
-                       <div className="flex justify-between items-start mb-4">
-                          <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Token #{v.tokenNumber}</span>
-                            <h4 className="text-lg font-bold text-slate-800">{v.patient.name}</h4>
-                          </div>
-                          <div className="p-2 rounded-xl bg-emerald-50 text-emerald-500 shadow-sm">
-                            <CheckCircle2 size={18} />
-                          </div>
-                       </div>
-                       <div className="flex items-center gap-4 pt-4 border-t border-slate-50">
-                          <div className="flex flex-col">
-                             <span className="text-[10px] font-black text-slate-400 uppercase">Consulted At</span>
-                             <span className="text-xs font-bold text-slate-600">{new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}</span>
-                          </div>
-                          <button className="ml-auto text-[10px] font-black text-primary hover:underline uppercase tracking-widest">Reprint Rx</button>
-                       </div>
-                     </div>
+                      <div 
+                        key={v.id} 
+                        className="relative overflow-hidden cursor-pointer bg-white border-2 border-transparent hover:border-emerald-500/30 transition-all duration-500 group rounded-[2rem] p-6 shadow-sm hover:shadow-2xl hover:-translate-y-2"
+                        onClick={() => selectVisit(v)}
+                      >
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+                        
+                        <div className="relative flex justify-between items-start mb-6">
+                           <div className="flex flex-col">
+                             <div className="flex items-center gap-2 mb-1">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Token #{v.tokenNumber}</span>
+                             </div>
+                             <h4 className="text-xl font-black text-slate-800 group-hover:text-emerald-700 transition-colors uppercase tracking-tight leading-none">{v.patient.name}</h4>
+                           </div>
+                           <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200 group-hover:rotate-12 transition-transform">
+                             <CheckCircle2 size={24} strokeWidth={3} />
+                           </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-5 border-t border-slate-50">
+                           <div className="flex flex-col">
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Consulted At</span>
+                              <span className="text-sm font-black text-slate-600 italic">{new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                           </div>
+                           <button className="px-5 py-2.5 rounded-xl bg-emerald-50 text-emerald-700 text-[10px] font-black uppercase tracking-widest hover:bg-emerald-500 hover:text-white transition-all shadow-sm border border-emerald-100">
+                              Reprint Rx
+                           </button>
+                        </div>
+                      </div>
                    ))
                 ) : (
                    <div className="col-span-full py-20 text-center flex flex-col items-center">

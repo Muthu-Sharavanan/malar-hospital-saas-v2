@@ -560,64 +560,87 @@ export default function DoctorDashboard() {
         </div>
 
         {currentView === 'calendar' ? (
-          <div className="glass-card !p-8 animate-fade-in bg-white border-2 border-white shadow-lg">
-             <div className="flex justify-between items-center mb-8">
-                <div>
-                   <h3 className="text-2xl font-black text-slate-800">{format(currentMonth, 'MMMM yyyy')}</h3>
-                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Hospital Schedule</p>
+          <div className="bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden animate-fade-in flex flex-col h-[75vh]">
+             {/* Google Calendar Style Header */}
+             <div className="flex justify-between items-center px-10 py-6 border-b border-slate-100 bg-white">
+                <div className="flex items-center gap-8">
+                   <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-2xl bg-[#1a73e8]/10 flex items-center justify-center text-[#1a73e8] shadow-sm">
+                         <Calendar size={24} />
+                      </div>
+                      <div>
+                         <h3 className="text-2xl font-bold text-slate-800 tracking-tight">{format(currentMonth, 'MMMM yyyy')}</h3>
+                         <p className="text-[10px] font-black text-[#1a73e8] uppercase tracking-widest">Medical Schedule</p>
+                      </div>
+                   </div>
+                   
+                   <div className="flex items-center bg-slate-50 rounded-xl p-1 border border-slate-100 shadow-sm">
+                      <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-[#1a73e8] hover:shadow-sm transition-all">
+                         <ChevronLeft size={20} />
+                      </button>
+                      <button onClick={() => setCurrentMonth(new Date())} className="px-6 py-2 rounded-lg text-xs font-black text-slate-600 hover:bg-white hover:text-[#1a73e8] hover:shadow-sm transition-all uppercase tracking-widest">
+                         Today
+                      </button>
+                      <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-2.5 rounded-lg text-slate-500 hover:bg-white hover:text-[#1a73e8] hover:shadow-sm transition-all">
+                         <ChevronRight size={20} />
+                      </button>
+                   </div>
                 </div>
-                <div className="flex gap-2">
-                   <button onClick={() => setCurrentMonth(subMonths(currentMonth, 1))} className="p-3 rounded-xl bg-slate-50 text-slate-600 hover:bg-primary hover:text-white transition-all shadow-sm">
-                      <ChevronLeft size={20} />
-                   </button>
-                   <button onClick={() => setCurrentMonth(new Date())} className="px-5 rounded-xl bg-slate-50 text-xs font-black text-slate-600 hover:bg-slate-100 transition-all uppercase tracking-widest shadow-sm">
-                      Today
-                   </button>
-                   <button onClick={() => setCurrentMonth(addMonths(currentMonth, 1))} className="p-3 rounded-xl bg-slate-50 text-slate-600 hover:bg-primary hover:text-white transition-all shadow-sm">
-                      <ChevronRight size={20} />
-                   </button>
+
+                <div className="flex gap-3">
+                   <button className="btn btn-outline !border-slate-200 !text-slate-600 !px-6 !h-11 !text-xs font-black uppercase tracking-widest hover:!bg-slate-50">Month</button>
+                   <button className="btn btn-primary !bg-[#1a73e8] !border-none !px-8 !h-11 !text-xs font-black uppercase tracking-widest shadow-lg shadow-[#1a73e8]/20">+ Appointment</button>
                 </div>
              </div>
 
-             <div className="grid grid-cols-7 gap-px bg-slate-100 rounded-2xl overflow-hidden border border-slate-100 shadow-inner">
-                {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-                   <div key={day} className="bg-slate-50 p-4 text-center text-[10px] font-black text-slate-400 uppercase tracking-widest">{day}</div>
-                ))}
-                {(() => {
-                   const start = startOfWeek(startOfMonth(currentMonth));
-                   const end = endOfWeek(endOfMonth(currentMonth));
-                   return eachDayOfInterval({ start, end }).map(day => {
-                      const dayVisits = allAppointments.filter(v => isSameDay(new Date(v.visitDate), day));
-                      const isCurrentMonth = isSameMonth(day, currentMonth);
-                      const isToday = isSameDay(day, new Date());
+             {/* Calendar Grid */}
+             <div className="flex-1 flex flex-col overflow-hidden">
+                <div className="grid grid-cols-7 border-b border-slate-100 bg-slate-50/50">
+                   {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+                      <div key={day} className="py-3 text-center text-[11px] font-black text-slate-400 uppercase tracking-[0.2em] border-r border-slate-100 last:border-r-0">{day}</div>
+                   ))}
+                </div>
 
-                      return (
-                         <div 
-                           key={day.toString()} 
-                           className={`min-h-[110px] p-3 transition-all relative group ${isCurrentMonth ? 'bg-white' : 'bg-slate-50/50'} ${isToday ? 'ring-2 ring-inset ring-primary/20' : ''}`}
-                         >
-                            <span className={`text-sm font-bold ${!isCurrentMonth ? 'text-slate-300' : isToday ? 'text-primary' : 'text-slate-600'}`}>
-                               {format(day, 'd')}
-                            </span>
-                            
-                            <div className="mt-2 flex flex-col gap-1">
-                               {dayVisits.slice(0, 3).map((v, i) => (
-                                  <div 
-                                    key={v.id} 
-                                    onClick={() => setCalendarVisitDetail(v)}
-                                    className={`text-[9px] p-1.5 rounded-lg border font-bold truncate cursor-pointer transition-all hover:scale-105 shadow-sm ${v.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border-emerald-100' : 'bg-amber-50 text-amber-700 border-amber-100'}`}
-                                  >
-                                     {v.patient.name}
-                                  </div>
-                                ))}
-                                {dayVisits.length > 3 && (
-                                   <div className="text-[8px] font-black text-slate-300 text-center uppercase mt-1">+{dayVisits.length - 3} More</div>
-                                )}
+                <div className="grid grid-cols-7 flex-1 overflow-y-auto">
+                   {(() => {
+                      const start = startOfWeek(startOfMonth(currentMonth));
+                      const end = endOfWeek(endOfMonth(currentMonth));
+                      return eachDayOfInterval({ start, end }).map((day, idx) => {
+                         const dayVisits = allAppointments.filter(v => isSameDay(new Date(v.visitDate), day));
+                         const isCurrentMonth = isSameMonth(day, currentMonth);
+                         const isToday = isSameDay(day, new Date());
+
+                         return (
+                            <div 
+                              key={day.toString()} 
+                              className={`min-h-[140px] p-2 border-r border-b border-slate-100 transition-all relative hover:bg-slate-50/30 group last:border-r-0 ${!isCurrentMonth ? 'bg-slate-50/30' : 'bg-white'}`}
+                            >
+                               <div className="flex justify-center mb-2 pt-1">
+                                  <span className={`text-xs font-black w-8 h-8 flex items-center justify-center rounded-full transition-all ${!isCurrentMonth ? 'text-slate-300' : isToday ? 'bg-[#1a73e8] text-white shadow-lg shadow-[#1a73e8]/30' : 'text-slate-600 group-hover:bg-slate-100'}`}>
+                                     {format(day, 'd')}
+                                  </span>
+                               </div>
+                               
+                               <div className="flex flex-col gap-1.5 overflow-y-hidden max-h-[90px]">
+                                  {dayVisits.slice(0, 3).map((v) => (
+                                     <div 
+                                       key={v.id} 
+                                       onClick={() => setCalendarVisitDetail(v)}
+                                       className={`text-[9px] px-2.5 py-2 rounded-lg font-bold truncate cursor-pointer transition-all hover:scale-[1.02] active:scale-95 flex items-center gap-2 border-l-4 shadow-sm ${v.status === 'COMPLETED' ? 'bg-emerald-50 text-emerald-700 border-emerald-500' : 'bg-[#1a73e8]/5 text-[#1a73e8] border-[#1a73e8]'}`}
+                                     >
+                                        <div className={`w-1.5 h-1.5 rounded-full ${v.status === 'COMPLETED' ? 'bg-emerald-500' : 'bg-[#1a73e8]'}`}></div>
+                                        {v.patient.name}
+                                     </div>
+                                   ))}
+                                   {dayVisits.length > 3 && (
+                                      <div className="text-[9px] font-black text-[#1a73e8] text-center uppercase tracking-tighter mt-1 opacity-60 hover:opacity-100 cursor-pointer">+ {dayVisits.length - 3} more</div>
+                                   )}
+                               </div>
                             </div>
-                         </div>
-                      );
-                   });
-                })()}
+                         );
+                      });
+                   })()}
+                </div>
              </div>
           </div>
         ) : currentView === 'reviews' ? (

@@ -1,0 +1,17 @@
+{
+  "name": "Malar Hospital SaaS",
+  "short_name": "Malar HMS",
+  "description": "Premium Hospital Management System",
+  "start_url": "/login",
+  "display": "standalone",
+  "background_color": "#0A4D68",
+  "theme_color": "#0A4D68",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+  binaryTargets = ["native", "rhel-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+  role      String   // ADMIN, DOCTOR, NURSE, RECEPTIONIST, PHARMACIST, LAB_TECH
+  regNo     String?  // Doctor registration number
+  surgeries Surgery[] @relation("Surgeon")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  visitsConsulted Visit[] @relation("DoctorVisits")
+  authorizedBills Bill[]  @relation("BillAuthorizer")
+  isAvailable   Boolean  @default(true)
+
+
+  @@index([email])
+}
+
+model Patient {
+  id        String   @id @default(cuid())
+  uhid      String   @unique // MH-10001
+  name      String
+  phone     String?
+  age       Int
+  gender    String
+  address   String?
+  
+  // Compliance Fields
+  abhaId    String?  @unique
+  consentGranted Boolean @default(false)
+  consentDate    DateTime?
+  consentRevokedDate DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  visits    Visit[]
+  admissions Admission[]
+
+  @@index([phone])
+  @@index([uhid])
+}
+
+model Visit {
+  id            String   @id @default(cuid())
+  patientId     String
+  patient       Patient  @relation(fields: [patientId], references: [id])
+  tokenNumber   Int
+  doctorId      String
+  doctor        User     @relation("DoctorVisits", fields: [doctorId], references: [id])
+  assignedDoctorName String?
+  visitDate     DateTime @default(now())
+  status        String   // REGISTERED, VITALS_DONE, CONSULTING, COMPLETED
+  
+  // Vitals
+  pulse         Int?
+  bloodPressure String?
+  spo2          Int?
+  temperature   Float?
+  weight        Float?
+  height        Float?
+  bmi           Float?
+  
+  // Consultation
+  chiefComplaints String?
+  history         String?
+  examination     String?
+  diagnosis       String?
+
+  bills         Bill[]
+  labOrders     LabOrder[]
+  prescriptions Prescription[]
+  admission     Admission?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Admission {
+  id              String   @id @default(cuid())
+  visitId         String   @unique
+  visit           Visit    @relation(fields: [visitId], references: [id])
+  patientId       String
+  patient         Patient  @relation(fields: [patientId], references: [id])
+  bedId           String?
+  bed             Bed?     @relation(fields: [bedId], references: [id])
+  admissionDate   DateTime @default(now())
+  dischargeDate   DateTime?
+  status          String   @default("ADMITTED") // ADMITTED, DISCHARGED
+  surgeries       Surgery[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Bed {
+  id              String   @id @default(cuid())
+  bedNumber       String   @unique
+  wardName        String   // General, Semi-Special, Special, ICU
+  type            String   // NORMAL, OXYGEN, VENTILATOR
+  pricePerDay     Float
+  status          String   @default("AVAILABLE") // AVAILABLE, OCCUPIED, MAINTENANCE
+  admissions      Admission[]
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Surgery {
+  id              String   @id @default(cuid())
+  admissionId     String
+  admission       Admission @relation(fields: [admissionId], references: [id])
+  surgeryName     String
+  surgeonId       String
+  surgeon         User     @relation("Surgeon", fields: [surgeonId], references: [id])
+  surgeryDate     DateTime
+  anaesthetistName String?
+  status          String   @default("SCHEDULED") // SCHEDULED, COMPLETED, CANCELLED
+  totalFees       Float
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Prescription {
+  id              String   @id @default(cuid())
+  visitId         String
+  visit           Visit    @relation(fields: [visitId], references: [id])
+  drugName        String
+  dosage          String   // e.g. 1-0-1
+  duration        String   // e.g. 5 days
+  instructions    String?  // e.g. After food
+  status          String   @default("ORDERED") // ORDERED, DISPENSED
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model LabOrder {
+  id              String   @id @default(cuid())
+  visitId         String
+  visit           Visit    @relation(fields: [visitId], references: [id])
+  testName        String
+  category        String   // BIOCHEMISTRY, HEMATOLOGY, etc.
+  price           Float
+  status          String   // ORDERED, PAID, WAIVED, SAMPLE_COLLECTED, REPORTED
+  reportData      String?  // JSON or Markdown findings
+  billId          String?
+  bill            Bill?    @relation(fields: [billId], references: [id])
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model Bill {
+  id              String   @id @default(cuid())
+  visitId         String
+  visit           Visit    @relation(fields: [visitId], references: [id])
+  amount          Float
+  type            String   // CONSULTATION, LAB, PHARMACY, SURGERY
+  paymentStatus   String   // PAID, UNPAID, WAIVED, REFUNDED
+  paymentMode     String?  // CASH, UPI
+  discount        Float    @default(0)
+  finalAmount     Float
+  waiverReason    String?
+  refundAmount    Float    @default(0)
+  refundReason    String?
+  authorizingDocId String?
+  authorizingDoc   User?    @relation("BillAuthorizer", fields: [authorizingDocId], references: [id])
+  labOrders       LabOrder[]
+  surgeryItemization String? // Itemized surgery charges as JSON string
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+}
+
+model AuditLog {
+  id              String   @id @default(cuid())
+  userId          String?
+  patientId       String?
+  action          String   // VIEWED, EXPORTED, MODIFIED, CONSENT_GRANTED, CONSENT_REVOKED
+  details         String?  // JSON string of specifics
+  createdAt       DateTime @default(now())
+
+  @@index([patientId])
+  @@index([userId])
+}

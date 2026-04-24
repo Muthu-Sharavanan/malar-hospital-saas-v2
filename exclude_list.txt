@@ -1,0 +1,14 @@
+node_modules\
+.next\
+.git\
+dist\
+build\
+*.log
+.env
+Malar_Hospital_SaaS.zip
+git-push-automated.js
+git-push-automated.cjs
+git-init-commit.js
+debug.log
+zip_debug.log
+exclude_list.txt

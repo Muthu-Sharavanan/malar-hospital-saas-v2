@@ -288,15 +288,15 @@ export default function DoctorDashboard() {
     // If currently listening to this field, stop it
     if (isListening === field) {
       if (recognitionRef.current) {
-        recognitionRef.current.stop();
+        recognitionRef.current.abort();
       }
       setIsListening(null);
       return;
     }
     
-    // Stop any other active recognition
+    // Stop any other active recognition instantly
     if (recognitionRef.current) {
-      recognitionRef.current.stop();
+      recognitionRef.current.abort();
     }
 
     const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
@@ -309,13 +309,21 @@ export default function DoctorDashboard() {
     recognition.continuous = true;
     recognition.interimResults = true;
     recognition.lang = 'en-IN';
+    recognition.maxAlternatives = 1;
     recognitionRef.current = recognition;
 
     const initialText = consultation[field as keyof typeof consultation] || '';
 
-    recognition.onstart = () => setIsListening(field);
-    recognition.onend = () => setIsListening(null);
-    recognition.onerror = () => setIsListening(null);
+    recognition.onstart = () => {
+      setIsListening(field);
+    };
+    recognition.onend = () => {
+      if (isListening === field) setIsListening(null);
+    };
+    recognition.onerror = (event: any) => {
+      console.error("Speech Recognition Error", event.error);
+      setIsListening(null);
+    };
 
     recognition.onresult = (event: any) => {
       let interimTranscript = '';
@@ -373,30 +381,53 @@ export default function DoctorDashboard() {
           .replace(/\brx\b/gi, 'Prescription')
           .replace(/\b(cbc|c b c)\b/gi, 'Complete Blood Count');
 
-        // 2. Anti-Stutter & Medical Auto-Correct
-        const words = txt.split(/\s+/);
-        const cleanedWords: string[] = [];
+      // 2. Anti-Stutter & Medical Auto-Correct
+      const words = txt.split(/\s+/);
+      const cleanedWords: string[] = [];
+      let shouldStop = false;
+      
+      for (let j = 0; j < words.length; j++) {
+        let word = words[j].toLowerCase();
         
-        for (let j = 0; j < words.length; j++) {
-          let word = words[j].toLowerCase();
-          
-          // Remove consecutive duplicates (e.g., "patient patient" -> "patient")
-          if (j > 0 && word === words[j-1].toLowerCase() && word.length > 1) {
-            continue; 
-          }
-          
-          // Apply Medical Auto-Correct
-          const corrected = medicalAutoCorrect[word];
-          cleanedWords.push(corrected || words[j]);
+        // Voice Command: Stop/Next to move to next box
+        if (word === 'stop' || word === 'next') {
+          shouldStop = true;
+          continue; 
         }
-        txt = cleanedWords.join(' ');
 
-        if (event.results[i].isFinal) {
-          finalTranscript += txt;
-        } else {
-          interimTranscript += txt;
+        // Remove consecutive duplicates (e.g., "patient patient" -> "patient")
+        if (j > 0 && word === words[j-1].toLowerCase() && word.length > 1) {
+          continue; 
         }
+        
+        // Apply Medical Auto-Correct
+        const corrected = medicalAutoCorrect[word];
+        cleanedWords.push(corrected || words[j]);
       }
+      txt = cleanedWords.join(' ');
+
+      if (event.results[i].isFinal) {
+        finalTranscript += txt;
+        
+        // If "Stop" command detected, move to next box
+        if (shouldStop) {
+          const fieldOrder = ['chiefComplaints', 'history', 'examination', 'diagnosis', 'investigationAdvised'];
+          const currentIndex = fieldOrder.indexOf(field);
+          const nextField = fieldOrder[currentIndex + 1];
+          
+          recognition.abort();
+          setIsListening(null);
+          
+          if (nextField) {
+            setTimeout(() => {
+              startListening(nextField);
+            }, 600);
+          }
+        }
+      } else {
+        interimTranscript += txt;
+      }
+    }
 
       // Format the final part
       let processedFinal = (initialText + ' ' + finalTranscript).trim();
@@ -416,7 +447,13 @@ export default function DoctorDashboard() {
       }));
     };
 
-    recognition.start();
+    setTimeout(() => {
+      try {
+        recognition.start();
+      } catch (err) {
+        console.error("Failed to start recognition:", err);
+      }
+    }, 50);
   };
 
   return (

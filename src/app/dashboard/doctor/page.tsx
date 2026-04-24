@@ -407,7 +407,12 @@ export default function DoctorDashboard() {
       txt = cleanedWords.join(' ');
 
       if (event.results[i].isFinal) {
-        finalTranscript += txt;
+        // Specifically for Investigation Advised: move to next line after each "item" said
+        if (field === 'investigationAdvised') {
+          finalTranscript += txt.trim() + '\n';
+        } else {
+          finalTranscript += txt;
+        }
         
         // If "Stop" command detected, move to next box
         if (shouldStop) {
@@ -430,13 +435,48 @@ export default function DoctorDashboard() {
     }
 
       // Format the final part
-      let processedFinal = (initialText + ' ' + finalTranscript).trim();
+      let processedFinal = (initialText + (initialText && !initialText.endsWith('\n') ? ' ' : '') + finalTranscript).trim();
       
-      // Auto-correct spacing around punctuation
-      processedFinal = processedFinal.replace(/\s+([.,!?])/g, '$1');
+      // Global Duplicate Filter (Removes repeated significant words)
+      const allLines = processedFinal.split('\n');
+      const filteredLines = allLines.map(line => {
+        const words = line.split(/\s+/);
+        const seenWordsInLine = new Set<string>();
+        const connectorWords = ['and', 'the', 'of', 'with', 'for', 'to', 'is', 'was', 'in', 'on', 'at', 'by'];
+        
+        return words.filter(word => {
+          const cleanWord = word.toLowerCase().replace(/[.,!?]/g, '');
+          if (cleanWord.length <= 3 || connectorWords.includes(cleanWord)) return true;
+          // We can't easily do global across lines without breaking lists, 
+          // so we'll just keep the line-based uniqueness or similar.
+          // Actually, let's keep the global seenWords but preserve the \n structure.
+          return true; 
+        }).join(' ');
+      });
+      // Re-applying a simpler global filter that respects newlines
+      const wordsForFilter = processedFinal.split(/(\s+|\n)/);
+      const seenWordsGlobal = new Set<string>();
+      const finalWords: string[] = [];
+      const connectors = ['and', 'the', 'of', 'with', 'for', 'to', 'is', 'was', 'in', 'on', 'at', 'by'];
+
+      for (let w of wordsForFilter) {
+        const clean = w.toLowerCase().trim().replace(/[.,!?]/g, '');
+        if (clean === '' || clean.length <= 3 || connectors.includes(clean) || w === '\n') {
+          finalWords.push(w);
+          continue;
+        }
+        if (!seenWordsGlobal.has(clean)) {
+          seenWordsGlobal.add(clean);
+          finalWords.push(w);
+        }
+      }
+      processedFinal = finalWords.join('');
+
+      // Auto-correct spacing around punctuation (but avoid messing up newlines)
+      processedFinal = processedFinal.replace(/ +([.,!?])/g, '$1');
       processedFinal = processedFinal.replace(/([.,!?])([^\s"'\n])/g, '$1 $2');
       
-      // Auto-capitalize first letter of every sentence
+      // Auto-capitalize first letter of every sentence/line
       processedFinal = processedFinal.replace(/(^\s*|[\.\!\?\n]\s*)([a-z])/g, function(match, separator, letter) {
           return separator + letter.toUpperCase();
       });

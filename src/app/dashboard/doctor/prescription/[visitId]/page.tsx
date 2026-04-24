@@ -90,7 +90,7 @@ export default function PrescriptionPrint() {
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px' }}>
            <div>
               <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Chief Complaints</small>
-              <p style={{ margin: '4px 0', fontSize: '14px' }}>{visit.chiefComplaints || 'N/A'}</p>
+              <p style={{ margin: '4px 0', fontSize: '14px', whiteSpace: 'pre-wrap' }}>{visit.chiefComplaints || 'N/A'}</p>
            </div>
            {visit.history && (
              <div>
@@ -106,12 +106,12 @@ export default function PrescriptionPrint() {
            )}
            <div>
               <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Provisional Diagnosis</small>
-              <p style={{ margin: '4px 0', fontSize: '15px', fontWeight: 700 }}>{visit.diagnosis || 'Clinical evaluation pending'}</p>
+              <p style={{ margin: '4px 0', fontSize: '15px', fontWeight: 700, whiteSpace: 'pre-wrap' }}>{visit.diagnosis || 'Clinical evaluation pending'}</p>
            </div>
            {visit.investigationAdvised && (
              <div>
                 <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Investigation Advised</small>
-                <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: 700, color: 'var(--primary)' }}>{visit.investigationAdvised}</p>
+                <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'pre-wrap' }}>{visit.investigationAdvised}</p>
              </div>
            )}
         </div>
@@ -134,10 +134,10 @@ export default function PrescriptionPrint() {
             {visit.prescriptions?.map((p: any, i: number) => (
               <tr key={p.id}>
                 <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9', fontSize: '13px' }}>{i + 1}</td>
-                <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9', fontWeight: 700, fontSize: '13px' }}>{p.drugName}</td>
+                <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9', fontWeight: 700, fontSize: '13px', whiteSpace: 'pre-wrap' }}>{p.drugName}</td>
                 <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9', fontSize: '13px' }}>{p.dosage}</td>
                 <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9', fontSize: '13px' }}>{p.duration}</td>
-                <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9', fontSize: '13px' }}>{p.instructions || '-'}</td>
+                <td style={{ padding: '10px', borderBottom: '1px solid #f1f5f9', fontSize: '13px', whiteSpace: 'pre-wrap' }}>{p.instructions || '-'}</td>
               </tr>
             ))}
             {(!visit.prescriptions || visit.prescriptions.length === 0) && (

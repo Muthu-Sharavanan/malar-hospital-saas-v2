@@ -514,7 +514,11 @@ export default function ReceptionDashboard() {
                     <tr key={v.id} className="group hover-scale-101 transition-all">
                       <td className="p-4 bg-slate-50 rounded-l-2xl border-y border-l border-slate-100">
                         <div className="font-black text-slate-800 text-sm">{new Date(v.visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}</div>
-                        <div className="text-[10px] font-bold text-primary mt-0.5">{v.visitTime || 'TBD'}</div>
+                        <div className="text-[10px] font-bold text-primary mt-0.5">
+                          {new Date(v.visitDate).getHours() === 0 && new Date(v.visitDate).getMinutes() === 0 
+                            ? 'TBD' 
+                            : new Date(v.visitDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
+                        </div>
                       </td>
                       <td className="p-4 bg-slate-50 border-y border-slate-100">
                         <div className="font-bold text-slate-800">{v.patient.name}</div>

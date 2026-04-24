@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, phone, age, gender, address, doctorId, patientId, visitDate, reason, abhaId, consentGranted } = body;
+    const { name, phone, age, gender, address, doctorId, patientId, visitDate, visitTime, reason, abhaId, consentGranted } = body;
 
     // 1. Check for EXACT duplicate (Name + Phone) if this is a manual entry (no patientId)
     if (!patientId) {
@@ -57,7 +57,16 @@ export async function POST(req: Request) {
     }
 
     // Calculate NEXT GLOBAL TOKEN for the specific visit date
-    const visitDateObj = visitDate ? new Date(visitDate) : new Date();
+    // Combine date + time as IST (UTC+5:30) so future appointment time is preserved
+    let visitDateObj: Date;
+    if (visitDate && visitTime) {
+      visitDateObj = new Date(`${visitDate}T${visitTime}:00+05:30`);
+    } else if (visitDate) {
+      // No time provided — store as IST midnight
+      visitDateObj = new Date(`${visitDate}T00:00:00+05:30`);
+    } else {
+      visitDateObj = new Date();
+    }
     const tokenDateStart = new Date(visitDateObj);
     tokenDateStart.setHours(0, 0, 0, 0);
     const tokenDateEnd = new Date(visitDateObj);

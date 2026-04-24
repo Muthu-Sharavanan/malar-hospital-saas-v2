@@ -751,8 +751,6 @@ export default function DoctorDashboard() {
                </div>
 
                 </div>
-             </div>
-             </div>
 
             {/* Consultation Form */}
             <div className="lg:col-span-2">
@@ -1091,9 +1089,9 @@ export default function DoctorDashboard() {
                        Close Details
                     </button>
                  </div>
-              </div>              </div>
+              </div>
            </div>
-        ) : (    </div>
+        </div>
       )}
 
       {/* Toast Notification Container */}

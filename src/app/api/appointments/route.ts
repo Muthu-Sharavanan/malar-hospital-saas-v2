@@ -14,9 +14,13 @@ export async function GET(req: Request) {
     
     // Attempt to get doctor filter from session
     if (sessionCookie) {
-      const session = JSON.parse(sessionCookie.value);
-      sessionRole = session.role || '';
-      sessionName = (session.name || '').toLowerCase().trim().replace(/^(dr\.?\s*)+/, '');
+      try {
+        const session = JSON.parse(decodeURIComponent(sessionCookie.value));
+        sessionRole = session.role || '';
+        sessionName = (session.name || '').toLowerCase().trim().replace(/^(dr\.?\s*)+/i, '');
+      } catch (e) {
+        console.error("Session parse error", e);
+      }
     }
 
     // Determine query filtering based on session (only show mapped doctor's visits)

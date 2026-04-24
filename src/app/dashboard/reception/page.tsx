@@ -86,15 +86,23 @@ export default function ReceptionDashboard() {
 
   const fetchFutureQueue = async () => {
     try {
-      const res = await fetch('/api/appointments');
+      const res = await fetch(`/api/appointments?t=${Date.now()}`);
       const data = await res.json();
       if (data.success) {
-        const midnightToday = new Date();
-        midnightToday.setHours(23, 59, 59, 999);
-        const upcoming = data.visits.filter((v: any) => new Date(v.visitDate) > midnightToday);
+        // Get start of today (midnight) to compare
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
+        // Filter: Any visit where the date is strictly after today's midnight
+        const upcoming = data.visits.filter((v: any) => {
+          const vDate = new Date(v.visitDate);
+          return vDate >= today && v.status !== 'COMPLETED';
+        });
         setFutureQueue(upcoming);
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error("Fetch future queue error", err);
+    }
   };
 
   const fetchBills = async () => {

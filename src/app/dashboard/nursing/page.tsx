@@ -176,21 +176,21 @@ export default function NursingDashboard() {
                   Active Queue
                 </h3>
                 
-                {/* Redesigned Session Toggle - Catchy Primary Style */}
-                <div className="flex bg-slate-100 p-1.5 rounded-full h-16 w-64 border-2 border-slate-200 ml-4 shadow-inner">
+                {/* Redesigned Session Toggle - Rest Easy Catchy Style */}
+                <div className="flex bg-slate-100/80 p-2.5 rounded-full h-20 w-80 border-2 border-slate-200 mt-8 mb-8 ml-8 shadow-inner gap-4">
                   <button 
                     type="button"
                     onClick={() => setSessionFilter('morning')}
-                    className={`flex-1 rounded-full text-[12px] font-black transition-all duration-300 flex items-center justify-center gap-2 ${sessionFilter === 'morning' ? 'bg-primary text-white shadow-[0_10px_20px_rgba(var(--primary-rgb),0.4)] scale-105' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`flex-1 rounded-full text-base font-black transition-all duration-300 ${sessionFilter === 'morning' ? 'bg-[#088395] text-white shadow-[0_12px_24px_rgba(8,131,149,0.5)] scale-105' : 'text-slate-400 hover:text-slate-600'}`}
                   >
-                    <Sun size={16} /> MORNING
+                    MORNING
                   </button>
                   <button 
                     type="button"
                     onClick={() => setSessionFilter('evening')}
-                    className={`flex-1 rounded-full text-[12px] font-black transition-all duration-300 flex items-center justify-center gap-2 ${sessionFilter === 'evening' ? 'bg-primary text-white shadow-[0_10px_20px_rgba(var(--primary-rgb),0.4)] scale-105' : 'text-slate-400 hover:text-slate-600'}`}
+                    className={`flex-1 rounded-full text-base font-black transition-all duration-300 ${sessionFilter === 'evening' ? 'bg-[#088395] text-white shadow-[0_12px_24px_rgba(8,131,149,0.5)] scale-105' : 'text-slate-400 hover:text-slate-600'}`}
                   >
-                    <Moon size={16} /> EVENING
+                    EVENING
                   </button>
                 </div>
               </div>

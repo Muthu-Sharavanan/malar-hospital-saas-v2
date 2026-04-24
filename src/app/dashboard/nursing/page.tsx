@@ -176,18 +176,48 @@ export default function NursingDashboard() {
                   Active Queue
                 </h3>
                 
-                <div className="flex items-center gap-10 mt-10 mb-10 ml-8">
+                <div className="flex items-center gap-12 mt-12 mb-12 ml-6">
                   <button 
                     type="button"
                     onClick={() => setSessionFilter('morning')}
-                    className={`flex items-center justify-center gap-4 px-16 py-4 rounded-full text-lg font-black transition-all duration-400 ${sessionFilter === 'morning' ? 'bg-[#088395] text-white shadow-[0_10px_25px_rgba(8,131,149,0.3)] scale-105' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                    style={{
+                      backgroundColor: sessionFilter === 'morning' ? '#088395' : '#f8fafc',
+                      color: sessionFilter === 'morning' ? 'white' : '#94a3b8',
+                      padding: '16px 64px',
+                      borderRadius: '9999px',
+                      fontSize: '18px',
+                      fontWeight: '900',
+                      border: 'none',
+                      boxShadow: sessionFilter === 'morning' ? '0 10px 25px rgba(8,131,149,0.3)' : 'none',
+                      transition: 'all 0.4s ease',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                      transform: sessionFilter === 'morning' ? 'scale(1.05)' : 'scale(1)'
+                    }}
                   >
                     <Sun size={24} /> MORNING
                   </button>
                   <button 
                     type="button"
                     onClick={() => setSessionFilter('evening')}
-                    className={`flex items-center justify-center gap-4 px-16 py-4 rounded-full text-lg font-black transition-all duration-400 ${sessionFilter === 'evening' ? 'bg-[#088395] text-white shadow-[0_10px_25px_rgba(8,131,149,0.3)] scale-105' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                    style={{
+                      backgroundColor: sessionFilter === 'evening' ? '#088395' : '#f8fafc',
+                      color: sessionFilter === 'evening' ? 'white' : '#94a3b8',
+                      padding: '16px 64px',
+                      borderRadius: '9999px',
+                      fontSize: '18px',
+                      fontWeight: '900',
+                      border: 'none',
+                      boxShadow: sessionFilter === 'evening' ? '0 10px 25px rgba(8,131,149,0.3)' : 'none',
+                      transition: 'all 0.4s ease',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '16px',
+                      transform: sessionFilter === 'evening' ? 'scale(1.05)' : 'scale(1)'
+                    }}
                   >
                     <Moon size={24} /> EVENING
                   </button>

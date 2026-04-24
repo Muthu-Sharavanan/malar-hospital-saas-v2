@@ -455,16 +455,40 @@ export default function ReceptionDashboard() {
                           </select>
                        </div>
                        
-                        <div className="flex items-center gap-8 mt-10 mb-10 ml-6">
+                        <div className="flex items-center gap-12 mt-12 mb-12 ml-6">
                           <button 
                             type="button"
                             onClick={() => setTimePeriod('AM')}
-                            className={`px-16 py-4 rounded-full text-lg font-black transition-all duration-400 ${timePeriod === 'AM' ? 'bg-[#088395] text-white shadow-[0_10px_25px_rgba(8,131,149,0.3)] scale-105' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                            style={{
+                              backgroundColor: timePeriod === 'AM' ? '#088395' : '#f8fafc',
+                              color: timePeriod === 'AM' ? 'white' : '#94a3b8',
+                              padding: '16px 64px',
+                              borderRadius: '9999px',
+                              fontSize: '18px',
+                              fontWeight: '900',
+                              border: 'none',
+                              boxShadow: timePeriod === 'AM' ? '0 10px 25px rgba(8,131,149,0.3)' : 'none',
+                              transition: 'all 0.4s ease',
+                              cursor: 'pointer',
+                              transform: timePeriod === 'AM' ? 'scale(1.05)' : 'scale(1)'
+                            }}
                           >AM</button>
                           <button 
                             type="button"
                             onClick={() => setTimePeriod('PM')}
-                            className={`px-16 py-4 rounded-full text-lg font-black transition-all duration-400 ${timePeriod === 'PM' ? 'bg-[#088395] text-white shadow-[0_10px_25px_rgba(8,131,149,0.3)] scale-105' : 'bg-slate-50 text-slate-400 hover:bg-slate-100'}`}
+                            style={{
+                              backgroundColor: timePeriod === 'PM' ? '#088395' : '#f8fafc',
+                              color: timePeriod === 'PM' ? 'white' : '#94a3b8',
+                              padding: '16px 64px',
+                              borderRadius: '9999px',
+                              fontSize: '18px',
+                              fontWeight: '900',
+                              border: 'none',
+                              boxShadow: timePeriod === 'PM' ? '0 10px 25px rgba(8,131,149,0.3)' : 'none',
+                              transition: 'all 0.4s ease',
+                              cursor: 'pointer',
+                              transform: timePeriod === 'PM' ? 'scale(1.05)' : 'scale(1)'
+                            }}
                           >PM</button>
                         </div>
                     </div>

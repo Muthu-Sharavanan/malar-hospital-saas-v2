@@ -1054,14 +1054,24 @@ export default function DoctorDashboard() {
                                      value={currentDrug.name} onChange={e => setCurrentDrug({...currentDrug, name: e.target.value.toUpperCase()})}
                                    />
                                    <div className="grid grid-cols-2 gap-2">
-                                      <select className="form-input !py-1 !px-3 !bg-white !text-xs font-bold" value={currentDrug.dosage} onChange={e => setCurrentDrug({...currentDrug, dosage: e.target.value})}>
-                                         <option>1-0-1</option>
-                                         <option>1-1-1</option>
-                                         <option>1-0-0</option>
-                                         <option>0-1-0</option>
-                                         <option>0-0-1</option>
-                                         <option>SOS</option>
-                                      </select>
+                                      <div className="relative">
+                                        <input 
+                                          list="dosages"
+                                          className="form-input !py-1 !px-3 !bg-white !text-xs font-bold w-full" 
+                                          placeholder="Dosage..."
+                                          value={currentDrug.dosage} 
+                                          onChange={e => setCurrentDrug({...currentDrug, dosage: e.target.value})}
+                                        />
+                                        <datalist id="dosages">
+                                           <option value="1-0-1" />
+                                           <option value="1-1-1" />
+                                           <option value="1-0-0" />
+                                           <option value="0-1-0" />
+                                           <option value="0-0-1" />
+                                           <option value="SOS" />
+                                           <option value="Stat" />
+                                        </datalist>
+                                      </div>
                                       <div className="relative">
                                         <input 
                                           list="durations"

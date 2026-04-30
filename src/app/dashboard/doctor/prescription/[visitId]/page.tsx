@@ -88,28 +88,28 @@ export default function PrescriptionPrint() {
         <h4 style={{ color: '#0A4D68', borderBottom: '1px solid #eee', paddingBottom: '3px', marginBottom: '10px', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Clinical Findings</h4>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px' }}>
            <div>
-               <small style={{ fontWeight: 800, color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Chief Complaints</small>
+               <small style={{ fontWeight: 800, color: '#1E293B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Chief Complaints</small>
               <p style={{ margin: '4px 0', fontSize: '13px', whiteSpace: 'pre-wrap' }}>{visit.chiefComplaints || 'N/A'}</p>
            </div>
            {visit.history && (
              <div>
-                 <small style={{ fontWeight: 800, color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Clinical History</small>
+                 <small style={{ fontWeight: 800, color: '#1E293B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Clinical History</small>
                 <p style={{ margin: '4px 0', fontSize: '13px', whiteSpace: 'pre-wrap' }}>{visit.history}</p>
              </div>
            )}
            {visit.examination && (
              <div>
-                 <small style={{ fontWeight: 800, color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Physical Examination</small>
+                 <small style={{ fontWeight: 800, color: '#1E293B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Physical Examination</small>
                 <p style={{ margin: '4px 0', fontSize: '13px', whiteSpace: 'pre-wrap' }}>{visit.examination}</p>
              </div>
            )}
            <div>
-               <small style={{ fontWeight: 800, color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Provisional Diagnosis</small>
+               <small style={{ fontWeight: 800, color: '#1E293B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Provisional Diagnosis</small>
               <p style={{ margin: '4px 0', fontSize: '13px', fontWeight: 600, whiteSpace: 'pre-wrap' }}>{visit.diagnosis || 'Clinical evaluation pending'}</p>
            </div>
            {visit.investigationAdvised && (
              <div>
-                 <small style={{ fontWeight: 800, color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Investigation Advised</small>
+                 <small style={{ fontWeight: 800, color: '#1E293B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Investigation Advised</small>
                 <p style={{ margin: '4px 0', fontSize: '13px', fontWeight: 600, color: 'var(--primary)', whiteSpace: 'pre-wrap' }}>{visit.investigationAdvised}</p>
              </div>
            )}
@@ -148,7 +148,7 @@ export default function PrescriptionPrint() {
 
       {/* Typing Orders Section */}
       <div className="mb-6" style={{ marginTop: '10px' }}>
-        <h4 style={{ color: '#0A4D68', borderBottom: '1px solid #eee', paddingBottom: '3px', marginBottom: '10px', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Orders</h4>
+        <h4 style={{ color: '#0A4D68', borderBottom: '1px solid #eee', paddingBottom: '3px', marginBottom: '10px', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Advice/commands</h4>
         <div
           contentEditable
           suppressContentEditableWarning
@@ -192,7 +192,7 @@ export default function PrescriptionPrint() {
       <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end', paddingTop: '20px' }}>
          <div style={{ textAlign: 'center', borderTop: '1px solid #000', width: '220px', paddingTop: '5px' }}>
             <p style={{ fontWeight: 700, margin: 0, fontSize: '15px' }}>{visit.doctor.name}</p>
-            <small style={{ color: '#64748B', display: 'block', fontSize: '12px' }}>Reg No: {visit.doctor.regNo || 'MC-12345'}</small>
+            <small style={{ color: '#64748B', display: 'block', fontSize: '12px' }}>Reg No: {visit.doctor.name.includes('Aravind') ? 'TNMC no:127757' : (visit.doctor.regNo || 'MC-12345')}</small>
          </div>
       </div>
 

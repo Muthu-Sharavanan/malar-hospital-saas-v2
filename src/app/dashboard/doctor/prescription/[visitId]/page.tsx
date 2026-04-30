@@ -30,7 +30,7 @@ export default function PrescriptionPrint() {
       {/* Hospital Header */}
       <div className="flex flex-col items-center mb-6 pb-4 text-center" style={{ borderBottom: '2px solid #e2e8f0' }}>
         <div className="mb-4">
-           <h1 style={{ color: '#0A4D68', margin: 0, fontSize: '30px', fontWeight: '900', letterSpacing: '0.5px', textTransform: 'uppercase' }}>MALAR HOSPITAL</h1>
+           <img src="/logo.jpeg" alt="Malar Hospital" style={{ width: '320px', height: 'auto' }} />
         </div>
         
         <div style={{ fontSize: '12px', color: '#334155', fontWeight: '700', marginBottom: '15px', textAlign: 'center' }}>

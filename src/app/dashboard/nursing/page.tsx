@@ -271,7 +271,7 @@ export default function NursingDashboard() {
                   <div className="flex justify-between items-start mb-3">
                     <div>
                            <div className="flex items-center gap-2 mb-1">
-                              <span className="text-[10px] text-primary font-black uppercase tracking-wider bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">Token #{v.tokenNumber}</span>
+                              <span className="text-[10px] text-primary font-black uppercase tracking-wider bg-primary/5 px-2 py-0.5 rounded-full border border-primary/10">Token {v.tokenNumber}</span>
                               <span className="text-[10px] text-slate-400 font-black flex items-center gap-1">
                                  <Clock size={10} /> 
                                  {new Date(v.visitDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}
@@ -315,7 +315,7 @@ export default function NursingDashboard() {
                     <div>
                       <h2 className="text-2xl font-black text-slate-800">{selectedVisit.patient.name}</h2>
                       <p className="text-xs font-black text-primary uppercase tracking-widest mt-1">
-                        UHID: {selectedVisit.patient.uhid} &nbsp;·&nbsp; TOKEN #{selectedVisit.tokenNumber}
+                        UHID: {selectedVisit.patient.uhid} &nbsp;·&nbsp; TOKEN {selectedVisit.tokenNumber}
                       </p>
                     </div>
                   </div>

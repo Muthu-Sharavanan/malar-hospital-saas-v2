@@ -63,7 +63,7 @@ export default function FinalBillPrint() {
          </div>
          <div style={{ textAlign: 'right' }}>
             <p><strong>Visit ID:</strong> {visit.id.slice(-6).toUpperCase()}</p>
-            <p><strong>Token No:</strong> #{visit.tokenNumber}</p>
+            <p><strong>Token No:</strong> {visit.tokenNumber}</p>
             <p><strong>Visit Date:</strong> {new Date(visit.visitDate).toLocaleDateString()}</p>
             <p><strong>Primary Doctor:</strong> {visit.doctor.name}</p>
          </div>

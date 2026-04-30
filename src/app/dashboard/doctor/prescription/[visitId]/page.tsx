@@ -59,7 +59,7 @@ export default function PrescriptionPrint() {
          </div>
          <div>
             <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>Token Number</small>
-            <span style={{ fontWeight: 600 }}>#{visit.tokenNumber}</span>
+            <span style={{ fontWeight: 600 }}>{visit.tokenNumber}</span>
          </div>
          <div>
             <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>OP ID</small>

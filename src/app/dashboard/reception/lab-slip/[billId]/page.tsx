@@ -36,7 +36,7 @@ export default function LabSlipPrint() {
 
       <div style={{ fontSize: '13px', marginBottom: '15px' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-           <span>Token: <strong>#{bill.visit.tokenNumber}</strong></span>
+           <span>Token: <strong>{bill.visit.tokenNumber}</strong></span>
            <span>Date: {new Date(bill.createdAt).toLocaleDateString()}</span>
         </div>
         <div style={{ marginTop: '5px' }}>Patient: <strong>{bill.visit.patient.name}</strong></div>

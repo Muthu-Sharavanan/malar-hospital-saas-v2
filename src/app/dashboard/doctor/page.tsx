@@ -204,7 +204,7 @@ export default function DoctorDashboard() {
           if (newVisits.length > 0) {
             const newToasts = newVisits.map((v: any) => ({
               id: Date.now() + Math.random().toString(),
-              message: `Token #${v.tokenNumber} - ${v.patient.name} has been added to your queue!`
+              message: `Token ${v.tokenNumber} - ${v.patient.name} has been added to your queue!`
             }));
             setToasts(prev => [...prev, ...newToasts]);
             newToasts.forEach((t: any) => {
@@ -710,7 +710,7 @@ export default function DoctorDashboard() {
                      >
                        <div className="flex justify-between items-start mb-2">
                           <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-[#088395] uppercase tracking-widest mb-1">Token #{v.tokenNumber}</span>
+                            <span className="text-[10px] font-black text-[#088395] uppercase tracking-widest mb-1">Token {v.tokenNumber}</span>
                             <h4 className="text-lg font-bold text-slate-800">{v.patient.name}</h4>
                           </div>
                           <div className={`px-3 py-1 rounded-full text-[9px] font-black uppercase ${v.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
@@ -775,7 +775,7 @@ export default function DoctorDashboard() {
                            <div className="flex flex-col">
                              <div className="flex items-center gap-2 mb-1">
                                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Token #{v.tokenNumber}</span>
+                                <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Token {v.tokenNumber}</span>
                              </div>
                              <h4 className="text-xl font-black text-slate-800 group-hover:text-emerald-700 transition-colors uppercase tracking-tight leading-none">{v.patient.name}</h4>
                            </div>
@@ -834,7 +834,7 @@ export default function DoctorDashboard() {
                       >
                         <div className="flex justify-between items-start mb-3">
                            <div className="flex flex-col">
-                             <span className="text-xs text-secondary font-bold uppercase tracking-wider mb-1">Token #{v.tokenNumber}</span>
+                             <span className="text-xs text-secondary font-bold uppercase tracking-wider mb-1">Token {v.tokenNumber}</span>
                              <div className="flex items-center gap-2">
                                <h4 className="text-base font-bold text-slate-800">{v.patient.name}</h4>
                                {v.isReview && (
@@ -886,7 +886,7 @@ export default function DoctorDashboard() {
                             <div>
                                <h2 className="text-xl font-bold text-slate-800">{selectedVisit.patient.name}</h2>
                                <p className="text-xs font-bold text-primary tracking-widest uppercase mt-1">
-                                  {selectedVisit.patient.uhid} &nbsp;·&nbsp; Token #{selectedVisit.tokenNumber}
+                                  {selectedVisit.patient.uhid} &nbsp;·&nbsp; Token {selectedVisit.tokenNumber}
                                </p>
                             </div>
                          </div>
@@ -1293,7 +1293,7 @@ export default function DoctorDashboard() {
                          <div className="flex flex-col">
                            <span className="font-bold text-slate-800 text-sm group-hover:text-primary transition-colors">{v.patient.name}</span>
                            <span className="text-xs text-slate-500 font-bold mt-1 uppercase">
-                             {v.patient.uhid} • Token #{v.tokenNumber} • {v.patient.gender} • {v.patient.age} Y/O
+                             {v.patient.uhid} • Token {v.tokenNumber} • {v.patient.gender} • {v.patient.age} Y/O
                            </span>
                            <span className="text-[10px] text-slate-400 font-bold mt-1 max-w-md truncate">
                              {v.chiefComplaints || 'Pending Consultation'}

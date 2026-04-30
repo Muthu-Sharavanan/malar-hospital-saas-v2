@@ -43,7 +43,7 @@ export default function ReceiptPrint() {
             <p><strong>Date:</strong> {new Date(bill.createdAt).toLocaleDateString()}</p>
          </div>
          <div style={{ textAlign: 'right' }}>
-            <p><strong>Token No:</strong> #{bill.visit.tokenNumber}</p>
+            <p><strong>Token No:</strong> {bill.visit.tokenNumber}</p>
             <p><strong>Payment Mode:</strong> {bill.paymentMode || 'CASH'}</p>
          </div>
       </div>

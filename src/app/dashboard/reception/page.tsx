@@ -230,8 +230,8 @@ export default function ReceptionDashboard() {
         const appointmentTime = formData.visitTime ? ` at ${formData.visitTime}` : '';
 
         const realWaMessage = formData.visitDate 
-          ? `*APPOINTMENT CONFIRMATION*\n\n*Name:* ${formData.name}\n*Age:* ${formData.age}Y\n*UHID:* ${data.uhid}\n*Date:* ${formattedDate}${appointmentTime}\n*Doctor:* Dr. ${docName}\n*Token:* #${data.visit.tokenNumber}${formData.reason ? `\n*Reason:* ${formData.reason}` : ''}`
-          : `*VISIT CONFIRMATION*\n\n*Name:* ${formData.name}\n*Age:* ${formData.age}Y\n*UHID:* ${data.uhid}\n*Doctor:* Dr. ${docName}\n*Token:* #${data.visit.tokenNumber}\n*Status:* Confirmed for Today.${formData.reason ? `\n*Reason:* ${formData.reason}` : ''}`;
+          ? `*APPOINTMENT CONFIRMATION*\n\n*Name:* ${formData.name}\n*Age:* ${formData.age}Y\n*UHID:* ${data.uhid}\n*Date:* ${formattedDate}${appointmentTime}\n*Doctor:* Dr. ${docName}\n*Token:* ${data.visit.tokenNumber}${formData.reason ? `\n*Reason:* ${formData.reason}` : ''}`
+          : `*VISIT CONFIRMATION*\n\n*Name:* ${formData.name}\n*Age:* ${formData.age}Y\n*UHID:* ${data.uhid}\n*Doctor:* Dr. ${docName}\n*Token:* ${data.visit.tokenNumber}\n*Status:* Confirmed for Today.${formData.reason ? `\n*Reason:* ${formData.reason}` : ''}`;
 
         if (formData.phone && formData.visitDate) {
           // In a real scenario, this would be a server-side trigger, but we open WA Web here.
@@ -553,7 +553,7 @@ export default function ReceptionDashboard() {
                   {queue.length > 0 ? queue.map((v) => (
                     <tr key={v.id} className="group hover-scale-101 transition-all">
                       <td className="p-4 bg-slate-50 rounded-l-2xl border-y border-l border-slate-100">
-                        <div className="font-black text-primary text-base">#{v.tokenNumber}</div>
+                        <div className="font-black text-primary text-base">{v.tokenNumber}</div>
                         <div className="text-[10px] font-bold text-slate-400 mt-0.5">{v.patient.uhid}</div>
                       </td>
                       <td className="p-4 bg-slate-50 border-y border-slate-100">
@@ -736,7 +736,7 @@ export default function ReceptionDashboard() {
                
                <div className="bg-slate-50 rounded-2xl p-8 mb-10 border border-slate-100">
                   <div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-2">Clinical Token ID</div>
-                  <div className="text-5xl font-black text-primary">#{successInfo?.token}</div>
+                  <div className="text-5xl font-black text-primary">{successInfo?.token}</div>
                   {successInfo?.uhid && (
                     <div className="mt-8 pt-8 border-t border-dashed border-slate-200">
                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-2">Hospital Universal ID (UHID)</div>

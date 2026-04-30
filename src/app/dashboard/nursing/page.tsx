@@ -389,14 +389,14 @@ export default function NursingDashboard() {
                         <div className="form-group">
                           <label className="form-label !text-[10px] !font-black !text-slate-500">WEIGHT (kg)</label>
                           <input 
-                            type="number" step="0.1" className="form-input !h-12 !bg-slate-50/50 border-none transition-all focus:!bg-white focus:!ring-2" placeholder="70" required 
+                            type="number" step="0.1" className="form-input !h-12 !bg-slate-50/50 border-none transition-all focus:!bg-white focus:!ring-2" placeholder="70" 
                             value={vitals.weight} onChange={e => setVitals({...vitals, weight: e.target.value})}
                           />
                         </div>
                         <div className="form-group">
                           <label className="form-label !text-[10px] !font-black !text-slate-500">HEIGHT (cm)</label>
                           <input 
-                            type="number" className="form-input !h-12 !bg-slate-50/50 border-none transition-all focus:!bg-white focus:!ring-2" placeholder="170" required 
+                            type="number" className="form-input !h-12 !bg-slate-50/50 border-none transition-all focus:!bg-white focus:!ring-2" placeholder="170" 
                             value={vitals.height} onChange={e => setVitals({...vitals, height: e.target.value})}
                           />
                         </div>

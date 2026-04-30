@@ -33,7 +33,7 @@ export default function PrescriptionPrint() {
            <h1 style={{ color: '#0A4D68', margin: 0, fontSize: '30px', fontWeight: '900', letterSpacing: '0.5px', textTransform: 'uppercase' }}>MALAR HOSPITAL</h1>
         </div>
         
-        <div style={{ fontSize: '12px', color: '#334155', fontWeight: '700', marginBottom: '15px' }}>
+        <div style={{ fontSize: '12px', color: '#334155', fontWeight: '700', marginBottom: '15px', textAlign: 'center' }}>
            <p style={{ margin: '2px 0' }}>12 Alagesapuram Main Road | Thoothukudi - 628002</p>
            <p style={{ margin: '2px 0' }}>Tel: 0461 - 2360380</p>
         </div>

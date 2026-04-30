@@ -28,18 +28,17 @@ export default function PrescriptionPrint() {
   return (
     <div className="print-container" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px', background: 'white', minHeight: '100vh', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
       {/* Hospital Header */}
-      <div className="flex flex-col items-center mb-6 pb-4 text-center" style={{ borderBottom: '2px solid #e2e8f0' }}>
-        <div className="mb-4">
-           <img src="/logo.jpeg" alt="Malar Hospital" style={{ width: '320px', height: 'auto' }} />
+      <div className="flex flex-col items-center mb-2 pb-1 text-center" style={{ borderBottom: '1px solid #e2e8f0' }}>
+        <div className="mb-1">
+           <img src="/logo.jpeg" alt="Malar Hospital" style={{ width: '280px', height: 'auto' }} />
         </div>
         
-        <div style={{ fontSize: '12px', color: '#334155', fontWeight: '700', marginBottom: '15px', textAlign: 'center' }}>
-           <p style={{ margin: '2px 0' }}>12 Alagesapuram Main Road | Thoothukudi - 628002</p>
-           <p style={{ margin: '2px 0' }}>Tel: 0461 - 2360380</p>
+        <div style={{ fontSize: '11px', color: '#334155', fontWeight: '700', marginBottom: '5px', textAlign: 'center' }}>
+           <p style={{ margin: '0' }}>12 Alagesapuram Main Road | Thoothukudi - 628002 | Tel: 0461 - 2360380</p>
         </div>
 
-        <div style={{ width: '100%', borderBottom: '2px solid #0A4D68', paddingBottom: '10px', textAlign: 'center' }}>
-           <h2 style={{ color: '#0A4D68', margin: 0, fontSize: '22px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>VISIT SUMMARY</h2>
+        <div style={{ width: '100%', borderBottom: '2px solid #0A4D68', paddingBottom: '5px', textAlign: 'center' }}>
+           <h2 style={{ color: '#0A4D68', margin: 0, fontSize: '18px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>VISIT SUMMARY</h2>
         </div>
       </div>
 

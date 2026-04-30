@@ -34,10 +34,11 @@ export default function PrescriptionPrint() {
         </div>
         
         <div style={{ fontSize: '12px', color: '#334155', fontWeight: '700', marginBottom: '15px' }}>
-           <p style={{ margin: '2px 0' }}>12 Alagesapuram Main Road | Thoothukudi - 628002 | Tel: 0461 - 2360380</p>
+           <p style={{ margin: '2px 0' }}>12 Alagesapuram Main Road | Thoothukudi - 628002</p>
+           <p style={{ margin: '2px 0' }}>Tel: 0461 - 2360380</p>
         </div>
 
-        <div style={{ width: '100%', borderBottom: '2px solid #0A4D68', paddingBottom: '10px' }}>
+        <div style={{ width: '100%', borderBottom: '2px solid #0A4D68', paddingBottom: '10px', textAlign: 'center' }}>
            <h2 style={{ color: '#0A4D68', margin: 0, fontSize: '22px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>VISIT SUMMARY</h2>
         </div>
       </div>

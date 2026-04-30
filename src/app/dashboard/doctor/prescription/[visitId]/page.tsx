@@ -28,27 +28,17 @@ export default function PrescriptionPrint() {
   return (
     <div className="print-container" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px', background: 'white', minHeight: '100vh', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
       {/* Hospital Header */}
-      <div className="flex flex-col items-center mb-10 pb-6 text-center" style={{ borderBottom: '2px solid #e2e8f0' }}>
-        <div className="flex flex-col items-center gap-1 mb-4">
-           {/* Logo Placeholder - Medical Icon Style */}
-           <div className="mb-2" style={{ color: '#0A4D68' }}>
-              <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M12 2v20M2 12h20" />
-                <path d="M12 7c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5z" />
-              </svg>
-           </div>
-           <div>
-              <h1 style={{ color: '#0A4D68', margin: 0, fontSize: '34px', fontWeight: '900', letterSpacing: '0.5px', textTransform: 'uppercase' }}>MALAR HOSPITAL</h1>
-              <p style={{ margin: 0, fontSize: '15px', color: '#1e293b', fontWeight: '600', opacity: 0.8 }}>Caring for you, always.</p>
-           </div>
+      <div className="flex flex-col items-center mb-6 pb-4 text-center" style={{ borderBottom: '2px solid #e2e8f0' }}>
+        <div className="mb-4">
+           <h1 style={{ color: '#0A4D68', margin: 0, fontSize: '30px', fontWeight: '900', letterSpacing: '0.5px', textTransform: 'uppercase' }}>MALAR HOSPITAL</h1>
         </div>
         
-        <div style={{ fontSize: '12px', color: '#334155', fontWeight: '700', marginBottom: '20px' }}>
+        <div style={{ fontSize: '12px', color: '#334155', fontWeight: '700', marginBottom: '15px' }}>
            <p style={{ margin: '2px 0' }}>12 Alagesapuram Main Road | Thoothukudi - 628002 | Tel: 0461 - 2360380</p>
         </div>
 
-        <div style={{ marginTop: '10px' }}>
-           <h2 style={{ color: '#0A4D68', margin: 0, fontSize: '38px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>VISIT SUMMARY</h2>
+        <div>
+           <h2 style={{ color: '#0A4D68', margin: 0, fontSize: '22px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>VISIT SUMMARY</h2>
         </div>
       </div>
 

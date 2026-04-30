@@ -88,29 +88,29 @@ export default function PrescriptionPrint() {
         <h4 style={{ color: '#0A4D68', borderBottom: '1px solid #eee', paddingBottom: '3px', marginBottom: '10px', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Clinical Findings</h4>
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '15px' }}>
            <div>
-              <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Chief Complaints</small>
-              <p style={{ margin: '4px 0', fontSize: '14px', whiteSpace: 'pre-wrap' }}>{visit.chiefComplaints || 'N/A'}</p>
+               <small style={{ fontWeight: 800, color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Chief Complaints</small>
+              <p style={{ margin: '4px 0', fontSize: '13px', whiteSpace: 'pre-wrap' }}>{visit.chiefComplaints || 'N/A'}</p>
            </div>
            {visit.history && (
              <div>
-                <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Clinical History</small>
-                <p style={{ margin: '4px 0', fontSize: '14px', whiteSpace: 'pre-wrap' }}>{visit.history}</p>
+                 <small style={{ fontWeight: 800, color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Clinical History</small>
+                <p style={{ margin: '4px 0', fontSize: '13px', whiteSpace: 'pre-wrap' }}>{visit.history}</p>
              </div>
            )}
            {visit.examination && (
              <div>
-                <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Physical Examination</small>
-                <p style={{ margin: '4px 0', fontSize: '14px', whiteSpace: 'pre-wrap' }}>{visit.examination}</p>
+                 <small style={{ fontWeight: 800, color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Physical Examination</small>
+                <p style={{ margin: '4px 0', fontSize: '13px', whiteSpace: 'pre-wrap' }}>{visit.examination}</p>
              </div>
            )}
            <div>
-              <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Provisional Diagnosis</small>
-              <p style={{ margin: '4px 0', fontSize: '15px', fontWeight: 700, whiteSpace: 'pre-wrap' }}>{visit.diagnosis || 'Clinical evaluation pending'}</p>
+               <small style={{ fontWeight: 800, color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Provisional Diagnosis</small>
+              <p style={{ margin: '4px 0', fontSize: '13px', fontWeight: 600, whiteSpace: 'pre-wrap' }}>{visit.diagnosis || 'Clinical evaluation pending'}</p>
            </div>
            {visit.investigationAdvised && (
              <div>
-                <small style={{ fontWeight: 'bold', color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '10px' }}>Investigation Advised</small>
-                <p style={{ margin: '4px 0', fontSize: '14px', fontWeight: 700, color: 'var(--primary)', whiteSpace: 'pre-wrap' }}>{visit.investigationAdvised}</p>
+                 <small style={{ fontWeight: 800, color: '#64748B', display: 'block', textTransform: 'uppercase', fontSize: '13px', letterSpacing: '0.5px' }}>Investigation Advised</small>
+                <p style={{ margin: '4px 0', fontSize: '13px', fontWeight: 600, color: 'var(--primary)', whiteSpace: 'pre-wrap' }}>{visit.investigationAdvised}</p>
              </div>
            )}
         </div>
@@ -144,6 +144,28 @@ export default function PrescriptionPrint() {
             )}
           </tbody>
         </table>
+      </div>
+
+      {/* Typing Orders Section */}
+      <div className="mb-6" style={{ marginTop: '10px' }}>
+        <h4 style={{ color: '#0A4D68', borderBottom: '1px solid #eee', paddingBottom: '3px', marginBottom: '10px', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Orders</h4>
+        <div
+          contentEditable
+          suppressContentEditableWarning
+          className="typing-orders"
+          style={{
+            minHeight: '70px',
+            border: '1px dashed #cbd5e1',
+            borderRadius: '6px',
+            padding: '10px 14px',
+            fontSize: '14px',
+            lineHeight: '2',
+            outline: 'none',
+            color: '#1e293b',
+            whiteSpace: 'pre-wrap',
+          }}
+          data-placeholder="e.g. Lifestyle advice given. Review on 23/5/26"
+        />
       </div>
 
       {/* Suggested Investigations Area */}
@@ -180,7 +202,14 @@ export default function PrescriptionPrint() {
           .no-print { display: none !important; }
           body { background: white !important; }
           .print-container { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; padding: 0 !important; }
+          .typing-orders { border: none !important; padding-left: 0 !important; }
         }
+        .typing-orders:empty:before {
+          content: attr(data-placeholder);
+          color: #94a3b8;
+          pointer-events: none;
+        }
+        .typing-orders:focus { border-color: #0A4D68 !important; }
       `}</style>
       <div className="no-print" style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000 }}>
          <button 

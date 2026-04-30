@@ -28,19 +28,24 @@ export default function PrescriptionPrint() {
   return (
     <div className="print-container" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px', background: 'white', minHeight: '100vh', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
       {/* Hospital Header */}
-      <div className="flex justify-between items-center mb-8 pb-4" style={{ borderBottom: '3px solid var(--primary)' }}>
-        <div className="flex items-center gap-4">
-           {/* Placeholder for Logo */}
+      <div className="flex flex-col items-center mb-8 pb-4 text-center" style={{ borderBottom: '3px solid #0A4D68' }}>
+        <div className="flex flex-col items-center gap-2 mb-4">
+           {/* Logo */}
            <div style={{ width: '60px', height: '60px', background: '#0A4D68', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '24px' }}>M</div>
            <div>
-              <h1 style={{ color: '#0A4D68', margin: 0, fontSize: '28px' }}>MALAR HOSPITAL</h1>
-              <p style={{ margin: 0, fontSize: '12px', color: '#64748B' }}>Caring for you, always.</p>
+              <h1 style={{ color: '#0A4D68', margin: 0, fontSize: '32px', fontWeight: '800', letterSpacing: '-1px' }}>MALAR HOSPITAL</h1>
+              <p style={{ margin: 0, fontSize: '14px', color: '#64748B', fontWeight: '600' }}>Caring for you, always.</p>
            </div>
         </div>
-         <div style={{ textAlign: 'right', fontSize: '13px' }}>
-            <p style={{ margin: 0 }}>12 Alagesapuram Main road Thoothukudi-628002</p>
-            <p style={{ margin: 0 }}>Tel: 0461-2360380</p>
-         </div>
+        
+        <div style={{ fontSize: '13px', color: '#475569', marginBottom: '15px' }}>
+           <p style={{ margin: 0 }}>12 Alagesapuram Main road Thoothukudi-628002</p>
+           <p style={{ margin: 0 }}>Tel: 0461-2360380</p>
+        </div>
+
+        <div style={{ marginTop: '5px' }}>
+           <h2 style={{ color: '#0A4D68', margin: 0, fontSize: '24px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px' }}>Visit Summary</h2>
+        </div>
       </div>
 
       {/* Patient Info Bar */}

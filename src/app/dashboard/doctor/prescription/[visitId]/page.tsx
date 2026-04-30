@@ -28,23 +28,27 @@ export default function PrescriptionPrint() {
   return (
     <div className="print-container" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px', background: 'white', minHeight: '100vh', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
       {/* Hospital Header */}
-      <div className="flex flex-col items-center mb-8 pb-4 text-center" style={{ borderBottom: '3px solid #0A4D68' }}>
-        <div className="flex flex-col items-center gap-2 mb-4">
-           {/* Logo */}
-           <div style={{ width: '60px', height: '60px', background: '#0A4D68', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold', fontSize: '24px' }}>M</div>
+      <div className="flex flex-col items-center mb-10 pb-6 text-center" style={{ borderBottom: '2px solid #e2e8f0' }}>
+        <div className="flex flex-col items-center gap-1 mb-4">
+           {/* Logo Placeholder - Medical Icon Style */}
+           <div className="mb-2" style={{ color: '#0A4D68' }}>
+              <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M12 2v20M2 12h20" />
+                <path d="M12 7c2.76 0 5 2.24 5 5s-2.24 5-5 5-5-2.24-5-5 2.24-5 5-5z" />
+              </svg>
+           </div>
            <div>
-              <h1 style={{ color: '#0A4D68', margin: 0, fontSize: '32px', fontWeight: '800', letterSpacing: '-1px' }}>MALAR HOSPITAL</h1>
-              <p style={{ margin: 0, fontSize: '14px', color: '#64748B', fontWeight: '600' }}>Caring for you, always.</p>
+              <h1 style={{ color: '#0A4D68', margin: 0, fontSize: '34px', fontWeight: '900', letterSpacing: '0.5px', textTransform: 'uppercase' }}>MALAR HOSPITAL</h1>
+              <p style={{ margin: 0, fontSize: '15px', color: '#1e293b', fontWeight: '600', opacity: 0.8 }}>Caring for you, always.</p>
            </div>
         </div>
         
-        <div style={{ fontSize: '13px', color: '#475569', marginBottom: '15px' }}>
-           <p style={{ margin: 0 }}>12 Alagesapuram Main road Thoothukudi-628002</p>
-           <p style={{ margin: 0 }}>Tel: 0461-2360380</p>
+        <div style={{ fontSize: '12px', color: '#334155', fontWeight: '700', marginBottom: '20px' }}>
+           <p style={{ margin: '2px 0' }}>12 Alagesapuram Main Road | Thoothukudi - 628002 | Tel: 0461 - 2360380</p>
         </div>
 
-        <div style={{ marginTop: '5px' }}>
-           <h2 style={{ color: '#0A4D68', margin: 0, fontSize: '24px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '2px' }}>Visit Summary</h2>
+        <div style={{ marginTop: '10px' }}>
+           <h2 style={{ color: '#0A4D68', margin: 0, fontSize: '38px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>VISIT SUMMARY</h2>
         </div>
       </div>
 
@@ -204,9 +208,10 @@ export default function PrescriptionPrint() {
       {/* Print Button - Hidden on Print */}
       <style>{`
         @media print {
+          @page { margin: 0; }
           .no-print { display: none !important; }
-          body { background: white !important; }
-          .print-container { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; padding: 0 !important; }
+          body { background: white !important; margin: 0 !important; }
+          .print-container { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; padding: 40px !important; }
           .typing-orders { border: none !important; padding-left: 0 !important; }
         }
         .typing-orders:empty:before {

@@ -26,7 +26,7 @@ export default function PrescriptionPrint() {
   if (!visit) return <div className="p-10">Prescription Not Found</div>;
 
   return (
-    <div className="print-container" style={{ maxWidth: '800px', margin: '0 auto', padding: '40px', background: 'white', minHeight: '100vh', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
+    <div className="print-container" style={{ maxWidth: '800px', margin: '0 auto', padding: '10px 40px 40px 40px', background: 'white', minHeight: '100vh', boxShadow: '0 0 10px rgba(0,0,0,0.1)' }}>
       {/* Hospital Header */}
       <div className="flex flex-col items-center mb-4 pb-2 text-center" style={{ borderBottom: '1px solid #e2e8f0' }}>
         <div style={{ marginBottom: '-10px' }}>
@@ -202,7 +202,7 @@ export default function PrescriptionPrint() {
           @page { margin: 0; }
           .no-print { display: none !important; }
           body { background: white !important; margin: 0 !important; }
-          .print-container { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; padding: 40px !important; }
+          .print-container { box-shadow: none !important; margin: 0 !important; width: 100% !important; max-width: none !important; padding: 10px 40px 40px 40px !important; }
           .typing-orders { border: none !important; padding-left: 0 !important; }
         }
         .typing-orders:empty:before {

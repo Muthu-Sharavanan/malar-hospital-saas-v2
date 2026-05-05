@@ -382,6 +382,8 @@ export default function DoctorDashboard() {
 
       // Command Check
       const fullTranscript = (sessionFinal + interim).toLowerCase();
+
+      // 1. Clear Command
       if (fullTranscript.includes('clear')) {
         setConsultation((prev: any) => ({ ...prev, [field]: '' }));
         recognition.abort();
@@ -389,6 +391,27 @@ export default function DoctorDashboard() {
         return;
       }
 
+      // 2. Remove [Word/Phrase] Command
+      if (fullTranscript.includes('remove ')) {
+        const parts = fullTranscript.split('remove ');
+        const targetPhrase = parts[parts.length - 1].trim();
+        
+        if (targetPhrase && targetPhrase.length > 0) {
+          recognition.abort();
+          setConsultation((prev: any) => {
+            const currentText = String(prev[field] || '');
+            // Create a case-insensitive regex to find the target phrase
+            const regex = new RegExp(targetPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+            const updatedText = currentText.replace(regex, '').replace(/\s\s+/g, ' ').trim();
+            return { ...prev, [field]: updatedText };
+          });
+          // Restart listening after a short delay
+          setTimeout(() => startListening(field), 300);
+          return;
+        }
+      }
+
+      // 3. Navigation Commands
       if (fullTranscript.includes('stop') || fullTranscript.includes('next')) {
         const fieldOrder = ['chiefComplaints', 'history', 'examination', 'diagnosis', 'investigationAdvised', 'nextReview'];
         const currentIndex = fieldOrder.indexOf(field);

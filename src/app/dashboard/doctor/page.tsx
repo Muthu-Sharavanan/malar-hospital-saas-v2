@@ -331,7 +331,6 @@ export default function DoctorDashboard() {
       'diabetes': 'Diabetes Mellitus',
       'bp': 'Blood Pressure',
       'sugar': 'Blood Glucose',
-      'pressure': 'Blood Pressure',
       'paracetmol': 'Paracetamol',
       'pan 40': 'Pantoprazole 40mg',
       'panto': 'Pantoprazole',
@@ -383,19 +382,19 @@ export default function DoctorDashboard() {
 
       // Command Check
       const fullTranscript = (sessionFinal + interim).toLowerCase();
-      if (fullTranscript.includes('clear field') || fullTranscript.trim() === 'clear') {
+      if (fullTranscript.includes('clear')) {
         setConsultation((prev: any) => ({ ...prev, [field]: '' }));
         recognition.abort();
         setTimeout(() => startListening(field), 100);
         return;
       }
 
-      if (fullTranscript.includes('stop dictation') || fullTranscript.includes('move to next')) {
+      if (fullTranscript.includes('stop') || fullTranscript.includes('next')) {
         const fieldOrder = ['chiefComplaints', 'history', 'examination', 'diagnosis', 'investigationAdvised', 'nextReview'];
         const currentIndex = fieldOrder.indexOf(field);
         const next = fieldOrder[currentIndex + 1];
         recognition.abort();
-        if (next && fullTranscript.includes('next')) {
+        if (next && (fullTranscript.includes('next') || fullTranscript.includes('stop'))) {
           setTimeout(() => startListening(next), 500);
         }
         return;

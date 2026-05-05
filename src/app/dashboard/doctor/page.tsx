@@ -383,43 +383,36 @@ export default function DoctorDashboard() {
       // Command Check
       const fullTranscript = (sessionFinal + interim).toLowerCase();
 
-      // 1. Clear Command
-      if (fullTranscript.includes('clear')) {
+      // 1. Clear Command (Standalone only to avoid "clear lungs" issues)
+      const trimmed = fullTranscript.trim();
+      if (trimmed === 'clear' || trimmed === 'clear all' || trimmed === 'clear field') {
         setConsultation((prev: any) => ({ ...prev, [field]: '' }));
         recognition.abort();
         setTimeout(() => startListening(field), 100);
         return;
       }
 
-      // 2. Remove [Word/Phrase] Command
-      if (fullTranscript.includes('remove ')) {
-        const parts = fullTranscript.split('remove ');
-        const targetPhrase = parts[parts.length - 1].trim();
+      // 2. Remove [Word/Phrase] Command (Must start with remove)
+      if (fullTranscript.startsWith('remove ')) {
+        const targetPhrase = fullTranscript.replace(/^remove\s+/i, '').trim();
         
         if (targetPhrase && targetPhrase.length > 0) {
           recognition.abort();
           setConsultation((prev: any) => {
             const currentText = String(prev[field] || '');
-            
-            // ESCAPE special characters for regex
             const escapedTarget = targetPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-            
-            // SMART LAST-OCCURRENCE REGEX:
-            // 1. Uses word boundaries (\b) to avoid partial word deletions
-            // 2. Uses a lookahead (?!.*) to ensure we only target the LAST instance in the box
+            // Target the last instance with word boundaries
             const lastOccurrenceRegex = new RegExp(`\\b${escapedTarget}\\b(?!.*\\b${escapedTarget}\\b)`, 'gi');
-            
             const updatedText = currentText.replace(lastOccurrenceRegex, '').replace(/\s\s+/g, ' ').trim();
             return { ...prev, [field]: updatedText };
           });
-          // Restart listening after a short delay
           setTimeout(() => startListening(field), 300);
           return;
         }
       }
 
       // 3. New Line / Paragraph Command
-      if (fullTranscript.includes('new line') || fullTranscript.includes('paragraph')) {
+      if (trimmed === 'new line' || trimmed === 'paragraph' || fullTranscript.endsWith(' new line')) {
         recognition.abort();
         setConsultation((prev: any) => {
           const base = String(prev[field] || '').trim();
@@ -429,8 +422,8 @@ export default function DoctorDashboard() {
         return;
       }
 
-      // 4. Undo Command (Removes last word)
-      if (fullTranscript.includes('undo')) {
+      // 4. Undo Command (Standalone only)
+      if (trimmed === 'undo' || fullTranscript.endsWith(' undo')) {
         recognition.abort();
         setConsultation((prev: any) => {
           const base = String(prev[field] || '').trim();
@@ -442,13 +435,13 @@ export default function DoctorDashboard() {
         return;
       }
 
-      // 5. Navigation Commands
-      if (fullTranscript.includes('stop') || fullTranscript.includes('next')) {
+      // 5. Navigation Commands (Standalone or trailing)
+      if (trimmed === 'stop' || trimmed === 'next' || fullTranscript.endsWith(' next') || fullTranscript.endsWith(' stop dictation')) {
         const fieldOrder = ['chiefComplaints', 'history', 'examination', 'diagnosis', 'investigationAdvised', 'nextReview'];
         const currentIndex = fieldOrder.indexOf(field);
         const next = fieldOrder[currentIndex + 1];
         recognition.abort();
-        if (next && (fullTranscript.includes('next') || fullTranscript.includes('stop'))) {
+        if (next) {
           setTimeout(() => startListening(next), 500);
         }
         return;

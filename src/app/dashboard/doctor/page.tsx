@@ -400,9 +400,16 @@ export default function DoctorDashboard() {
           recognition.abort();
           setConsultation((prev: any) => {
             const currentText = String(prev[field] || '');
-            // Create a case-insensitive regex to find the target phrase
-            const regex = new RegExp(targetPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-            const updatedText = currentText.replace(regex, '').replace(/\s\s+/g, ' ').trim();
+            
+            // ESCAPE special characters for regex
+            const escapedTarget = targetPhrase.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            
+            // SMART LAST-OCCURRENCE REGEX:
+            // 1. Uses word boundaries (\b) to avoid partial word deletions
+            // 2. Uses a lookahead (?!.*) to ensure we only target the LAST instance in the box
+            const lastOccurrenceRegex = new RegExp(`\\b${escapedTarget}\\b(?!.*\\b${escapedTarget}\\b)`, 'gi');
+            
+            const updatedText = currentText.replace(lastOccurrenceRegex, '').replace(/\s\s+/g, ' ').trim();
             return { ...prev, [field]: updatedText };
           });
           // Restart listening after a short delay
@@ -411,7 +418,31 @@ export default function DoctorDashboard() {
         }
       }
 
-      // 3. Navigation Commands
+      // 3. New Line / Paragraph Command
+      if (fullTranscript.includes('new line') || fullTranscript.includes('paragraph')) {
+        recognition.abort();
+        setConsultation((prev: any) => {
+          const base = String(prev[field] || '').trim();
+          return { ...prev, [field]: base + '\n' };
+        });
+        setTimeout(() => startListening(field), 300);
+        return;
+      }
+
+      // 4. Undo Command (Removes last word)
+      if (fullTranscript.includes('undo')) {
+        recognition.abort();
+        setConsultation((prev: any) => {
+          const base = String(prev[field] || '').trim();
+          const words = base.split(/\s+/);
+          words.pop(); 
+          return { ...prev, [field]: words.join(' ') };
+        });
+        setTimeout(() => startListening(field), 300);
+        return;
+      }
+
+      // 5. Navigation Commands
       if (fullTranscript.includes('stop') || fullTranscript.includes('next')) {
         const fieldOrder = ['chiefComplaints', 'history', 'examination', 'diagnosis', 'investigationAdvised', 'nextReview'];
         const currentIndex = fieldOrder.indexOf(field);
@@ -433,10 +464,20 @@ export default function DoctorDashboard() {
       setConsultation((prev: any) => {
         const base = String(initialText || '');
         
-        // SILENT COMMAND FILTER: Strip 'remove' and anything following it from the display
-        // This ensures the command itself never flickers into the UI
-        const displayFinal = correctedFinal.replace(/remove\s*.*$/gi, '').trim();
-        const displayInterim = interim.replace(/remove\s*.*$/gi, '').trim();
+        // SILENT COMMAND FILTER: Strip commands from the display
+        const displayFinal = correctedFinal
+          .replace(/remove\s*.*$/gi, '')
+          .replace(/new line/gi, '')
+          .replace(/paragraph/gi, '')
+          .replace(/undo/gi, '')
+          .trim();
+
+        const displayInterim = interim
+          .replace(/remove\s*.*$/gi, '')
+          .replace(/new line/gi, '')
+          .replace(/paragraph/gi, '')
+          .replace(/undo/gi, '')
+          .trim();
 
         let combined = base + (base && !base.endsWith('\n') && !base.endsWith(' ') ? ' ' : '') + displayFinal;
         

@@ -315,7 +315,6 @@ export default function DoctorDashboard() {
     recognition.maxAlternatives = 1;
     recognitionRef.current = recognition;
 
-    let initialText = consultation[field as keyof typeof consultation] || '';
 
     recognition.onstart = () => {
       setIsListening(field);

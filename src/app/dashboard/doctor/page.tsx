@@ -384,7 +384,7 @@ export default function DoctorDashboard() {
       // Command Check
       const fullTranscript = (sessionFinal + interim).toLowerCase();
       if (fullTranscript.includes('clear field') || fullTranscript.trim() === 'clear') {
-        setConsultation(prev => ({ ...prev, [field]: '' }));
+        setConsultation((prev: any) => ({ ...prev, [field]: '' }));
         recognition.abort();
         setTimeout(() => startListening(field), 100);
         return;
@@ -392,33 +392,38 @@ export default function DoctorDashboard() {
 
       if (fullTranscript.includes('stop dictation') || fullTranscript.includes('move to next')) {
         const fieldOrder = ['chiefComplaints', 'history', 'examination', 'diagnosis', 'investigationAdvised', 'nextReview'];
-        const next = fieldOrder[fieldOrder.indexOf(field) + 1];
+        const currentIndex = fieldOrder.indexOf(field);
+        const next = fieldOrder[currentIndex + 1];
         recognition.abort();
-        if (next && fullTranscript.includes('next')) setTimeout(() => startListening(next), 500);
+        if (next && fullTranscript.includes('next')) {
+          setTimeout(() => startListening(next), 500);
+        }
         return;
       }
 
       // Apply Medical Autocorrect to the finalized session text
       let correctedFinal = sessionFinal;
-      Object.keys(medicalAutoCorrect).forEach(key => {
+      for (const key of Object.keys(medicalAutoCorrect)) {
         const regex = new RegExp(`\\b${key}\\b`, 'gi');
         correctedFinal = correctedFinal.replace(regex, medicalAutoCorrect[key]);
-      });
+      }
 
-      setConsultation(prev => {
-        // Build the text using the initial base + current session's total finalized text
-        // This prevents duplication by not appending sessionFinal to an already updated prev state
-        let combined = initialText + (initialText && !initialText.endsWith('\n') && !initialText.endsWith(' ') ? ' ' : '') + correctedFinal;
+      setConsultation((prev: any) => {
+        // Ensure we are working with a string base
+        const base = String(initialText || '');
+        let combined = base + (base && !base.endsWith('\n') && !base.endsWith(' ') ? ' ' : '') + correctedFinal;
         
-        // Clean up formatting (Capitalization, punctuation spacing)
+        // Clean up formatting
         let processed = combined
           .replace(/ +([.,!?])/g, '$1')
           .replace(/([.,!?])([^\s"'\n])/g, '$1 $2')
           .replace(/(^\s*|[\.\!\?\n]\s*)([a-z])/g, (m, s, l) => s + l.toUpperCase())
           .trim();
 
-        // Append interim results for visual feedback without committing them to the final base for the next loop
-        return { ...prev, [field]: processed + (interim ? (processed && !processed.endsWith(' ') ? ' ' : '') + interim : '') };
+        // Build the new value including interim results
+        const newValue = processed + (interim ? (processed && !processed.endsWith(' ') ? ' ' : '') + interim : '');
+        
+        return { ...prev, [field]: newValue };
       });
     };
 

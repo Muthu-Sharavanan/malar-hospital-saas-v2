@@ -431,19 +431,22 @@ export default function DoctorDashboard() {
       }
 
       setConsultation((prev: any) => {
-        // Ensure we are working with a string base
         const base = String(initialText || '');
-        let combined = base + (base && !base.endsWith('\n') && !base.endsWith(' ') ? ' ' : '') + correctedFinal;
         
-        // Clean up formatting
+        // SILENT COMMAND FILTER: Strip 'remove' and anything following it from the display
+        // This ensures the command itself never flickers into the UI
+        const displayFinal = correctedFinal.replace(/remove\s*.*$/gi, '').trim();
+        const displayInterim = interim.replace(/remove\s*.*$/gi, '').trim();
+
+        let combined = base + (base && !base.endsWith('\n') && !base.endsWith(' ') ? ' ' : '') + displayFinal;
+        
         let processed = combined
           .replace(/ +([.,!?])/g, '$1')
           .replace(/([.,!?])([^\s"'\n])/g, '$1 $2')
           .replace(/(^\s*|[\.\!\?\n]\s*)([a-z])/g, (m, s, l) => s + l.toUpperCase())
           .trim();
 
-        // Build the new value including interim results
-        const newValue = processed + (interim ? (processed && !processed.endsWith(' ') ? ' ' : '') + interim : '');
+        const newValue = processed + (displayInterim ? (processed && !processed.endsWith(' ') ? ' ' : '') + displayInterim : '');
         
         return { ...prev, [field]: newValue };
       });

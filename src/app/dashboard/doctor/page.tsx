@@ -367,7 +367,7 @@ export default function DoctorDashboard() {
       'eeg': 'EEG'
     };
 
-    const sessionBaseText = consultation[field as keyof typeof consultation] || '';
+    const initialText = consultation[field as keyof typeof consultation] || '';
 
     recognition.onresult = (event: any) => {
       let sessionFinal = '';
@@ -384,50 +384,42 @@ export default function DoctorDashboard() {
 
       // Command Check
       const fullTranscript = (sessionFinal + interim).toLowerCase();
-      if (fullTranscript.includes('clear')) {
+      if (fullTranscript.includes('clear field') || fullTranscript.trim() === 'clear') {
         setConsultation(prev => ({ ...prev, [field]: '' }));
         recognition.abort();
         setTimeout(() => startListening(field), 100);
         return;
       }
-      if (fullTranscript.includes('stop') || fullTranscript.includes('next')) {
+
+      if (fullTranscript.includes('stop dictation') || fullTranscript.includes('move to next')) {
         const fieldOrder = ['chiefComplaints', 'history', 'examination', 'diagnosis', 'investigationAdvised', 'nextReview'];
         const next = fieldOrder[fieldOrder.indexOf(field) + 1];
         recognition.abort();
-        if (next) setTimeout(() => startListening(next), 500);
+        if (next && fullTranscript.includes('next')) setTimeout(() => startListening(next), 500);
         return;
       }
 
+      // Apply Medical Autocorrect to the finalized session text
+      let correctedFinal = sessionFinal;
+      Object.keys(medicalAutoCorrect).forEach(key => {
+        const regex = new RegExp(`\\b${key}\\b`, 'gi');
+        correctedFinal = correctedFinal.replace(regex, medicalAutoCorrect[key]);
+      });
+
       setConsultation(prev => {
-        const currentVal = prev[field as keyof typeof prev];
-        const sessionBaseText = typeof currentVal === 'string' ? currentVal : '';
-        let combined = sessionBaseText + (sessionBaseText && !sessionBaseText.endsWith('\n') ? ' ' : '') + sessionFinal;
+        // Build the text using the initial base + current session's total finalized text
+        // This prevents duplication by not appending sessionFinal to an already updated prev state
+        let combined = initialText + (initialText && !initialText.endsWith('\n') && !initialText.endsWith(' ') ? ' ' : '') + correctedFinal;
         
-        // Finalized cleanup
-        let words = combined.split(/(\s+|\n)/);
-        let seen = new Set<string>();
-        let connectors = ['and', 'the', 'of', 'with', 'for', 'to', 'is', 'was', 'in', 'on', 'at', 'by'];
-        let filtered: string[] = [];
-
-        for (let w of words) {
-          let clean = w.toLowerCase().trim().replace(/[.,!?]/g, '');
-          if (!clean || clean.length <= 3 || connectors.includes(clean) || w === '\n') {
-            filtered.push(w);
-            continue;
-          }
-          if (!seen.has(clean)) {
-            seen.add(clean);
-            filtered.push(w);
-          }
-        }
-
-        let processed = filtered.join('')
+        // Clean up formatting (Capitalization, punctuation spacing)
+        let processed = combined
           .replace(/ +([.,!?])/g, '$1')
           .replace(/([.,!?])([^\s"'\n])/g, '$1 $2')
           .replace(/(^\s*|[\.\!\?\n]\s*)([a-z])/g, (m, s, l) => s + l.toUpperCase())
           .trim();
 
-        return { ...prev, [field]: processed + (interim ? ' ' + interim : '') };
+        // Append interim results for visual feedback without committing them to the final base for the next loop
+        return { ...prev, [field]: processed + (interim ? (processed && !processed.endsWith(' ') ? ' ' : '') + interim : '') };
       });
     };
 

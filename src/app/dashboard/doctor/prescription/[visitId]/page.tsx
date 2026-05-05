@@ -148,7 +148,7 @@ export default function PrescriptionPrint() {
 
       {/* Typing Orders Section */}
       <div className="mb-6" style={{ marginTop: '10px' }}>
-        <h4 style={{ color: '#0A4D68', borderBottom: '1px solid #eee', paddingBottom: '3px', marginBottom: '10px', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Advice/commands</h4>
+        <h4 style={{ color: '#0A4D68', borderBottom: '1px solid #eee', paddingBottom: '3px', marginBottom: '10px', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Advice/Comments</h4>
         <div
           contentEditable
           suppressContentEditableWarning

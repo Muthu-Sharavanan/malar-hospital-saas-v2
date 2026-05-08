@@ -17,11 +17,11 @@ export async function POST(req: Request) {
 
     const { 
       billId, visitId, type, 
-      paymentMode, discount, 
-      waiverReason, authorizingDocId, paymentStatus,
-      refundAmount, refundReason,
+      paymentMode = 'CASH', discount = 0, 
+      waiverReason, authorizingDocId, paymentStatus = 'UNPAID',
+      refundAmount = 0, refundReason,
       surgeryCharges // [{itemName, amount}]
-    } = { ...validation.data, surgeryCharges: body.surgeryCharges };
+    } = { ...validation.data, surgeryCharges: body.surgeryCharges || [] };
 
     // CASE 1: CREATE NEW BILL (e.g. SURGERY)
     if (!billId && visitId && type === 'SURGERY') {

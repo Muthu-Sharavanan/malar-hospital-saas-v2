@@ -1,18 +1,27 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { billSchema } from '@/lib/validations';
 
 
 export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
+    const body = await req.json();
+
+    // Validate Input
+    const validation = billSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ success: false, error: "Validation Failed", details: validation.error.format() }, { status: 400 });
+    }
+
     const { 
       billId, visitId, type, 
-      paymentMode, discount = 0, 
-      waiverReason = '', authorizingDocId, paymentStatus = 'PAID',
-      refundAmount = 0, refundReason = '',
-      surgeryCharges = [] // [{itemName, amount}]
-    } = await req.json();
+      paymentMode, discount, 
+      waiverReason, authorizingDocId, paymentStatus,
+      refundAmount, refundReason,
+      surgeryCharges // [{itemName, amount}]
+    } = { ...validation.data, surgeryCharges: body.surgeryCharges };
 
     // CASE 1: CREATE NEW BILL (e.g. SURGERY)
     if (!billId && visitId && type === 'SURGERY') {

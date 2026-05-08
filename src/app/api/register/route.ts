@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { patientSchema } from '@/lib/validations';
 
 
 export const dynamic = 'force-dynamic';
@@ -7,7 +8,18 @@ export const dynamic = 'force-dynamic';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { name, phone, age, gender, address, doctorId, patientId, visitDate, visitTime, reason, abhaId, consentGranted } = body;
+    
+    // 1. Validate Input
+    const validation = patientSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ 
+        success: false, 
+        error: "Validation Failed", 
+        details: validation.error.format() 
+      }, { status: 400 });
+    }
+
+    const { name, phone, age, gender, address, doctorId, patientId, visitDate, visitTime, reason, abhaId, consentGranted } = validation.data;
 
     // 1. Check for EXACT duplicate (Name + Phone) if this is a manual entry (no patientId)
     if (!patientId) {
@@ -119,8 +131,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, visit, isNewPatient, uhid: patient.uhid });
   } catch (error: any) {
-    console.error("Registration Error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return handleApiError(error);
   }
 }
 

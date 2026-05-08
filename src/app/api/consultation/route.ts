@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { consultationSchema } from '@/lib/validations';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -19,9 +20,17 @@ export async function PATCH(req: Request) {
 
 export async function POST(req: Request) {
   try {
+    const body = await req.json();
+    
+    // Validate Input
+    const validation = consultationSchema.safeParse(body);
+    if (!validation.success) {
+      return NextResponse.json({ success: false, error: "Validation Failed", details: validation.error.format() }, { status: 400 });
+    }
+
     const { 
       visitId, chiefComplaints, history, examination, diagnosis, investigationAdvised, nextReview, isReview, drugs 
-    } = await req.json();
+    } = validation.data;
 
     const visitSearch = await prisma.visit.findUnique({ where: { id: visitId } });
     if (!visitSearch) throw new Error("Visit not found");

@@ -1,6 +1,7 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import bcrypt from 'bcryptjs';
 
 
 export const dynamic = 'force-dynamic';
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
     const { email, password, customName } = body;
 
     // DEBUG LOGGING
-    console.log(`[LOGIN] Email: ${email}, Role check pending... Body keys: ${Object.keys(body)}`);
+    console.log(`[LOGIN] Email: ${email}, Role check pending...`);
 
     // 1. Find user by email first
     const user = await prisma.user.findFirst({ where: { email } });
@@ -20,8 +21,9 @@ export async function POST(req: Request) {
        return NextResponse.json({ success: false, error: "Email address not found" }, { status: 401 });
     }
 
-    // 2. Check Password
-    if (user.password !== password) {
+    // 2. Check Password using Bcrypt
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
        return NextResponse.json({ success: false, error: "Incorrect password" }, { status: 401 });
     }
 

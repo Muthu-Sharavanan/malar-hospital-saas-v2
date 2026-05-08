@@ -45,7 +45,7 @@ export async function POST(req: Request) {
       // Use the selected patient
       patient = await prisma.patient.update({
         where: { id: patientId },
-        data: { name, age: parseInt(age), gender, address, phone, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
+        data: { name, age, gender, address, phone, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
       });
     } else {
       isNewPatient = true;
@@ -64,7 +64,7 @@ export async function POST(req: Request) {
       
       const uhid = `MH-${nextUhidNum}`;
       patient = await prisma.patient.create({
-        data: { uhid, name, age: parseInt(age), gender, phone, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
+        data: { uhid, name, age, gender, phone, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
       });
     }
 

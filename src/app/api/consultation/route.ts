@@ -1,5 +1,6 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
+import { consultationSchema } from '@/lib/validations';
 import { handleApiError } from '@/lib/errors';
 
 export const dynamic = 'force-dynamic';

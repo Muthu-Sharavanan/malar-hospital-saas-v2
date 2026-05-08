@@ -1,7 +1,7 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { patientSchema } from '@/lib/validations';
-
+import { handleApiError } from '@/lib/errors';
 
 export const dynamic = 'force-dynamic';
 
@@ -182,6 +182,6 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ success: true, visits: filteredVisits });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return handleApiError(error, 'GET register');
   }
 }

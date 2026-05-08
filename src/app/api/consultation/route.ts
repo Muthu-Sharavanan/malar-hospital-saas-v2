@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import { consultationSchema } from '@/lib/validations';
+import { handleApiError } from '@/lib/errors';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -14,7 +14,7 @@ export async function PATCH(req: Request) {
     });
     return NextResponse.json({ success: true, visit });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return handleApiError(error, 'PATCH consultation');
   }
 }
 
@@ -72,8 +72,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, visit: result });
   } catch (error: any) {
-    console.error(error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return handleApiError(error, 'POST consultation');
   }
 }
 
@@ -175,6 +174,6 @@ export async function GET(req: Request) {
 
     return NextResponse.json({ success: true, queue: filteredQueue });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return handleApiError(error, 'GET consultation');
   }
 }

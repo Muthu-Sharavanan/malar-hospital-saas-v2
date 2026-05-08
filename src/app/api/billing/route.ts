@@ -1,6 +1,6 @@
 import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
-import { billSchema } from '@/lib/validations';
+import { handleApiError } from '@/lib/errors';
 
 
 export const dynamic = 'force-dynamic';
@@ -91,8 +91,7 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, bill });
   } catch (error: any) {
-    console.error(error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return handleApiError(error, 'POST billing');
   }
 }
 
@@ -117,6 +116,6 @@ export async function GET() {
 
     return NextResponse.json({ success: true, bills });
   } catch (error: any) {
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return handleApiError(error, 'GET billing');
   }
 }

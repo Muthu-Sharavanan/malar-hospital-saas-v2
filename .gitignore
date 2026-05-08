@@ -1,5 +1,7 @@
 node_modules
 .env
+.env.local
+.env.*.local
 .next
 out
 build
@@ -17,14 +19,10 @@ yarn-error.log*
 /prisma/*.db
 /prisma/*.db-journal
 
-
 .vercel
 
 *.mjs
 git-push-automated.cjs
 sync-*.txt
 test-*.mjs
-
-*.mjs
 *.cjs
-sync-*.txt

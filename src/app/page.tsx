@@ -129,11 +129,11 @@ export default function LoginPage() {
             </div>
           </div>
           <div className="form-group">
-            <label className="form-label">Your Name (Mandatory)</label>
+            <label className="form-label">Staff Name (Current Shift)</label>
             <input 
               type="text" 
               className="form-input" 
-              placeholder="e.g. John Doe" 
+              placeholder="e.g. Nurse Anitha" 
               value={customName} 
               onChange={e => setCustomName(e.target.value)} 
               required

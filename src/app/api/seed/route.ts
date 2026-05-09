@@ -5,21 +5,11 @@ import bcrypt from 'bcryptjs';
 export const dynamic = 'force-dynamic';
 
 export async function GET(req: Request) {
+  const logs: string[] = [];
   try {
-    // 1. CLEAR DATA for a fresh start
-    console.log("Cleaning up data...");
-    await prisma.$transaction([
-      prisma.prescription.deleteMany({}),
-      prisma.labOrder.deleteMany({}),
-      prisma.bill.deleteMany({}),
-      prisma.visit.deleteMany({}),
-      prisma.admission.deleteMany({}),
-      prisma.surgery.deleteMany({}),
-      prisma.patient.deleteMany({}),
-      prisma.user.deleteMany({}), // Clean slate for users too
-    ]);
+    logs.push("Starting database initialization...");
 
-    // 2. SEED: Essential Users
+    // 1. Create Users (The most important part)
     const users = [
       { name: 'Dr. Ramaswamy', email: 'ramaswamy@malar.com', password: 'password123', role: 'DOCTOR' },
       { name: 'Dr. Aravind', email: 'aravind@malar.com', password: 'password123', role: 'DOCTOR' },
@@ -33,22 +23,36 @@ export async function GET(req: Request) {
     const hashedPassword = await bcrypt.hash('password123', 12);
 
     for (const user of users) {
-      await prisma.user.create({
-        data: {
-          name: user.name,
-          email: user.email,
-          password: hashedPassword,
-          role: user.role
-        }
-      });
+      try {
+        await prisma.user.upsert({
+          where: { email: user.email },
+          update: { name: user.name, password: hashedPassword, role: user.role },
+          create: { name: user.name, email: user.email, password: hashedPassword, role: user.role }
+        });
+        logs.push(`Successfully synced user: ${user.email}`);
+      } catch (e: any) {
+        logs.push(`Failed to sync user ${user.email}: ${e.message}`);
+      }
+    }
+
+    // 2. Try to create a test patient to see if schema exists
+    try {
+        await prisma.patient.upsert({
+            where: { uhid: 'TEST-1' },
+            update: {},
+            create: { uhid: 'TEST-1', name: 'Test Patient', age: 0, gender: 'Other' }
+        });
+        logs.push("Database schema verified (Patient table exists).");
+    } catch (e: any) {
+        logs.push("SCHEMA ERROR: The database tables do not exist. You MUST run 'npx prisma db push' using the production DATABASE_URL.");
     }
 
     return NextResponse.json({ 
       success: true, 
-      message: "LIVE RESET SUCCESSFUL! Staff accounts have been created. You can now log in with password123." 
+      logs,
+      message: "Database sync attempted. Check logs above to see if users were created." 
     });
   } catch (error: any) {
-    console.error("Seed error:", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return NextResponse.json({ success: false, error: error.message, logs }, { status: 500 });
   }
 }

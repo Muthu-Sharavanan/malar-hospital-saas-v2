@@ -2,6 +2,7 @@ import prisma from '@/lib/prisma';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import bcrypt from 'bcryptjs';
+import { handleApiError } from '@/lib/errors';
 
 
 export const dynamic = 'force-dynamic';
@@ -71,7 +72,6 @@ export async function POST(req: Request) {
 
     return NextResponse.json({ success: true, user: { name: user.name, role: user.role } });
   } catch (error: any) {
-    console.error("[LOGIN ERROR]", error);
-    return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    return handleApiError(error, 'POST login');
   }
 }

@@ -5,7 +5,7 @@ To make this a fully working website app, follow these 3 simple steps:
 ## 1. Prepare for Production
 Run the build locally to ensure everything is perfect:
 ```bash
-npm run![alt text](image.png) build
+npm run build
 ```
 
 ## 2. Choose a Hosting Provider
@@ -13,9 +13,9 @@ npm run![alt text](image.png) build
 - **Railway/Render**: Good for PostgreSQL-based apps.
 
 ## 3. Database Strategy
-Currently, the app uses **SQLite**. 
-- **Quick Demo**: Keep SQLite. Vercel will allow it, but data will reset on every redeploy.
-- **Real App**: Change `provider = "sqlite"` to `provider = "postgresql"` in `prisma/schema.prisma` and use a **Supabase** or **Neon** database URL.
+Currently, the app uses **PostgreSQL** (Supabase).
+- Ensure your `DATABASE_URL` is set correctly in your environment variables.
+- Run `npx prisma db push` to sync your schema.
 
 ## PWA Support
 This app is ready to be installed on your phone or tablet!

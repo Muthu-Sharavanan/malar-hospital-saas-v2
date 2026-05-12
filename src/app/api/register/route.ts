@@ -49,7 +49,14 @@ export async function POST(req: Request) {
           // SILENT AUTO-LINK: If same phone exists, use it and update details
           patient = await tx.patient.update({
             where: { id: existing.id },
-            data: { name, age, gender, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted) }
+            data: { 
+              name: trimmedName, 
+              age: Number(age), 
+              gender, 
+              address, 
+              abhaId: abhaId || null, 
+              consentGranted: Boolean(consentGranted) 
+            }
           });
         } else {
           isNewPatient = true;
@@ -68,7 +75,7 @@ export async function POST(req: Request) {
           
           const uhid = `MH-${nextUhidNum}`;
           patient = await tx.patient.create({
-            data: { uhid, name: trimmedName, age, gender, phone: trimmedPhone, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
+            data: { uhid, name: trimmedName, age: Number(age), gender, phone: trimmedPhone, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
           });
         }
       }

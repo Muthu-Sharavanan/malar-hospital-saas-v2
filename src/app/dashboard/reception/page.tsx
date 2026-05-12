@@ -266,7 +266,8 @@ export default function ReceptionDashboard() {
         if (formData.visitDate) { setActiveTab('future'); fetchFutureQueue(); } 
         else { setActiveTab('queue'); fetchQueue(); }
       } else {
-        alert("Registration failed: " + data.error);
+        const errorDetails = data.details ? JSON.stringify(data.details, null, 2) : "";
+        alert(`❌ Registration failed: ${data.error}\n${errorDetails}`);
       }
     } catch (err) { alert("An error occurred"); } finally { setLoading(false); }
   };

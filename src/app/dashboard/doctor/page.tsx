@@ -266,6 +266,11 @@ export default function DoctorDashboard() {
   const handleSubmitConsult = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedVisit) return;
+    if (!consultation.chiefComplaints || !consultation.diagnosis) {
+      alert("⚠️ Please enter Chief Complaints and Provisional Diagnosis before finalizing.");
+      setLoading(false);
+      return;
+    }
     setLoading(true);
     try {
       const res = await fetch('/api/consultation', {
@@ -275,12 +280,19 @@ export default function DoctorDashboard() {
       });
       const data = await res.json();
       if (data.success) {
-        window.open(`/dashboard/doctor/prescription/${selectedVisit.id}`, 'prescription_print');
+        // Try to open prescription in new window
+        const printWindow = window.open(`/dashboard/doctor/prescription/${selectedVisit.id}`, 'prescription_print');
+        if (!printWindow) {
+           alert("✅ Consultation Saved! (Note: Popup was blocked, please click 'Print Rx' manually)");
+        }
+        
         setSelectedVisit(null);
         setConsultation({ chiefComplaints: '', history: '', examination: '', diagnosis: '', investigationAdvised: '', nextReview: '', isReview: false });
         setDrugs([]);
         fetchDoctorQueue();
         fetchAllAppointments();
+      } else {
+        alert("❌ Failed to save consultation: " + (data.error || "Unknown Error"));
       }
     } catch (err) {
       alert("Failed to save consultation");
@@ -982,7 +994,7 @@ export default function DoctorDashboard() {
                                  </div>
                                  <textarea 
                                    className="form-input !h-24 !bg-slate-50 border-none transition-all focus:!bg-white focus:!ring-2 font-medium" 
-                                   placeholder="Dictate complaints..." required
+                                   placeholder="Dictate complaints..." 
                                    value={consultation.chiefComplaints} 
                                    onChange={e => setConsultation({...consultation, chiefComplaints: e.target.value})}
                                  />
@@ -1030,7 +1042,7 @@ export default function DoctorDashboard() {
                                  </div>
                                  <textarea 
                                    className="form-input !h-24 !bg-slate-50 border-none transition-all focus:!bg-white focus:!ring-2 font-bold" 
-                                   placeholder="Clinical diagnosis..." required
+                                   placeholder="Clinical diagnosis..." 
                                    value={consultation.diagnosis} 
                                    onChange={e => setConsultation({...consultation, diagnosis: e.target.value.toUpperCase()})}
                                  />

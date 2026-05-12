@@ -103,14 +103,15 @@ export default function ReceptionDashboard() {
       const res = await fetch(`/api/appointments?t=${Date.now()}`);
       const data = await res.json();
       if (data.success) {
-        // Get start of today (midnight) to compare
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        // Get start of tomorrow (midnight)
+        const tomorrow = new Date();
+        tomorrow.setDate(tomorrow.getDate() + 1);
+        tomorrow.setHours(0, 0, 0, 0);
         
-        // Filter: Any visit where the date is strictly after today's midnight
+        // Filter: Any visit where the date is strictly after today
         const upcoming = data.visits.filter((v: any) => {
           const vDate = new Date(v.visitDate);
-          return vDate >= today && v.status !== 'COMPLETED';
+          return vDate >= tomorrow && v.status !== 'COMPLETED';
         });
         setFutureQueue(upcoming);
       }

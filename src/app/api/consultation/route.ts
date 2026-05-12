@@ -126,7 +126,7 @@ export async function GET(req: Request) {
             }
           }
         ],
-        status: { in: ['REGISTERED', 'VITALS_DONE', 'CONSULTING'] }
+        status: { in: ['VITALS_DONE', 'CONSULTING'] }
       },
       include: {
         patient: true,

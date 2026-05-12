@@ -78,7 +78,6 @@ export default function ReceptionDashboard() {
   }, [timeHour, timeMinute, timePeriod]);
 
   const fetchDoctors = async () => {
-    setIsRefreshing(true);
     try {
       const res = await fetch(`/api/users?role=DOCTOR&t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
@@ -88,7 +87,7 @@ export default function ReceptionDashboard() {
           setFormData(prev => ({ ...prev, doctorId: data.users[0].id }));
         }
       }
-    } catch (err) {} finally { setTimeout(() => setIsRefreshing(false), 600); }
+    } catch (err) {}
   };
 
   const fetchQueue = async () => {
@@ -156,7 +155,6 @@ export default function ReceptionDashboard() {
       if (data.success) {
         setSearchResults(data.patients);
         setShowSearchResults(true);
-        if (data.patients.length === 1 && query === data.patients[0].phone) setSelectedPatient(data.patients[0]);
       }
     } catch (err) {}
   };
@@ -213,7 +211,6 @@ export default function ReceptionDashboard() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    if (formData.phone.length !== 10) { alert("❌ Enter valid 10-digit number."); setLoading(false); return; }
     try {
       const res = await fetch('/api/register', {
         method: 'POST',
@@ -234,7 +231,7 @@ export default function ReceptionDashboard() {
         if (formData.visitDate) { setActiveTab('future'); fetchFutureQueue(); } 
         else { setActiveTab('queue'); fetchQueue(); }
       } else alert(`❌ Failed: ${data.error}`);
-    } catch (err) { alert("An error occurred"); } finally { setLoading(false); }
+    } catch (err) {} finally { setLoading(false); }
   };
 
   const toggleDoctorAvailability = async (userId: string, currentStatus: boolean) => {
@@ -244,8 +241,7 @@ export default function ReceptionDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ userId, isAvailable: !currentStatus })
       });
-      const data = await res.json();
-      if (data.success) fetchDoctors();
+      if ((await res.json()).success) fetchDoctors();
     } catch (err) {}
   };
 
@@ -258,9 +254,8 @@ export default function ReceptionDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(billingForm)
       });
-      const data = await res.json();
-      if (data.success) { setShowBillModal(false); fetchBills(); }
-    } catch (error) { alert("Billing failed"); } finally { setLoading(false); }
+      if ((await res.json()).success) { setShowBillModal(false); fetchBills(); }
+    } catch (error) {} finally { setLoading(false); }
   };
 
   return (
@@ -268,8 +263,8 @@ export default function ReceptionDashboard() {
       {/* Sidebar - RESTORED PREMIUM DESIGN */}
       <aside style={{ width: '240px', background: '#0A4D68', color: 'white', display: 'flex', flexDirection: 'column', height: '100vh', position: 'fixed', left: 0, top: 0, zIndex: 100 }}>
         <div style={{ padding: '40px 30px', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 'bold', margin: 0 }}>Malar Hospital</h2>
-          <span style={{ fontSize: '10px', opacity: 0.5, letterSpacing: '2px', textTransform: 'uppercase' }}>Reception Portal</span>
+          <h2 style={{ fontSize: '20px', fontWeight: '800', margin: 0, letterSpacing: '-0.5px' }}>Malar Hospital</h2>
+          <span style={{ fontSize: '9px', opacity: 0.5, letterSpacing: '2px', textTransform: 'uppercase', fontWeight: '800', marginTop: '4px', display: 'block' }}>Reception Portal</span>
         </div>
         <nav style={{ padding: '30px 0', flexGrow: 1 }}>
           <SidebarItem active={activeTab === 'register'} icon={<UserPlus size={20} />} label="New Patient" onClick={() => setActiveTab('register')} />
@@ -281,33 +276,33 @@ export default function ReceptionDashboard() {
         <div style={{ padding: '30px', borderTop: '1px solid rgba(255,255,255,0.05)' }}><LogoutButton /></div>
       </aside>
 
-      <main style={{ flex: 1, marginLeft: '240px', padding: '60px 80px' }} className="animate-fade-in">
+      <main style={{ flex: 1, marginLeft: '240px', padding: '60px 80px' }} className="animate-in fade-in duration-500">
         <header style={{ marginBottom: '50px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
           <div>
-            <h1 style={{ fontSize: '36px', fontWeight: '800', color: '#0A4D68', margin: '0 0 10px 0' }}>Reception Dashboard</h1>
-            <p style={{ color: '#64748B', fontSize: '18px' }}>Hospital Operations & Patient Lifecycle | Thoothukudi</p>
+            <h1 style={{ fontSize: '40px', fontWeight: '900', color: '#0A4D68', margin: '0 0 8px 0', letterSpacing: '-1px' }}>Reception Dashboard</h1>
+            <p style={{ color: '#64748B', fontSize: '18px', fontWeight: '500' }}>Hospital Operations & Patient Lifecycle | Thoothukudi</p>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '25px' }}>
-            <div style={{ background: '#E2E8F0', padding: '10px 25px', borderRadius: '50px', fontSize: '13px', fontWeight: 'bold', color: '#0A4D68' }}>
-               {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} | {shift} Shift
+            <div style={{ background: '#E2E8F0', padding: '12px 28px', borderRadius: '50px', fontSize: '12px', fontWeight: '900', color: '#0A4D68', textTransform: 'uppercase', letterSpacing: '1px' }}>
+               {currentTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })} • {shift} Shift
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '15px', borderLeft: '1px solid #E2E8F0', paddingLeft: '25px' }}>
               <div style={{ textAlign: 'right' }}>
-                <div style={{ fontWeight: 'bold', fontSize: '14px', color: '#1E293B' }}>{userName}</div>
-                <div style={{ fontSize: '11px', color: '#64748B', fontWeight: 'bold' }}>FRONT OFFICE</div>
+                <div style={{ fontWeight: '900', fontSize: '15px', color: '#1E293B' }}>{userName}</div>
+                <div style={{ fontSize: '10px', color: '#64748B', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>FRONT OFFICE EXECUTIVE</div>
               </div>
-              <div style={{ width: '45px', height: '45px', background: '#F1F5F9', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', color: '#0A4D68' }}>{userName?.charAt(0)}</div>
+              <div style={{ width: '48px', height: '48px', background: '#0A4D68', color: 'white', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: '900', fontSize: '20px', boxShadow: '0 10px 20px rgba(10,77,104,0.1)' }}>{userName?.charAt(0)}</div>
             </div>
           </div>
         </header>
 
-        {/* KPI Row - RESTORED GRID */}
+        {/* KPI Row - RESTORED PREMIUM GRID */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '30px', marginBottom: '50px' }}>
           <StatCard 
             icon={<Users size={24} />} 
             label="Active Queue" 
             value={queue.filter(v => v.status !== 'CONSULTING').length} 
-            trend="-9%" 
+            trend="-9% Today" 
             onClick={() => { setStatsModalData({ title: 'Active Queue (Waiting)', list: queue.filter(v => v.status !== 'CONSULTING') }); setShowStatsModal(true); }}
           />
           <StatCard 
@@ -331,20 +326,20 @@ export default function ReceptionDashboard() {
           />
         </div>
 
-        <div className="animate-fade-in">
+        <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
           {activeTab === 'register' && (
-            <div className="glass-card !p-10 bg-white shadow-xl">
+            <div className="glass-card !p-10 !border-2 !border-white shadow-2xl bg-white/70 backdrop-blur-xl">
               <div className="flex justify-between items-center mb-10">
-                <h2 className="text-2xl font-black text-slate-800">Patient Encounter Info</h2>
-                <div className="relative w-80">
-                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={20} />
-                  <input type="text" className="form-input !pl-12 !h-12 !bg-slate-50 border-none" placeholder="Search Patient..." value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); fetchPatients(e.target.value); }} onBlur={() => setTimeout(() => setShowSearchResults(false), 300)} onFocus={() => searchQuery && setShowSearchResults(true)} />
+                <h2 className="text-2xl font-black text-slate-800 tracking-tight">Patient Encounter Info</h2>
+                <div className="relative w-80 group">
+                  <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-primary transition-all" size={20} />
+                  <input type="text" className="form-input !pl-12 !h-14 !bg-slate-50 border-none group-focus-within:!bg-white group-focus-within:!ring-2 group-focus-within:!ring-primary/20 transition-all font-bold" placeholder="Quick Search ID/Phone..." value={searchQuery} onChange={(e) => { setSearchQuery(e.target.value); fetchPatients(e.target.value); }} onBlur={() => setTimeout(() => setShowSearchResults(false), 300)} onFocus={() => searchQuery && setShowSearchResults(true)} />
                   {showSearchResults && searchResults.length > 0 && (
-                    <div className="absolute top-[calc(100%+8px)] left-0 right-0 z-[200] bg-white border border-slate-100 rounded-xl shadow-2xl overflow-hidden">
+                    <div className="absolute top-[calc(100%+12px)] left-0 right-0 z-[200] bg-white border border-slate-100 rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95">
                        {searchResults.map(p => (
-                         <div key={p.id} className="p-4 hover:bg-slate-50 cursor-pointer border-b last:border-0" onMouseDown={() => selectPatient(p)}>
-                            <div className="font-bold text-slate-800">{p.name} <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded ml-2">{p.uhid}</span></div>
-                            <div className="text-xs text-slate-500 mt-1">{p.phone}</div>
+                         <div key={p.id} className="p-5 hover:bg-slate-50 cursor-pointer border-b border-slate-50 last:border-0 transition-colors" onMouseDown={() => selectPatient(p)}>
+                            <div className="font-black text-slate-800 text-base">{p.name} <span className="text-[10px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full ml-2 uppercase tracking-widest">{p.uhid}</span></div>
+                            <div className="text-xs text-slate-500 mt-1 font-bold">{p.phone} • {p.age}Y • {p.gender}</div>
                          </div>
                        ))}
                     </div>
@@ -353,113 +348,246 @@ export default function ReceptionDashboard() {
               </div>
 
               {selectedPatient && (
-                <div className="mb-8 p-6 bg-emerald-50 border-2 border-emerald-100 rounded-2xl flex justify-between items-center">
-                   <div className="flex gap-5 items-center">
-                      <div className="w-14 h-14 rounded-xl bg-emerald-600 text-white flex items-center justify-center text-xl font-black">{selectedPatient.name.charAt(0)}</div>
+                <div className="mb-10 p-8 bg-emerald-50 border-2 border-emerald-100 rounded-[2rem] flex justify-between items-center animate-in zoom-in-95 shadow-lg shadow-emerald-500/5">
+                   <div className="flex gap-6 items-center">
+                      <div className="w-16 h-16 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-2xl font-black shadow-xl shadow-emerald-200">
+                         {selectedPatient.name.charAt(0)}
+                      </div>
                       <div>
-                         <h4 className="text-lg font-black text-slate-800 uppercase">{selectedPatient.name}</h4>
-                         <div className="text-xs font-bold text-emerald-700/60 mt-2 flex gap-4">
-                            <span>ID: {selectedPatient.uhid}</span><span>{selectedPatient.age}Y | {selectedPatient.gender}</span>
+                         <div className="flex items-center gap-3">
+                            <h4 className="text-xl font-black text-slate-800 uppercase tracking-tight">{selectedPatient.name}</h4>
+                            <span className="text-[10px] font-black bg-emerald-600 text-white px-3 py-1 rounded-full uppercase tracking-widest">Verified Record</span>
+                         </div>
+                         <div className="text-xs font-black text-emerald-700/60 mt-2 flex gap-6 uppercase tracking-wider">
+                            <span><b>UHID:</b> {selectedPatient.uhid}</span>
+                            <span><b>AGE:</b> {selectedPatient.age}Y</span>
+                            <span><b>PHONE:</b> {selectedPatient.phone}</span>
                          </div>
                       </div>
                    </div>
                    <div className="flex gap-3">
-                      <button className="btn btn-outline h-11 px-5 border-emerald-600 text-emerald-600 bg-white" onClick={() => fetchHistory(selectedPatient.id)}><History size={16} className="mr-2" /> History</button>
-                      <button className="btn h-11 w-11 !p-0 bg-rose-100 text-rose-600 border-none" onClick={clearPatient}><Trash2 size={18} /></button>
+                      <button className="btn btn-outline h-12 px-6 border-emerald-600 text-emerald-600 bg-white hover:bg-emerald-600 hover:text-white transition-all font-black" onClick={() => fetchHistory(selectedPatient.id)}><History size={18} className="mr-2" /> Medical History</button>
+                      <button className="btn h-12 w-12 !p-0 bg-rose-100 text-rose-600 border-none hover:bg-rose-200 transition-all active:scale-90" onClick={clearPatient}><Trash2 size={20} /></button>
                    </div>
                 </div>
               )}
 
-              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                <div className="form-group"><label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Full Name</label><input type="text" className="form-input !bg-slate-50 !h-14 font-bold border-none" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value.toUpperCase()})} /></div>
-                <div className="form-group"><label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Phone Number</label><input type="tel" className="form-input !bg-slate-50 !h-14 font-bold border-none" maxLength={10} required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value.replace(/\D/g, '')})} /></div>
-                <div className="form-group grid grid-cols-2 gap-4">
-                  <div><label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Age</label><input type="number" className="form-input !bg-slate-50 !h-14 font-bold border-none" required value={formData.age} onChange={e => setFormData({...formData, age: e.target.value})} /></div>
-                  <div><label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Gender</label><select className="form-input !bg-slate-50 !h-14 font-bold border-none" required value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})}><option>Male</option><option>Female</option></select></div>
+              <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-8">
+                <div className="form-group">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-3 block">Patient Full Name</label>
+                  <input type="text" className="form-input !bg-slate-50 !h-16 font-black border-none text-lg text-slate-800 focus:!bg-white" placeholder="ENTER NAME" required value={formData.name} onChange={e => setFormData({...formData, name: e.target.value.toUpperCase()})} />
                 </div>
-                <div className="form-group"><label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Doctor</label><select className="form-input !bg-slate-50 !h-14 font-bold border-none" required value={formData.doctorId} onChange={e => setFormData({...formData, doctorId: e.target.value})}>{doctors.map(d => <option key={d.id} value={d.id}>Dr. {d.name}</option>)}</select></div>
-                <div className="form-group"><label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Appt Date</label><input type="date" className="form-input !bg-slate-50 !h-14 font-bold border-none" min={new Date().toISOString().split('T')[0]} value={formData.visitDate} onChange={e => setFormData({...formData, visitDate: e.target.value})} /></div>
+                <div className="form-group">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-3 block">Contact Number</label>
+                  <input type="tel" className="form-input !bg-slate-50 !h-16 font-black border-none text-lg text-slate-800 focus:!bg-white" placeholder="MOBILE NO" maxLength={10} required value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value.replace(/\D/g, '')})} />
+                </div>
+                <div className="form-group grid grid-cols-2 gap-6">
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-3 block">Age (Years)</label>
+                    <input type="number" className="form-input !bg-slate-50 !h-16 font-black border-none text-lg focus:!bg-white" required value={formData.age} onChange={e => setFormData({...formData, age: e.target.value})} />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-3 block">Gender</label>
+                    <select className="form-input !bg-slate-50 !h-16 font-black border-none text-lg focus:!bg-white" required value={formData.gender} onChange={e => setFormData({...formData, gender: e.target.value})}>
+                      <option>Male</option><option>Female</option><option>Other</option>
+                    </select>
+                  </div>
+                </div>
+                <div className="form-group">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-3 block">Assigned Doctor</label>
+                  <select className="form-input !bg-slate-50 !h-16 font-black border-none text-lg focus:!bg-white" required value={formData.doctorId} onChange={e => setFormData({...formData, doctorId: e.target.value})}>
+                    {doctors.map(d => <option key={d.id} value={d.id}>DR. {d.name.toUpperCase().replace(/^(DR\.?\s*)+/i, '')}</option>)}
+                  </select>
+                </div>
+                <div className="form-group">
+                   <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-3 block">Appointment Date (Optional)</label>
+                   <input type="date" className="form-input !bg-slate-50 !h-16 font-black border-none text-lg focus:!bg-white" min={new Date().toISOString().split('T')[0]} value={formData.visitDate} onChange={e => setFormData({...formData, visitDate: e.target.value})} />
+                </div>
                 {formData.visitDate && (
-                  <div className="form-group"><label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">Time Slot</label>
-                    <div className="flex gap-4"><select className="form-input !bg-white !h-14 font-bold flex-1" value={timeHour} onChange={e => setTimeHour(e.target.value)}>{Array.from({length: 12}, (_, i) => (i+1).toString().padStart(2, '0')).map(h => <option key={h} value={h}>{h}</option>)}</select>
-                    <select className="form-input !bg-white !h-14 font-bold flex-1" value={timeMinute} onChange={e => setTimeMinute(e.target.value)}>{['00','15','30','45'].map(m => <option key={m} value={m}>{m}</option>)}</select>
-                    <button type="button" onClick={() => setTimePeriod(timePeriod === 'AM' ? 'PM' : 'AM')} className="bg-slate-100 px-6 rounded-full font-black text-primary">{timePeriod}</button></div>
+                  <div className="form-group animate-in slide-in-from-right-4">
+                    <label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-3 block">Scheduled Time</label>
+                    <div className="flex gap-4">
+                      <select className="form-input !bg-white !h-16 font-black border-2 border-slate-100 rounded-2xl flex-1 text-center text-xl" value={timeHour} onChange={e => setTimeHour(e.target.value)}>{Array.from({length: 12}, (_, i) => (i+1).toString().padStart(2, '0')).map(h => <option key={h} value={h}>{h}</option>)}</select>
+                      <select className="form-input !bg-white !h-16 font-black border-2 border-slate-100 rounded-2xl flex-1 text-center text-xl" value={timeMinute} onChange={e => setTimeMinute(e.target.value)}>{['00','15','30','45'].map(m => <option key={m} value={m}>{m}</option>)}</select>
+                      <button type="button" onClick={() => setTimePeriod(timePeriod === 'AM' ? 'PM' : 'AM')} className="bg-primary text-white px-8 rounded-2xl font-black text-lg shadow-lg shadow-primary/20 active:scale-95 transition-all">{timePeriod}</button>
+                    </div>
                   </div>
                 )}
-                <div className="md:col-span-2 flex justify-end"><button type="submit" disabled={loading} className="btn btn-primary !h-16 !px-12 !rounded-2xl shadow-xl font-black">{loading ? 'Processing...' : 'Register Patient'}</button></div>
+                <div className="md:col-span-2 flex justify-end mt-4">
+                  <button type="submit" disabled={loading} className="btn btn-primary !h-20 !px-16 !rounded-[2rem] shadow-2xl shadow-primary/30 text-xl font-black tracking-tight active:scale-95 transition-all">{loading ? 'STAGING RECORD...' : 'GENERATE CLINICAL TOKEN'}</button>
+                </div>
               </form>
             </div>
           )}
 
           {activeTab === 'queue' && (
-            <div className="glass-card !p-8 bg-white"><h2 className="text-2xl font-black text-slate-800 mb-10">OPD Queue</h2>
+            <div className="glass-card !p-10 bg-white/70 backdrop-blur-xl border-2 border-white shadow-2xl animate-in fade-in">
+              <div className="flex justify-between items-center mb-12">
+                <h2 className="text-3xl font-black text-slate-800 tracking-tight">Operational OPD Queue</h2>
+                <div className="flex gap-4">
+                  <div className="px-5 py-2 bg-slate-100 rounded-full text-[10px] font-black text-slate-500 uppercase tracking-widest">Live Shift</div>
+                  <div className="px-5 py-2 bg-primary/10 rounded-full text-[10px] font-black text-primary uppercase tracking-widest">{queue.length} PATIENTS IN WAIT</div>
+                </div>
+              </div>
               <table className="w-full border-separate border-spacing-0">
-                <thead><tr className="text-[10px] font-black text-slate-400 uppercase text-left"><th className="pb-4">Token</th><th className="pb-4">Patient</th><th className="pb-4">Status</th><th className="pb-4 text-right">Actions</th></tr></thead>
-                <tbody>{queue.map(v => (
-                  <tr key={v.id}><td className="py-4 border-b border-slate-50 font-black text-primary">#{v.tokenNumber}</td><td className="py-4 border-b border-slate-50"><b>{v.patient.name}</b><br/><span className="text-[10px] text-slate-400">{v.patient.uhid}</span></td><td className="py-4 border-b border-slate-50"><span className={`px-2 py-1 rounded text-[10px] font-black ${v.status === 'CONSULTING' ? 'bg-amber-50 text-amber-600' : 'bg-emerald-50 text-emerald-600'}`}>{v.status}</span></td><td className="py-4 border-b border-slate-50 text-right"><button className="btn btn-outline !h-8 px-4 text-[10px]" onClick={() => fetchHistory(v.patientId)}>History</button></td></tr>
-                ))}</tbody>
+                <thead>
+                  <tr className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] text-left">
+                    <th className="pb-6 pl-6">ID Token</th>
+                    <th className="pb-6">Patient Demographics</th>
+                    <th className="pb-6">Status</th>
+                    <th className="pb-6">Specialist</th>
+                    <th className="pb-6 pr-6 text-right">Records</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {queue.map(v => (
+                    <tr key={v.id} className="group hover:bg-white/50 transition-colors">
+                      <td className="py-6 pl-6 border-t border-slate-100 font-black text-primary text-xl">#{v.tokenNumber}</td>
+                      <td className="py-6 border-t border-slate-100">
+                        <div className="font-black text-slate-800 text-lg uppercase">{v.patient.name}</div>
+                        <div className="text-[10px] font-black text-slate-400 tracking-widest mt-1">{v.patient.uhid} • {v.patient.age}Y | {v.patient.gender}</div>
+                      </td>
+                      <td className="py-6 border-t border-slate-100">
+                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${v.status === 'CONSULTING' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>
+                           {v.status === 'CONSULTING' ? 'In Consultation' : 'Waiting in Queue'}
+                        </span>
+                      </td>
+                      <td className="py-6 border-t border-slate-100 font-black text-slate-600 text-sm uppercase tracking-tight">DR. {v.doctor?.name.toUpperCase().replace(/^(DR\.?\s*)+/i, '')}</td>
+                      <td className="py-6 pr-6 border-t border-slate-100 text-right">
+                        <button className="btn btn-outline !h-10 px-5 text-[10px] font-black tracking-widest hover:bg-primary hover:text-white transition-all active:scale-95" onClick={() => fetchHistory(v.patientId)}>VIEW HISTORY</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
               </table>
             </div>
           )}
 
           {activeTab === 'billing' && (
-            <div className="glass-card !p-8 bg-white"><h2 className="text-2xl font-black text-slate-800 mb-10">Billing Center</h2>
+            <div className="glass-card !p-10 bg-white/70 backdrop-blur-xl border-2 border-white shadow-2xl animate-in fade-in">
+              <h2 className="text-3xl font-black text-slate-800 mb-12 tracking-tight uppercase">Financial Center</h2>
               <table className="w-full border-separate border-spacing-0">
-                <thead><tr className="text-[10px] font-black text-slate-400 uppercase text-left"><th className="pb-4">Patient</th><th className="pb-4">Amount</th><th className="pb-4">Status</th><th className="pb-4 text-right">Actions</th></tr></thead>
+                <thead><tr className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] text-left"><th className="pb-6 pl-6">Invoice Subject</th><th className="pb-6">Status</th><th className="pb-6">Net Amount</th><th className="pb-6 pr-6 text-right">Action</th></tr></thead>
                 <tbody>{bills.map(b => (
-                  <tr key={b.id}><td className="py-4 border-b border-slate-50"><b>{b.visit.patient.name}</b></td><td className="py-4 border-b border-slate-50 font-black text-primary">₹{b.finalAmount}</td><td className="py-4 border-b border-slate-50"><span className={`px-2 py-1 rounded text-[9px] font-black ${b.paymentStatus === 'PAID' ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>{b.paymentStatus}</span></td><td className="py-4 border-b border-slate-50 text-right">{b.paymentStatus === 'UNPAID' && <button className="btn btn-primary !h-8 px-4 text-[10px]" onClick={() => { setSelectedBill(b); setShowBillModal(true); }}>Collect</button>}</td></tr>
+                  <tr key={b.id} className="group hover:bg-white/50 transition-colors">
+                    <td className="py-6 pl-6 border-t border-slate-100"><div className="font-black text-slate-800 text-lg uppercase">{b.visit.patient.name}</div><div className="text-[10px] font-black text-slate-400 tracking-widest mt-1">{b.visit.patient.uhid}</div></td>
+                    <td className="py-6 border-t border-slate-100"><span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${b.paymentStatus === 'PAID' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}`}>{b.paymentStatus}</span></td>
+                    <td className="py-6 border-t border-slate-100 font-black text-primary text-xl">₹{b.finalAmount}</td>
+                    <td className="py-6 pr-6 border-t border-slate-100 text-right">{b.paymentStatus === 'UNPAID' && <button className="btn btn-primary !h-11 px-8 text-[11px] font-black active:scale-95 shadow-lg shadow-primary/20" onClick={() => { setSelectedBill(b); setShowBillModal(true); }}>COLLECT CASH</button>}</td>
+                  </tr>
                 ))}</tbody>
               </table>
             </div>
           )}
 
           {activeTab === 'doctors' && (
-            <div className="grid grid-cols-3 gap-8">{doctors.map(doc => (
-              <div key={doc.id} className="glass-card !p-8 bg-white">
-                <div className="flex justify-between items-start mb-6"><div className="w-12 h-12 rounded-xl bg-slate-50 text-primary flex items-center justify-center font-black">{doc.name.charAt(0)}</div><button onClick={() => toggleDoctorAvailability(doc.id, doc.isAvailable !== false)} className={`h-8 w-8 rounded-lg ${doc.isAvailable !== false ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>{doc.isAvailable !== false ? <CheckCircle2 size={18}/> : <AlertCircle size={18}/>}</button></div>
-                <h3 className="font-black text-slate-800">Dr. {doc.name}</h3><p className="text-[10px] font-bold text-slate-400 uppercase mt-1">{doc.specialization || 'Consultant'}</p>
+            <div className="grid grid-cols-3 gap-10 animate-in slide-in-from-bottom-6">{doctors.map(doc => (
+              <div key={doc.id} className="glass-card !p-10 bg-white/70 backdrop-blur-xl border-2 border-white hover-scale-102 transition-all shadow-xl">
+                <div className="flex justify-between items-start mb-8">
+                  <div className="w-16 h-16 rounded-2xl bg-slate-50 text-primary flex items-center justify-center font-black text-3xl shadow-inner">{doc.name.charAt(0)}</div>
+                  <button onClick={() => toggleDoctorAvailability(doc.id, doc.isAvailable !== false)} className={`h-12 w-12 rounded-2xl shadow-lg transition-all active:scale-90 flex items-center justify-center ${doc.isAvailable !== false ? 'bg-emerald-50 text-emerald-600 shadow-emerald-200/20' : 'bg-rose-50 text-rose-600 shadow-rose-200/20'}`}>{doc.isAvailable !== false ? <CheckCircle2 size={24}/> : <AlertCircle size={24}/>}</button>
+                </div>
+                <h3 className="font-black text-slate-800 text-xl tracking-tight uppercase">DR. {doc.name.toUpperCase().replace(/^(DR\.?\s*)+/i, '')}</h3>
+                <p className="text-[11px] font-black text-slate-400 uppercase tracking-[2px] mt-2">{doc.specialization || 'General Consultation'}</p>
               </div>
             ))}</div>
           )}
         </div>
 
-        {/* Success Modal - CENTERED */}
+        {/* Modals - ALL CENTERED & PREMIUM */}
         {showSuccessModal && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-            <div className="glass-card !p-12 !max-w-md bg-white text-center animate-in zoom-in-95"><div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8"><CheckCircle2 size={40} /></div><h2 className="text-3xl font-black mb-4 text-emerald-600">{successInfo?.title}</h2><p className="text-slate-500 font-medium mb-10">{successInfo?.message}</p><div className="bg-slate-50 rounded-2xl p-8 mb-10"><div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Clinical Token</div><div className="text-5xl font-black text-primary">#{successInfo?.token}</div></div><button className="btn btn-primary w-full h-16 !rounded-2xl text-lg font-black" onClick={() => setShowSuccessModal(false)}>Proceed</button></div>
-          </div>
-        )}
-
-        {/* Visit History Modal - CENTERED */}
-        {showHistoryModal && historyData && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => { setShowHistoryModal(false); setExpandedVisitId(null); }}>
-            <div className="glass-card !max-w-[680px] w-full !p-0 overflow-hidden flex flex-col bg-white shadow-2xl animate-in slide-in-from-bottom-5" style={{ maxHeight: '85vh' }} onClick={e => e.stopPropagation()}>
-              <div className="p-6 border-b border-slate-100 flex justify-between items-center"><div className="flex gap-4 items-center"><div className="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center font-bold">{historyData.patient.name.charAt(0)}</div><div><div className="font-black text-slate-800">{historyData.patient.name}</div><div className="text-xs text-slate-400 font-bold">{historyData.patient.uhid}</div></div></div><button onClick={() => { setShowHistoryModal(false); setExpandedVisitId(null); }} className="text-slate-400"><X size={20} /></button></div>
-              <div className="p-6 overflow-y-auto">{historyData.history.length === 0 ? <div className="py-12 text-center text-slate-400">No records found.</div> : historyData.history.map((v: any, idx: number) => (
-                <div key={v.id} className="border border-slate-100 rounded-xl mb-4"><div className="p-4 cursor-pointer flex justify-between items-center" onClick={() => setExpandedVisitId(expandedVisitId === v.id ? null : v.id)}><div className="flex items-center gap-4"><span className="w-6 h-6 rounded-full bg-slate-50 text-primary text-[10px] flex items-center justify-center font-black">{historyData.history.length - idx}</span><b>{new Date(v.visitDate).toLocaleDateString('en-GB')}</b></div><ChevronDown className={`text-slate-300 transition-transform ${expandedVisitId === v.id ? 'rotate-180' : ''}`} size={18} /></div>
-                {expandedVisitId === v.id && <div className="p-4 bg-slate-50 border-t border-slate-100 animate-in slide-in-from-top-2"><div className="mb-4"><span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block">Diagnosis</span><p className="text-xs font-black text-primary">{v.diagnosis || 'N/A'}</p></div>{v.prescriptions?.length > 0 && <div><span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Meds</span><div className="flex flex-wrap gap-2">{v.prescriptions.map((p: any) => <span key={p.id} className="px-2 py-1 bg-white text-emerald-700 text-[10px] font-black rounded border border-emerald-100">{p.drugName}</span>)}</div></div>}</div>}</div>
-              ))}</div>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+            <div className="glass-card !p-12 !max-w-md bg-white text-center animate-in zoom-in-95 shadow-3xl border-2 border-white rounded-[3rem]">
+              <div className="w-24 h-24 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-10 shadow-xl shadow-emerald-100"><CheckCircle2 size={48} /></div>
+              <h2 className="text-3xl font-black mb-4 text-emerald-600 tracking-tight uppercase">{successInfo?.title}</h2>
+              <p className="text-slate-500 font-bold text-lg mb-10 leading-snug">{successInfo?.message}</p>
+              <div className="bg-slate-50 rounded-[2rem] p-10 mb-10 border border-slate-100 shadow-inner">
+                <div className="text-[11px] font-black text-slate-400 uppercase tracking-[3px] mb-3">OPD Clinical Token</div>
+                <div className="text-6xl font-black text-primary tracking-tighter">#{successInfo?.token}</div>
+              </div>
+              <button className="btn btn-primary w-full h-20 !rounded-[2rem] text-xl font-black shadow-2xl shadow-primary/30 active:scale-95 transition-all" onClick={() => setShowSuccessModal(false)}>CONTINUE</button>
             </div>
           </div>
         )}
 
-        {/* Stats Detail Modal - CENTERED */}
+        {showHistoryModal && historyData && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => { setShowHistoryModal(false); setExpandedVisitId(null); }}>
+            <div className="glass-card !max-w-[720px] w-full !p-0 overflow-hidden flex flex-col bg-white shadow-3xl animate-in slide-in-from-bottom-5 border-2 border-white rounded-[2.5rem]" style={{ maxHeight: '85vh' }} onClick={e => e.stopPropagation()}>
+              <div className="p-10 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                <div className="flex gap-6 items-center">
+                  <div className="w-16 h-16 rounded-2xl bg-[#0A4D68] text-white flex items-center justify-center text-2xl font-black shadow-xl shadow-blue-900/20">{historyData.patient.name.charAt(0)}</div>
+                  <div>
+                    <div className="font-black text-slate-800 text-2xl tracking-tight uppercase">{historyData.patient.name}</div>
+                    <div className="text-[11px] font-black text-slate-400 uppercase tracking-[2px] mt-1">{historyData.patient.uhid} • {historyData.patient.age}Y • {historyData.patient.gender}</div>
+                  </div>
+                </div>
+                <button onClick={() => { setShowHistoryModal(false); setExpandedVisitId(null); }} className="w-12 h-12 flex items-center justify-center rounded-full bg-white shadow-lg text-slate-400 hover:text-rose-500 transition-colors"><X size={24} /></button>
+              </div>
+              <div className="p-10 overflow-y-auto bg-white">
+                {historyData.history.length === 0 ? <div className="py-20 text-center text-slate-400 font-black text-xl italic opacity-50 tracking-widest uppercase">No clinical records found</div> : historyData.history.map((v: any, idx: number) => (
+                  <div key={v.id} className="border border-slate-100 rounded-[2rem] mb-6 overflow-hidden shadow-sm transition-all hover:shadow-md">
+                    <div className={`p-6 cursor-pointer flex justify-between items-center transition-all ${expandedVisitId === v.id ? 'bg-slate-50' : 'bg-white'}`} onClick={() => setExpandedVisitId(expandedVisitId === v.id ? null : v.id)}>
+                      <div className="flex items-center gap-6">
+                        <span className="w-8 h-8 rounded-full bg-primary text-white text-xs flex items-center justify-center font-black shadow-lg shadow-primary/20">{historyData.history.length - idx}</span>
+                        <div>
+                          <div className="font-black text-slate-800 text-lg uppercase">{new Date(v.visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                          <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-0.5">DR. {v.doctor?.name.toUpperCase().replace(/^(DR\.?\s*)+/i, '')}</div>
+                        </div>
+                      </div>
+                      <ChevronDown className={`text-slate-300 transition-transform duration-300 ${expandedVisitId === v.id ? 'rotate-180' : ''}`} size={24} />
+                    </div>
+                    {expandedVisitId === v.id && (
+                      <div className="p-8 bg-white border-t border-slate-50 animate-in slide-in-from-top-4 duration-300">
+                        {v.diagnosis && (
+                          <div className="mb-6">
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] block mb-2">Final Diagnosis</span>
+                            <p className="text-base font-black text-primary uppercase tracking-tight">{v.diagnosis}</p>
+                          </div>
+                        )}
+                        {v.prescriptions?.length > 0 && (
+                          <div>
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] block mb-3">Medications Dispensed</span>
+                            <div className="flex flex-wrap gap-3">
+                              {v.prescriptions.map((p: any) => <span key={p.id} className="px-4 py-2 bg-emerald-50 text-emerald-700 text-[10px] font-black rounded-xl border border-emerald-100 uppercase tracking-widest">💊 {p.drugName}</span>)}
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
         {showStatsModal && statsModalData && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setShowStatsModal(false)}>
-            <div className="glass-card !max-w-[500px] w-full !p-0 overflow-hidden bg-white shadow-2xl animate-in zoom-in-95" style={{ maxHeight: '70vh' }} onClick={e => e.stopPropagation()}>
-              <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50"><h3 className="text-lg font-black text-slate-800 uppercase">{statsModalData.title}</h3><button onClick={() => setShowStatsModal(false)} className="text-slate-400"><X size={16} /></button></div>
-              <div className="p-4 overflow-y-auto">{statsModalData.list.length === 0 ? <div className="py-12 text-center text-slate-400 italic">No records.</div> : <div className="flex flex-col gap-2">{statsModalData.list.map((v: any) => (
-                <div key={v.id} className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex justify-between items-center"><div><div className="font-bold text-slate-800">{v.patient?.name || v.patientName || 'Unknown'}</div><div className="text-[10px] text-slate-400 uppercase">{v.patient?.uhid || v.uhid}</div></div><div className={`text-[9px] font-black px-2 py-0.5 rounded-full ${v.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'}`}>{v.status || 'SCHEDULED'}</div></div>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setShowStatsModal(false)}>
+            <div className="glass-card !max-w-[500px] w-full !p-0 overflow-hidden bg-white shadow-3xl animate-in zoom-in-95 border-2 border-white rounded-[2.5rem]" style={{ maxHeight: '70vh' }} onClick={e => e.stopPropagation()}>
+              <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50"><h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">{statsModalData.title}</h3><button onClick={() => setShowStatsModal(false)} className="text-slate-400 hover:text-rose-500 transition-colors"><X size={20} /></button></div>
+              <div className="p-6 overflow-y-auto">{statsModalData.list.length === 0 ? <div className="py-20 text-center text-slate-400 font-black italic uppercase tracking-widest opacity-50">Empty Audit Trail</div> : <div className="flex flex-col gap-3">{statsModalData.list.map((v: any) => (
+                <div key={v.id} className="p-5 rounded-2xl bg-slate-50 border border-slate-100 flex justify-between items-center hover:bg-white transition-all shadow-sm">
+                  <div>
+                    <div className="font-black text-slate-800 uppercase text-base">{v.patient?.name || v.patientName || 'ANONYMOUS'}</div>
+                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-[1px] mt-0.5">{v.patient?.uhid || v.uhid} • TOKEN #{v.tokenNumber || 'XX'}</div>
+                  </div>
+                  <div className={`text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest ${v.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-600' : 'bg-blue-100 text-blue-600'}`}>{v.status || 'SCHEDULED'}</div>
+                </div>
               ))}</div>}</div>
             </div>
           </div>
         )}
 
-        {/* Bill Modal - CENTERED */}
         {showBillModal && selectedBill && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-            <div className="glass-card !p-10 !max-w-md bg-white animate-in zoom-in-95">
-              <h2 className="text-2xl font-black text-slate-800 mb-8">Payment Collection</h2><div className="flex flex-col gap-6"><div className="form-group"><label className="text-[10px] font-black text-slate-400 uppercase block mb-2">Method</label><select className="form-input" value={billingForm.paymentMode} onChange={e => setBillingForm({...billingForm, paymentMode: e.target.value})}><option>CASH</option><option>UPI</option></select></div><div className="form-group"><label className="text-[10px] font-black text-slate-400 uppercase block mb-2">Discount</label><input type="number" className="form-input" value={billingForm.discount} onChange={e => setBillingForm({...billingForm, discount: parseInt(e.target.value) || 0})} /></div><button className="btn btn-primary w-full h-14 font-black" onClick={handlePayBill} disabled={loading}>Collect ₹{selectedBill.finalAmount - billingForm.discount}</button><button className="text-slate-400 w-full mt-4" onClick={() => setShowBillModal(false)}>Cancel</button></div>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+            <div className="glass-card !p-12 !max-w-md bg-white animate-in zoom-in-95 shadow-3xl border-2 border-white rounded-[3rem]">
+              <h2 className="text-3xl font-black text-slate-800 mb-8 tracking-tight uppercase">Payment Collection</h2>
+              <div className="flex flex-col gap-8">
+                <div className="form-group"><label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] block mb-3">Revenue Class</label><select className="form-input !h-16 font-black border-none !bg-slate-50 text-lg rounded-2xl" value={billingForm.paymentMode} onChange={e => setBillingForm({...billingForm, paymentMode: e.target.value})}><option>CASH ON COUNTER</option><option>UPI / QR SCAN</option><option>CARD SWIPE</option></select></div>
+                <div className="form-group"><label className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] block mb-3">Authorized Waiver</label><input type="number" className="form-input !h-16 font-black border-none !bg-slate-50 text-lg rounded-2xl" value={billingForm.discount} onChange={e => setBillingForm({...billingForm, discount: parseInt(e.target.value) || 0})} /></div>
+                <button className="btn btn-primary w-full h-20 !rounded-[2rem] font-black text-xl shadow-2xl shadow-primary/30 active:scale-95 transition-all" onClick={handlePayBill} disabled={loading}>CONFIRM RECEIPT ₹{selectedBill.finalAmount - billingForm.discount}</button>
+                <button className="text-slate-400 font-black uppercase text-xs tracking-widest w-full mt-2 hover:text-rose-500 transition-colors" onClick={() => setShowBillModal(false)}>Cancel Transaction</button>
+              </div>
             </div>
           </div>
         )}
@@ -470,20 +598,21 @@ export default function ReceptionDashboard() {
 
 function SidebarItem({ active, icon, label, onClick }: any) {
   return (
-    <button onClick={onClick} style={{ width: '100%', padding: '15px 30px', display: 'flex', alignItems: 'center', gap: '15px', background: active ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', textAlign: 'left', cursor: 'pointer', transition: '0.1s ease', userSelect: 'none' }} className="active:scale-95">
-      <div style={{ opacity: active ? 1 : 0.4 }}>{icon}</div>
-      <span style={{ fontWeight: active ? '800' : '400', fontSize: '14px', letterSpacing: active ? '0.5px' : '0', textTransform: 'uppercase' }}>{label}</span>
+    <button onClick={onClick} style={{ width: '100%', padding: '18px 35px', display: 'flex', alignItems: 'center', gap: '18px', background: active ? 'rgba(255,255,255,0.15)' : 'transparent', border: 'none', color: 'white', textAlign: 'left', cursor: 'pointer', transition: '0.2s cubic-bezier(0.4, 0, 0.2, 1)', userSelect: 'none', borderLeft: active ? '4px solid white' : '4px solid transparent' }} className="active:scale-95 group">
+      <div style={{ opacity: active ? 1 : 0.4, transition: '0.2s' }} className="group-hover:scale-110 transition-transform">{icon}</div>
+      <span style={{ fontWeight: active ? '900' : '500', fontSize: '15px', letterSpacing: active ? '0.8px' : '0.2px', textTransform: 'uppercase', color: active ? 'white' : 'rgba(255,255,255,0.6)' }}>{label}</span>
     </button>
   );
 }
 
 function StatCard({ icon, label, value, trend, color, onClick }: { icon: any, label: string, value: number, trend?: string, color?: string, onClick?: () => void }) {
   return (
-    <div style={{ padding: '24px', borderRadius: '24px', background: 'white', border: '2px solid transparent', boxShadow: '0 10px 30px rgba(0,0,0,0.03)', position: 'relative', cursor: 'pointer', transition: '0.1s ease-in-out', display: 'flex', flexDirection: 'column', gap: '15px' }} className="active:scale-95 hover:shadow-xl" onClick={onClick}>
-      <div style={{ width: '48px', height: '48px', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: color === 'amber' ? '#FFFBEB' : '#F1F5F9', color: color === 'amber' ? '#D97706' : '#0A4D68' }}>{icon}</div>
+    <div style={{ padding: '30px', borderRadius: '32px', background: 'rgba(255,255,255,0.7)', backdropFilter: 'blur(20px)', border: '2px solid white', boxShadow: '0 20px 40px rgba(0,0,0,0.04)', position: 'relative', cursor: 'pointer', transition: '0.2s cubic-bezier(0.4, 0, 0.2, 1)', display: 'flex', flexDirection: 'column', gap: '20px' }} className="active:scale-95 hover:shadow-2xl hover:-translate-y-1 group" onClick={onClick}>
+      {trend && <div style={{ position: 'absolute', top: '25px', right: '30px', fontSize: '9px', fontWeight: '900', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '1px' }} className="opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1"><TrendingUp size={12}/> {trend}</div>}
+      <div style={{ width: '56px', height: '56px', borderRadius: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: color === 'amber' ? '#FFFBEB' : '#F1F5F9', color: color === 'amber' ? '#D97706' : '#0A4D68', transition: '0.3s' }} className="group-hover:scale-110 group-hover:rotate-6 shadow-sm">{icon}</div>
       <div>
-        <div style={{ fontSize: '10px', fontWeight: '900', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '4px' }}>{label}</div>
-        <div style={{ fontSize: '32px', fontWeight: '900', color: '#1E293B' }}>{value}</div>
+        <div style={{ fontSize: '10px', fontWeight: '900', color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '2.5px', marginBottom: '6px' }}>{label}</div>
+        <div style={{ fontSize: '38px', fontWeight: '900', color: '#1E293B', letterSpacing: '-1.5px', lineHeight: '1' }}>{value}</div>
       </div>
     </div>
   );

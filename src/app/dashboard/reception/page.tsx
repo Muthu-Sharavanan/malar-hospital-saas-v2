@@ -803,11 +803,11 @@ export default function ReceptionDashboard() {
                                 </div>
                              </div>
                           </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '80px' }}>
-                             <div style={{ textAlign: 'right' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', color: '#0A4D68', justifyContent: 'flex-end' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '120px' }}>
+                             <div style={{ textAlign: 'right', paddingLeft: '20px' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '20px', color: '#0A4D68', justifyContent: 'flex-end' }}>
                                    <Stethoscope size={22} />
-                                   <span style={{ fontSize: '18px', fontWeight: '600', textTransform: 'uppercase' }}>
+                                   <span style={{ fontSize: '18px', fontWeight: '600', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                                       {v.doctor?.name ? (v.doctor.name.toLowerCase().startsWith('dr') ? v.doctor.name : `Dr. ${v.doctor.name}`) : 'Specialist'}
                                    </span>
                                 </div>

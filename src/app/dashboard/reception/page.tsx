@@ -302,12 +302,36 @@ export default function ReceptionDashboard() {
           </div>
         </header>
 
-        {/* KPI Row */}
+        {/* KPI Row - DOCTOR PREMIUM STYLE */}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '24px', marginBottom: '40px' }}>
-          <StatCard label="Token Activity" value={queue.length} icon={<Users size={20} />} trend={8} isPositive={true} onClick={() => { setStatsModalData({ title: 'Token Activity', list: queue }); setShowStatsModal(true); }} />
-          <StatCard label="Future Bookings" value={futureQueue.length} icon={<CalendarCheck size={20} />} onClick={() => { setStatsModalData({ title: 'Future Bookings', list: futureQueue }); setShowStatsModal(true); }} />
-          <StatCard label="In Consultation" value={queue.filter(v => v.status === 'CONSULTING').length} icon={<Activity size={20} />} isPositive={true} onClick={() => { setStatsModalData({ title: 'In Consultation', list: queue.filter(v => v.status === 'CONSULTING') }); setShowStatsModal(true); }} />
-          <StatCard label="Docs On Duty" value={doctors.filter(d => d.isAvailable !== false).length} icon={<UserRoundCheck size={20} />} isPositive={true} onClick={() => { setStatsModalData({ title: 'Doctors On Duty', list: doctors.filter(d => d.isAvailable !== false) }); setShowStatsModal(true); }} />
+          <StatCard 
+            label="Token Activity" 
+            value={queue.length} 
+            icon={<Users size={22} />} 
+            theme="blue"
+            onClick={() => { setStatsModalData({ title: 'Token Activity', list: queue }); setShowStatsModal(true); }} 
+          />
+          <StatCard 
+            label="Future Bookings" 
+            value={futureQueue.length} 
+            icon={<CalendarCheck size={22} />} 
+            theme="orange"
+            onClick={() => { setStatsModalData({ title: 'Future Bookings', list: futureQueue }); setShowStatsModal(true); }} 
+          />
+          <StatCard 
+            label="In Consultation" 
+            value={queue.filter(v => v.status === 'CONSULTING').length} 
+            icon={<Activity size={22} />} 
+            theme="green"
+            onClick={() => { setStatsModalData({ title: 'In Consultation', list: queue.filter(v => v.status === 'CONSULTING') }); setShowStatsModal(true); }} 
+          />
+          <StatCard 
+            label="Docs On Duty" 
+            value={doctors.filter(d => d.isAvailable !== false).length} 
+            icon={<UserRoundCheck size={22} />} 
+            theme="teal"
+            onClick={() => { setStatsModalData({ title: 'Doctors On Duty', list: doctors.filter(d => d.isAvailable !== false) }); setShowStatsModal(true); }} 
+          />
         </div>
 
         {/* Dynamic Content */}
@@ -767,21 +791,28 @@ function SidebarItem({ active, icon, label, onClick }: any) {
   );
 }
 
-function StatCard({ label, value, icon, trend, isPositive, onClick }: any) {
+function StatCard({ label, value, icon, theme, onClick }: any) {
+  const themes: any = {
+    blue: { bg: 'bg-blue-50', text: 'text-blue-600' },
+    green: { bg: 'bg-emerald-50', text: 'text-emerald-600' },
+    orange: { bg: 'bg-orange-50', text: 'text-orange-600' },
+    teal: { bg: 'bg-cyan-50', text: 'text-cyan-700' }
+  };
+  const currentTheme = themes[theme] || themes.blue;
+
   return (
-    <div className="glass-card !p-7 hover-scale-102 transition-all bg-white/80 !border-white cursor-pointer active:scale-95" onClick={onClick}>
-       <div className="flex justify-between items-start mb-4">
-          <div className="w-12 h-12 rounded-2xl bg-slate-50 flex items-center justify-center text-primary shadow-tiny">
+    <div className="glass-card !p-7 hover-scale-102 transition-all bg-white border-2 border-white cursor-pointer active:scale-95 shadow-sm" onClick={onClick}>
+       <style>{`
+         @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;800&display=swap');
+       `}</style>
+       <div className="flex justify-between items-start mb-5">
+          <div className={`w-14 h-14 rounded-2xl ${currentTheme.bg} flex items-center justify-center ${currentTheme.text} shadow-sm group-hover:scale-110 transition-transform`}>
             {icon}
           </div>
-          {trend !== undefined && (
-            <div className={`px-2.5 py-1 rounded-full text-[10px] font-black tracking-widest ${isPositive ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
-              {isPositive ? '+' : '-'}{trend}%
-            </div>
-          )}
+          <div className="px-3 py-1 bg-slate-50 rounded-full text-[9px] font-black text-slate-300 uppercase tracking-widest">Live Metrics</div>
        </div>
-       <div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-1">{label}</div>
-       <div className="text-3xl font-black text-slate-800 tracking-tighter">{value}</div>
+       <div className="text-[10px] font-800 text-slate-400 uppercase tracking-[1.5px] mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{label}</div>
+       <div className="text-4xl font-black text-slate-800 tracking-tighter" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{value}</div>
     </div>
   );
 }

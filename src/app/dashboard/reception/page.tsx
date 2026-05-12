@@ -815,7 +815,6 @@ export default function ReceptionDashboard() {
                     </div>
                   )}
                </div>
-               </div>
                </>
                )}
             </div>

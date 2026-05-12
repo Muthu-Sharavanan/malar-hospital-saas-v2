@@ -50,7 +50,7 @@ export default function ReceptionDashboard() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successInfo, setSuccessInfo] = useState<{title: string, message: string, token: string, uhid?: string, whatsappSent?: boolean}|null>(null);
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
-  const [duplicateInfo, setDuplicateInfo] = useState<{name: string, uhid: string, existingName?: string}|null>(null);
+  const [duplicateInfo, setDuplicateInfo] = useState<{name: string, uhid: string, existingName?: string, existingId?: string}|null>(null);
 
   // Form
   const [formData, setFormData] = useState({
@@ -249,7 +249,7 @@ export default function ReceptionDashboard() {
         if (formData.visitDate) { setActiveTab('future'); fetchFutureQueue(); } 
         else { setActiveTab('queue'); fetchQueue(); }
       } else if (res.status === 409) {
-        setDuplicateInfo({ name: formData.name, uhid: data.uhid, existingName: data.existingName });
+        setDuplicateInfo({ name: formData.name, uhid: data.uhid, existingName: data.existingName, existingId: data.existingId });
         setShowDuplicateModal(true);
       } else {
         alert("Registration failed: " + data.error);
@@ -852,8 +852,17 @@ export default function ReceptionDashboard() {
                  <br/>Registered under UHID: <strong>{duplicateInfo?.uhid || 'MH-PENDING'}</strong>
                </p>
                <div className="flex flex-col gap-3">
-                 <button className="btn btn-primary w-full h-14 !rounded-xl" onClick={() => setShowDuplicateModal(false)}>Acknowledge & Search</button>
-                 <p className="text-[10px] text-slate-400 font-bold">Search for this UHID to add a new visit instead of creating a new patient.</p>
+                 <button 
+                   className="btn btn-primary w-full h-14 !rounded-xl !bg-emerald-600 hover:!bg-emerald-700 !border-none text-lg font-black" 
+                   onClick={() => {
+                     const existingPatient = { id: (duplicateInfo as any).existingId, name: (duplicateInfo as any).existingName, phone: formData.phone, uhid: (duplicateInfo as any).uhid, age: formData.age, gender: formData.gender };
+                     selectPatient(existingPatient);
+                     setShowDuplicateModal(false);
+                   }}
+                 >
+                   Use Existing & Continue
+                 </button>
+                 <button className="btn btn-outline w-full h-12 !rounded-xl border-slate-200 text-slate-400" onClick={() => setShowDuplicateModal(false)}>Cancel & Edit</button>
                </div>
             </div>
           </div>

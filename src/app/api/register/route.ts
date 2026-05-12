@@ -32,7 +32,8 @@ export async function POST(req: Request) {
             { name: { equals: trimmedName, mode: 'insensitive' } },
             { phone: { equals: trimmedPhone } },
             { name: { not: "" } },
-            { phone: { not: "" } }
+            { phone: { not: "" } },
+            { uhid: { startsWith: 'MH-' } } // Only conflict with valid, assigned records
           ]
         }
       });
@@ -40,8 +41,9 @@ export async function POST(req: Request) {
         return NextResponse.json({ 
           success: false, 
           error: "Patient already exists with this name and number", 
-          uhid: existing.uhid || "MH-EXISTING",
-          existingName: existing.name
+          uhid: existing.uhid,
+          existingName: existing.name,
+          existingId: existing.id
         }, { status: 409 });
       }
     }

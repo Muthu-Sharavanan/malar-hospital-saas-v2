@@ -423,13 +423,16 @@ export default function ReceptionDashboard() {
           )}
         </div>
 
-        {/* Modals RESTORED */}
+        {/* Success Modal - CENTERED */}
         {showSuccessModal && (
-          <div className="modal-overlay"><div className="glass-card !p-12 !max-w-md bg-white text-center animate-in zoom-in-95"><div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8"><CheckCircle2 size={40} /></div><h2 className="text-3xl font-black mb-4 text-emerald-600">{successInfo?.title}</h2><p className="text-slate-500 font-medium mb-10">{successInfo?.message}</p><div className="bg-slate-50 rounded-2xl p-8 mb-10"><div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Clinical Token</div><div className="text-5xl font-black text-primary">#{successInfo?.token}</div></div><button className="btn btn-primary w-full h-16 !rounded-2xl text-lg font-black" onClick={() => setShowSuccessModal(false)}>Proceed</button></div></div>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+            <div className="glass-card !p-12 !max-w-md bg-white text-center animate-in zoom-in-95"><div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8"><CheckCircle2 size={40} /></div><h2 className="text-3xl font-black mb-4 text-emerald-600">{successInfo?.title}</h2><p className="text-slate-500 font-medium mb-10">{successInfo?.message}</p><div className="bg-slate-50 rounded-2xl p-8 mb-10"><div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Clinical Token</div><div className="text-5xl font-black text-primary">#{successInfo?.token}</div></div><button className="btn btn-primary w-full h-16 !rounded-2xl text-lg font-black" onClick={() => setShowSuccessModal(false)}>Proceed</button></div>
+          </div>
         )}
 
+        {/* Visit History Modal - CENTERED */}
         {showHistoryModal && historyData && (
-          <div className="modal-overlay" onClick={() => { setShowHistoryModal(false); setExpandedVisitId(null); }}>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => { setShowHistoryModal(false); setExpandedVisitId(null); }}>
             <div className="glass-card !max-w-[680px] w-full !p-0 overflow-hidden flex flex-col bg-white shadow-2xl animate-in slide-in-from-bottom-5" style={{ maxHeight: '85vh' }} onClick={e => e.stopPropagation()}>
               <div className="p-6 border-b border-slate-100 flex justify-between items-center"><div className="flex gap-4 items-center"><div className="w-10 h-10 rounded-lg bg-primary text-white flex items-center justify-center font-bold">{historyData.patient.name.charAt(0)}</div><div><div className="font-black text-slate-800">{historyData.patient.name}</div><div className="text-xs text-slate-400 font-bold">{historyData.patient.uhid}</div></div></div><button onClick={() => { setShowHistoryModal(false); setExpandedVisitId(null); }} className="text-slate-400"><X size={20} /></button></div>
               <div className="p-6 overflow-y-auto">{historyData.history.length === 0 ? <div className="py-12 text-center text-slate-400">No records found.</div> : historyData.history.map((v: any, idx: number) => (
@@ -440,8 +443,9 @@ export default function ReceptionDashboard() {
           </div>
         )}
 
+        {/* Stats Detail Modal - CENTERED */}
         {showStatsModal && statsModalData && (
-          <div className="modal-overlay" onClick={() => setShowStatsModal(false)}>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setShowStatsModal(false)}>
             <div className="glass-card !max-w-[500px] w-full !p-0 overflow-hidden bg-white shadow-2xl animate-in zoom-in-95" style={{ maxHeight: '70vh' }} onClick={e => e.stopPropagation()}>
               <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50"><h3 className="text-lg font-black text-slate-800 uppercase">{statsModalData.title}</h3><button onClick={() => setShowStatsModal(false)} className="text-slate-400"><X size={16} /></button></div>
               <div className="p-4 overflow-y-auto">{statsModalData.list.length === 0 ? <div className="py-12 text-center text-slate-400 italic">No records.</div> : <div className="flex flex-col gap-2">{statsModalData.list.map((v: any) => (
@@ -451,8 +455,13 @@ export default function ReceptionDashboard() {
           </div>
         )}
 
+        {/* Bill Modal - CENTERED */}
         {showBillModal && selectedBill && (
-          <div className="modal-overlay"><div className="glass-card !p-10 !max-w-md bg-white animate-in zoom-in-95"><h2 className="text-2xl font-black text-slate-800 mb-8">Payment Collection</h2><div className="flex flex-col gap-6"><div className="form-group"><label className="text-[10px] font-black text-slate-400 uppercase block mb-2">Method</label><select className="form-input" value={billingForm.paymentMode} onChange={e => setBillingForm({...billingForm, paymentMode: e.target.value})}><option>CASH</option><option>UPI</option></select></div><div className="form-group"><label className="text-[10px] font-black text-slate-400 uppercase block mb-2">Discount</label><input type="number" className="form-input" value={billingForm.discount} onChange={e => setBillingForm({...billingForm, discount: parseInt(e.target.value) || 0})} /></div><button className="btn btn-primary w-full h-14 font-black" onClick={handlePayBill} disabled={loading}>Collect ₹{selectedBill.finalAmount - billingForm.discount}</button><button className="text-slate-400 w-full mt-4" onClick={() => setShowBillModal(false)}>Cancel</button></div></div></div>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+            <div className="glass-card !p-10 !max-w-md bg-white animate-in zoom-in-95">
+              <h2 className="text-2xl font-black text-slate-800 mb-8">Payment Collection</h2><div className="flex flex-col gap-6"><div className="form-group"><label className="text-[10px] font-black text-slate-400 uppercase block mb-2">Method</label><select className="form-input" value={billingForm.paymentMode} onChange={e => setBillingForm({...billingForm, paymentMode: e.target.value})}><option>CASH</option><option>UPI</option></select></div><div className="form-group"><label className="text-[10px] font-black text-slate-400 uppercase block mb-2">Discount</label><input type="number" className="form-input" value={billingForm.discount} onChange={e => setBillingForm({...billingForm, discount: parseInt(e.target.value) || 0})} /></div><button className="btn btn-primary w-full h-14 font-black" onClick={handlePayBill} disabled={loading}>Collect ₹{selectedBill.finalAmount - billingForm.discount}</button><button className="text-slate-400 w-full mt-4" onClick={() => setShowBillModal(false)}>Cancel</button></div>
+            </div>
+          </div>
         )}
       </main>
     </div>

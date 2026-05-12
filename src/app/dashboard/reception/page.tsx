@@ -782,16 +782,16 @@ export default function ReceptionDashboard() {
                                width: '64px', 
                                height: '64px', 
                                borderRadius: '50%', 
-                               background: expandedVisitId === v.id ? '#0A4D68' : '#f8fafc',
-                               color: expandedVisitId === v.id ? 'white' : '#94a3b8',
+                               background: '#f8fafc',
+                               color: '#94a3b8',
                                display: 'flex', 
                                flexDirection: 'column', 
                                alignItems: 'center', 
                                justifyContent: 'center',
                                transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
-                               boxShadow: expandedVisitId === v.id ? '0 10px 15px -3px rgba(10, 77, 104, 0.2)' : 'none',
                                flexShrink: 0,
-                               aspectRatio: '1/1'
+                               aspectRatio: '1/1',
+                               border: '1px solid #f1f5f9'
                              }}>
                                 <span style={{ fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', marginBottom: '2px' }}>Visit</span>
                                 <span style={{ fontSize: '22px', fontWeight: '900', lineHeight: '1' }}>{historyData.history.length - idx}</span>
@@ -816,7 +816,7 @@ export default function ReceptionDashboard() {
                                 </div>
                                 <span style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '2px' }}>Primary Consultant</span>
                              </div>
-                             <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: expandedVisitId === v.id ? '#0A4D68' : '#f8fafc', color: expandedVisitId === v.id ? 'white' : '#cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.4s ease', transform: expandedVisitId === v.id ? 'rotate(180deg)' : 'rotate(0deg)', border: 'none' }}>
+                             <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#f8fafc', color: '#cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.4s ease', transform: expandedVisitId === v.id ? 'rotate(180deg)' : 'rotate(0deg)', border: 'none' }}>
                                 <ChevronDown size={28} />
                              </div>
                           </div>

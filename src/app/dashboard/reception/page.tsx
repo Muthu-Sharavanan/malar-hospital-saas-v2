@@ -675,7 +675,7 @@ export default function ReceptionDashboard() {
                     <h2 className="text-2xl font-black text-slate-800 tracking-tight">Digital Clinical Records</h2>
                     <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">{historyData.patient.name} | {historyData.patient.uhid}</p>
                   </div>
-                  <button className="h-12 w-12 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400" onClick={() => setShowHistoryModal(false)}><X size={20} /></button>
+                <button onClick={() => { setShowHistoryModal(false); }} className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm border border-slate-100 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all"><X size={20} /></button>
                </div>
                <div className="flex-1 overflow-y-auto p-8 flex flex-col gap-6 bg-slate-50/50">
                   {historyData.history.length > 0 ? historyData.history.map(v => (
@@ -752,7 +752,7 @@ export default function ReceptionDashboard() {
             <div className="glass-card !p-0 overflow-hidden bg-white animate-in zoom-in-95 rounded-[1.5rem]" style={{ width: '450px', maxWidth: '90vw', maxHeight: '70vh' }} onClick={e => e.stopPropagation()}>
               <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">{statsModalData.title}</h3>
-                <button onClick={() => setShowStatsModal(false)} className="text-slate-400"><X size={18} /></button>
+                <button onClick={() => setShowStatsModal(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all border-none"><X size={16} /></button>
               </div>
               <div className="p-4 overflow-y-auto">
                 {statsModalData.list.length === 0 ? (

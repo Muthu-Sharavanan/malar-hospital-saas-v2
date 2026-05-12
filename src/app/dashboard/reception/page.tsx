@@ -791,7 +791,7 @@ export default function ReceptionDashboard() {
                   </div>
                   <div>
                     <div style={{ fontWeight: '800', fontSize: '16px', color: '#0F172A' }}>{historyData.patient.name}</div>
-                    <div style={{ fontSize: '12px', color: '#64748B', display: 'gap: 10px', marginTop: '2px', display: 'flex', gap: '10px' }}>
+                    <div style={{ fontSize: '12px', color: '#64748B', marginTop: '2px', display: 'flex', gap: '10px' }}>
                       <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '1px 7px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>{historyData.patient.uhid}</span>
                       <span>{historyData.patient.age}Y · {historyData.patient.gender}</span>
                       {historyData.patient.phone && <span>📞 {historyData.patient.phone}</span>}

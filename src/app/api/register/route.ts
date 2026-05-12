@@ -21,125 +21,114 @@ export async function POST(req: Request) {
 
     const { name, phone, age, gender, address, doctorId, patientId, visitDate, visitTime, reason, abhaId, consentGranted } = validation.data;
 
-    // 1. Check for EXACT duplicate (Name + Phone) if this is a manual entry (no patientId)
-    if (!patientId && name && phone) {
-      const trimmedName = name.trim();
-      const trimmedPhone = phone.trim();
+    // Use a transaction to ensure either EVERYTHING succeeds or NOTHING is created
+    const result = await prisma.$transaction(async (tx) => {
+      let patient;
+      let isNewPatient = false;
 
-      const existing = await prisma.patient.findFirst({
-        where: {
-          AND: [
-            { name: { equals: trimmedName, mode: 'insensitive' } },
-            { phone: { equals: trimmedPhone } },
-            { name: { not: "" } },
-            { phone: { not: "" } },
-            { uhid: { startsWith: 'MH-' } } // Only conflict with valid, assigned records
-          ]
+      if (patientId) {
+        // Use the selected patient
+        patient = await tx.patient.update({
+          where: { id: patientId },
+          data: { name, age, gender, address, phone, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
+        });
+      } else {
+        // 1. Check for EXACT duplicate (Name + Phone)
+        const trimmedName = name.trim();
+        const trimmedPhone = phone.trim();
+        const existing = await tx.patient.findFirst({
+          where: {
+            AND: [
+              { name: { equals: trimmedName, mode: 'insensitive' } },
+              { phone: { equals: trimmedPhone } },
+              { name: { not: "" } },
+              { phone: { not: "" } }
+            ]
+          }
+        });
+
+        if (existing) {
+          // AUTO-HEAL: If an exact match exists, just use it instead of erroring
+          patient = await tx.patient.update({
+            where: { id: existing.id },
+            data: { age, gender, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted) }
+          });
+        } else {
+          isNewPatient = true;
+          const lastPatient = await tx.patient.findFirst({
+            orderBy: { uhid: 'desc' }
+          });
+          
+          let nextUhidNum = 10001;
+          if (lastPatient && lastPatient.uhid && lastPatient.uhid.includes('-')) {
+            const parts = lastPatient.uhid.split('-');
+            const lastNum = parseInt(parts[parts.length - 1]);
+            if (!isNaN(lastNum)) {
+              nextUhidNum = lastNum + 1;
+            }
+          }
+          
+          const uhid = `MH-${nextUhidNum}`;
+          patient = await tx.patient.create({
+            data: { uhid, name: trimmedName, age, gender, phone: trimmedPhone, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
+          });
         }
-      });
-      if (existing) {
-        return NextResponse.json({ 
-          success: false, 
-          error: "Patient already exists with this name and number", 
-          uhid: existing.uhid,
-          existingName: existing.name,
-          existingId: existing.id
-        }, { status: 409 });
       }
-    }
 
-    let patient;
-    let isNewPatient = false;
-
-    if (patientId) {
-      // Use the selected patient
-      patient = await prisma.patient.update({
-        where: { id: patientId },
-        data: { name, age, gender, address, phone, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
-      });
-    } else {
-      isNewPatient = true;
-      // More robust UHID generation: get the highest UHID and increment
-      const lastPatient = await prisma.patient.findFirst({
-        orderBy: { uhid: 'desc' }
-      });
+      // Calculate NEXT GLOBAL TOKEN
+      let visitDateObj: Date;
+      if (visitDate && visitTime) {
+        visitDateObj = new Date(`${visitDate}T${visitTime}:00+05:30`);
+      } else if (visitDate) {
+        visitDateObj = new Date(`${visitDate}T00:00:00+05:30`);
+      } else {
+        visitDateObj = new Date();
+      }
       
-      let nextUhidNum = 10001;
-      if (lastPatient && lastPatient.uhid.startsWith('MH-')) {
-        const lastNum = parseInt(lastPatient.uhid.split('-')[1]);
-        if (!isNaN(lastNum)) {
-          nextUhidNum = lastNum + 1;
-        }
-      }
-      
-      const uhid = `MH-${nextUhidNum}`;
-      patient = await prisma.patient.create({
-        data: { uhid, name, age, gender, phone, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
+      const tokenDateStart = new Date(visitDateObj);
+      tokenDateStart.setHours(0, 0, 0, 0);
+      const tokenDateEnd = new Date(visitDateObj);
+      tokenDateEnd.setHours(23, 59, 59, 999);
+
+      const lastVisit = await tx.visit.findFirst({
+        where: { visitDate: { gte: tokenDateStart, lte: tokenDateEnd } },
+        orderBy: { tokenNumber: 'desc' }
       });
-    }
 
-    // Calculate NEXT GLOBAL TOKEN for the specific visit date
-    // Combine date + time as IST (UTC+5:30) so future appointment time is preserved
-    let visitDateObj: Date;
-    if (visitDate && visitTime) {
-      visitDateObj = new Date(`${visitDate}T${visitTime}:00+05:30`);
-    } else if (visitDate) {
-      // No time provided — store as IST midnight
-      visitDateObj = new Date(`${visitDate}T00:00:00+05:30`);
-    } else {
-      visitDateObj = new Date();
-    }
-    const tokenDateStart = new Date(visitDateObj);
-    tokenDateStart.setHours(0, 0, 0, 0);
-    const tokenDateEnd = new Date(visitDateObj);
-    tokenDateEnd.setHours(23, 59, 59, 999);
+      const nextToken = lastVisit ? lastVisit.tokenNumber + 1 : 1;
+      const selectedDoc = await tx.user.findUnique({ where: { id: doctorId } });
+      const assignedDoctorName = selectedDoc?.name || 'Unknown';
 
-    const lastVisit = await prisma.visit.findFirst({
-      where: {
-        visitDate: {
-          gte: tokenDateStart,
-          lte: tokenDateEnd
+      // 2. Create Visit
+      const visit = await tx.visit.create({
+        data: {
+          patientId: patient.id,
+          doctorId,
+          assignedDoctorName,
+          tokenNumber: nextToken,
+          visitDate: visitDateObj,
+          status: 'REGISTERED',
+          chiefComplaints: reason || null
+        },
+        include: { patient: true, doctor: true }
+      });
+
+      // 3. Create Initial Bill
+      await tx.bill.create({
+        data: {
+          visitId: visit.id,
+          amount: 200,
+          type: 'CONSULTATION',
+          paymentStatus: 'UNPAID',
+          finalAmount: 200
         }
-      },
-      orderBy: {
-        tokenNumber: 'desc'
-      }
+      });
+
+      return { visit, isNewPatient, uhid: patient.uhid };
     });
 
-    const nextToken = lastVisit ? lastVisit.tokenNumber + 1 : 1;
+    return NextResponse.json({ success: true, ...result });
 
-    const selectedDoc = await prisma.user.findUnique({ where: { id: doctorId } });
-    const assignedDoctorName = selectedDoc?.name || 'Unknown';
-
-    // 2. Create Visit
-    const visit = await prisma.visit.create({
-      data: {
-        patientId: patient.id,
-        doctorId,
-        assignedDoctorName,
-        tokenNumber: nextToken,
-        visitDate: visitDateObj,
-        status: 'REGISTERED',
-        chiefComplaints: reason || null
-      },
-      include: {
-        patient: true,
-        doctor: true
-      }
-    });
-
-    // 3. Create Initial Bill (Consultation)
-    await prisma.bill.create({
-      data: {
-        visitId: visit.id,
-        amount: 200,
-        type: 'CONSULTATION',
-        paymentStatus: 'UNPAID',
-        finalAmount: 200
-      }
-    });
-
-    return NextResponse.json({ success: true, visit, isNewPatient, uhid: patient.uhid });
   } catch (error: any) {
     return handleApiError(error);
   }

@@ -48,6 +48,7 @@ export default function ReceptionDashboard() {
   const [billingForm, setBillingForm] = useState({ discount: 0, paymentMode: 'CASH', waiverReason: '', authorizingDoc: '' });
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [historyData, setHistoryData] = useState<{patient: any, history: any[]}|null>(null);
+  const [loadingHistory, setLoadingHistory] = useState(false);
   const [expandedVisitId, setExpandedVisitId] = useState<string | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successInfo, setSuccessInfo] = useState<{title: string, message: string, token: string, uhid?: string, whatsappSent?: boolean}|null>(null);
@@ -155,15 +156,16 @@ export default function ReceptionDashboard() {
 
   const fetchHistory = async (patientId: string) => {
     try {
-      setLoading(true);
+      setShowHistoryModal(true);
+      setLoadingHistory(true);
+      setHistoryData(null); // Clear previous
       const res = await fetch(`/api/patients/${patientId}/history`);
       const data = await res.json();
       if (data.success) {
         setHistoryData({ patient: data.patient, history: data.history });
         setExpandedVisitId(data.history[0]?.id || null);
-        setShowHistoryModal(true);
       }
-    } catch (err) {} finally { setLoading(false); }
+    } catch (err) {} finally { setLoadingHistory(false); }
   };
 
   const selectPatient = (patient: any) => {
@@ -678,28 +680,35 @@ export default function ReceptionDashboard() {
           </div>
         )}
 
-        {/* History Modal - IMAGE 2 PREMIUM ADMIN STYLE */}
-        {showHistoryModal && historyData && (
+        {/* History Modal - IMAGE 2 PERFECT ADMIN STYLE */}
+        {showHistoryModal && (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(12px)', zIndex: 1100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '100px 20px 20px 20px' }} onClick={() => setShowHistoryModal(false)}>
             <div className="glass-card !max-w-4xl !w-full !max-h-[85vh] bg-white border-none overflow-hidden flex flex-col animate-in zoom-in-95 shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[2rem]" onClick={e => e.stopPropagation()}>
+               {!historyData ? (
+                 <div className="p-20 text-center flex flex-col items-center gap-4">
+                    <div className="w-12 h-12 border-4 border-primary/20 border-t-primary rounded-full animate-spin"></div>
+                    <div className="text-sm font-black text-slate-400 uppercase tracking-widest">Fetching clinical archive...</div>
+                 </div>
+               ) : (
+                 <>
                {/* Premium Header - Profile Style */}
-               <div className="p-10 pb-8 flex justify-between items-start">
-                  <div className="flex gap-6 items-center">
-                     <div className="w-20 h-20 bg-[#0A4D68] text-white rounded-[1.5rem] flex items-center justify-center text-3xl font-black shadow-lg shadow-[#0A4D68]/20">
+               <div className="p-8 pb-6 flex justify-between items-start border-b border-slate-50">
+                  <div className="flex gap-5 items-center">
+                     <div className="w-16 h-16 bg-[#0A4D68] text-white rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[#0A4D68]/20">
                         {historyData.patient.name.charAt(0)}
                      </div>
                      <div>
-                        <h2 className="text-3xl font-black text-[#0A4D68] tracking-tight mb-2 uppercase">{historyData.patient.name}</h2>
-                        <div className="flex flex-wrap gap-3 items-center">
-                           <span className="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-black tracking-widest uppercase">{historyData.patient.uhid}</span>
-                           <span className="text-slate-400 font-bold text-sm">{historyData.patient.age}Y • {historyData.patient.gender}</span>
-                           <div className="flex items-center gap-2 text-rose-500 font-black text-sm ml-2">
-                              <Phone size={14} fill="currentColor" /> {historyData.patient.phone}
+                        <h2 className="text-2xl font-black text-[#0A4D68] tracking-tight mb-1.5 uppercase">{historyData.patient.name}</h2>
+                        <div className="flex flex-wrap gap-2 items-center">
+                           <span className="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-lg text-[10px] font-black tracking-widest uppercase">{historyData.patient.uhid}</span>
+                           <span className="text-slate-400 font-bold text-xs">{historyData.patient.age}Y • {historyData.patient.gender}</span>
+                           <div className="flex items-center gap-1 text-rose-500 font-black text-xs ml-1">
+                              <Phone size={12} fill="currentColor" /> {historyData.patient.phone}
                            </div>
                         </div>
                      </div>
                   </div>
-                  <button onClick={() => setShowHistoryModal(false)} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all border-none"><X size={20} /></button>
+                  <button onClick={() => setShowHistoryModal(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all border-none focus:outline-none"><X size={18} /></button>
                </div>
 
                {/* Stats Bar */}
@@ -709,31 +718,31 @@ export default function ReceptionDashboard() {
                      <span className="text-sm font-black text-[#0A4D68] uppercase tracking-tight">{historyData.history.length} Total Visits</span>
                   </div>
                   <div className="text-sm font-bold text-slate-400 tracking-tight">
-                     Last visit: <span className="text-slate-800 font-black">{historyData.history[0] ? new Date(historyData.history[0].visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'No Record'}</span>
-                  </div>
-               </div>
-               
-               {/* Visit List */}
-               <div className="flex-1 overflow-y-auto p-10 bg-slate-50/20 flex flex-col gap-6">
-                  {historyData.history.length > 0 ? historyData.history.map((v, idx) => (
-                    <div key={v.id} className="bg-white rounded-[1.5rem] border border-slate-100 shadow-sm overflow-hidden">
-                       <div className="p-7 flex justify-between items-center">
-                          <div className="flex items-center gap-6">
-                             <div className="w-12 h-12 rounded-[1rem] bg-[#0A4D68] text-white flex items-center justify-center font-black text-lg shadow-md shadow-[#0A4D68]/10">
+                      Last visit: <span className="text-slate-800 font-black">{historyData.history[0] ? new Date(historyData.history[0].visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'No Record'}</span>
+                   </div>
+                </div>
+                
+                {/* Visit List */}
+                <div className="flex-1 overflow-y-auto p-10 bg-slate-50/20 flex flex-col gap-6">
+                 {historyData.history.length > 0 ? historyData.history.map((v, idx) => (
+                    <div key={v.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                       <div className="p-6 flex justify-between items-center border-b border-slate-50">
+                          <div className="flex items-center gap-5">
+                             <div className="w-10 h-10 rounded-full bg-[#0A4D68] text-white flex items-center justify-center font-black text-sm shadow-md shadow-[#0A4D68]/10">
                                 {historyData.history.length - idx}
                              </div>
                              <div>
-                                <div className="text-lg font-black text-slate-800">{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}</div>
-                                <div className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Token #{v.tokenNumber}</div>
+                                <div className="text-base font-black text-slate-800">{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                                <div className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">Token #{v.tokenNumber}</div>
                              </div>
                           </div>
-                          <div className="flex items-center gap-3 text-[#0A4D68]">
-                             <Stethoscope size={18} />
-                             <span className="text-sm font-black tracking-tight">Dr. {v.doctor?.name || 'Unknown'}</span>
+                          <div className="flex items-center gap-2 text-[#0A4D68]">
+                             <Stethoscope size={16} />
+                             <span className="text-xs font-black tracking-tight">Dr. {v.doctor?.name || 'Unknown'}</span>
                           </div>
                        </div>
 
-                       <div className="px-10 py-8 bg-slate-50/30 border-t border-slate-50">
+                       <div className="px-8 py-6 bg-white">
                           {v.diagnosis || v.chiefComplaints ? (
                              <div className="space-y-4">
                                 {v.chiefComplaints && (
@@ -758,6 +767,8 @@ export default function ReceptionDashboard() {
                     <div className="py-20 text-center font-bold text-slate-300">No medical history found for this UHID.</div>
                   )}
                </div>
+               </>
+               )}
             </div>
           </div>
         )}

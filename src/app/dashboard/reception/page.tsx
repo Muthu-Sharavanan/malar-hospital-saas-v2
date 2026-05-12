@@ -678,103 +678,84 @@ export default function ReceptionDashboard() {
           </div>
         )}
 
-        {/* History Modal - ACCORDION VIEW */}
+        {/* History Modal - IMAGE 2 PREMIUM ADMIN STYLE */}
         {showHistoryModal && historyData && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '120px 20px 20px 20px' }} onClick={() => setShowHistoryModal(false)}>
-            <div className="glass-card !max-w-4xl !w-full !max-h-[75vh] bg-white border-2 border-white overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 shadow-2xl" onClick={e => e.stopPropagation()}>
-               <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                  <div className="flex items-center gap-6">
-                    <div className="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
-                       <History size={28} />
-                    </div>
-                    <div>
-                      <h2 className="text-2xl font-black text-slate-800 tracking-tight">Clinical Encounter History</h2>
-                      <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">{historyData.patient.name} • {historyData.patient.uhid}</p>
-                    </div>
-                  </div>
-                  <div className="flex items-center gap-4">
-                     <div className="text-right mr-4 hidden md:block">
-                        <div className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Total Records</div>
-                        <div className="text-sm font-black text-primary">{historyData.history.length} Visits</div>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(12px)', zIndex: 1100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '100px 20px 20px 20px' }} onClick={() => setShowHistoryModal(false)}>
+            <div className="glass-card !max-w-4xl !w-full !max-h-[85vh] bg-white border-none overflow-hidden flex flex-col animate-in zoom-in-95 shadow-[0_20px_50px_rgba(0,0,0,0.1)] rounded-[2rem]" onClick={e => e.stopPropagation()}>
+               {/* Premium Header - Profile Style */}
+               <div className="p-10 pb-8 flex justify-between items-start">
+                  <div className="flex gap-6 items-center">
+                     <div className="w-20 h-20 bg-[#0A4D68] text-white rounded-[1.5rem] flex items-center justify-center text-3xl font-black shadow-lg shadow-[#0A4D68]/20">
+                        {historyData.patient.name.charAt(0)}
                      </div>
-                     <button onClick={() => setShowHistoryModal(false)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm border border-slate-100 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all"><X size={20} /></button>
+                     <div>
+                        <h2 className="text-3xl font-black text-[#0A4D68] tracking-tight mb-2 uppercase">{historyData.patient.name}</h2>
+                        <div className="flex flex-wrap gap-3 items-center">
+                           <span className="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-lg text-xs font-black tracking-widest uppercase">{historyData.patient.uhid}</span>
+                           <span className="text-slate-400 font-bold text-sm">{historyData.patient.age}Y • {historyData.patient.gender}</span>
+                           <div className="flex items-center gap-2 text-rose-500 font-black text-sm ml-2">
+                              <Phone size={14} fill="currentColor" /> {historyData.patient.phone}
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+                  <button onClick={() => setShowHistoryModal(false)} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all border-none"><X size={20} /></button>
+               </div>
+
+               {/* Stats Bar */}
+               <div className="px-10 py-5 border-y border-slate-50 bg-white flex items-center gap-10">
+                  <div className="flex items-center gap-3">
+                     <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><Clock size={18} /></div>
+                     <span className="text-sm font-black text-[#0A4D68] uppercase tracking-tight">{historyData.history.length} Total Visits</span>
+                  </div>
+                  <div className="text-sm font-bold text-slate-400 tracking-tight">
+                     Last visit: <span className="text-slate-800 font-black">{historyData.history[0] ? new Date(historyData.history[0].visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'No Record'}</span>
                   </div>
                </div>
                
-               <div className="flex-1 overflow-y-auto p-8 bg-slate-50/30 flex flex-col gap-4">
+               {/* Visit List */}
+               <div className="flex-1 overflow-y-auto p-10 bg-slate-50/20 flex flex-col gap-6">
                   {historyData.history.length > 0 ? historyData.history.map((v, idx) => (
-                    <div key={v.id} className={`group bg-white rounded-2xl border transition-all duration-300 overflow-hidden ${expandedVisitId === v.id ? 'border-primary shadow-xl ring-4 ring-primary/5' : 'border-slate-100 hover:border-primary/30 shadow-sm'}`}>
-                       {/* Accordion Header */}
-                       <button 
-                         onClick={() => setExpandedVisitId(expandedVisitId === v.id ? null : v.id)}
-                         className="w-full p-6 flex justify-between items-center text-left"
-                       >
+                    <div key={v.id} className="bg-white rounded-[1.5rem] border border-slate-100 shadow-sm overflow-hidden">
+                       <div className="p-7 flex justify-between items-center">
                           <div className="flex items-center gap-6">
-                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs transition-colors ${expandedVisitId === v.id ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400'}`}>
+                             <div className="w-12 h-12 rounded-[1rem] bg-[#0A4D68] text-white flex items-center justify-center font-black text-lg shadow-md shadow-[#0A4D68]/10">
                                 {historyData.history.length - idx}
                              </div>
                              <div>
-                                <div className="text-sm font-black text-slate-800">{new Date(v.visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</div>
-                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Consultant: Dr. {v.doctor?.name || 'Unknown'}</div>
+                                <div className="text-lg font-black text-slate-800">{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                                <div className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">Token #{v.tokenNumber}</div>
                              </div>
                           </div>
-                          <div className="flex items-center gap-4">
-                             {v.diagnosis && <span className="hidden sm:block text-[9px] font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full uppercase tracking-wider">Record Updated</span>}
-                             <div className={`transition-transform duration-300 ${expandedVisitId === v.id ? 'rotate-180 text-primary' : 'text-slate-300'}`}>
-                                <ChevronDown size={20} />
-                             </div>
+                          <div className="flex items-center gap-3 text-[#0A4D68]">
+                             <Stethoscope size={18} />
+                             <span className="text-sm font-black tracking-tight">Dr. {v.doctor?.name || 'Unknown'}</span>
                           </div>
-                       </button>
+                       </div>
 
-                       {/* Accordion Content */}
-                       {expandedVisitId === v.id && (
-                          <div className="p-8 pt-0 border-t border-dashed border-slate-100 animate-in slide-in-from-top-4 duration-300">
-                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-8">
-                                <div className="space-y-6">
+                       <div className="px-10 py-8 bg-slate-50/30 border-t border-slate-50">
+                          {v.diagnosis || v.chiefComplaints ? (
+                             <div className="space-y-4">
+                                {v.chiefComplaints && (
                                    <div>
-                                      <span className="block font-black text-slate-300 uppercase tracking-widest mb-2 text-[9px]">Chief Complaints</span>
-                                      <p className="text-sm font-bold text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">{v.chiefComplaints || 'General checkup/evaluation'}</p>
+                                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1 block">Chief Complaints</span>
+                                      <p className="text-sm font-bold text-slate-700">{v.chiefComplaints}</p>
                                    </div>
+                                )}
+                                {v.diagnosis && (
                                    <div>
-                                      <span className="block font-black text-slate-300 uppercase tracking-widest mb-2 text-[9px]">Clinical Diagnosis</span>
-                                      <p className="text-sm font-bold text-slate-700 leading-relaxed italic bg-slate-50 p-4 rounded-xl border border-slate-100">{v.diagnosis || 'Diagnosis pending clinical results'}</p>
+                                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1 block">Diagnosis</span>
+                                      <p className="text-sm font-bold text-slate-700 italic">{v.diagnosis}</p>
                                    </div>
-                                </div>
-                                <div className="space-y-6">
-                                   <div>
-                                      <span className="block font-black text-slate-300 uppercase tracking-widest mb-4 text-[9px]">Prescribed Medications</span>
-                                      {v.prescriptions?.length > 0 ? (
-                                         <div className="grid grid-cols-1 gap-3">
-                                            {v.prescriptions.map((p:any) => (
-                                               <div key={p.id} className="flex items-center gap-4 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100 shadow-tiny">
-                                                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-[10px]">Rx</div>
-                                                  <div>
-                                                     <div className="text-xs font-black text-slate-800">{p.drugName}</div>
-                                                     <div className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">{p.dosage}</div>
-                                                  </div>
-                                               </div>
-                                            ))}
-                                         </div>
-                                      ) : (
-                                         <div className="text-[10px] text-slate-300 italic p-4 bg-slate-50 rounded-xl border border-slate-100 border-dashed">No medications recorded for this visit.</div>
-                                      )}
-                                   </div>
-                                   <div className="flex gap-3 pt-2">
-                                      <button className="h-10 px-4 rounded-lg border border-slate-200 text-slate-500 text-[10px] font-black uppercase tracking-wider hover:bg-slate-50 transition-colors flex items-center gap-2"><Printer size={14} /> Print Case</button>
-                                      <button className="h-10 px-4 rounded-lg border border-slate-200 text-slate-500 text-[10px] font-black uppercase tracking-wider hover:bg-slate-50 transition-colors flex items-center gap-2"><FileText size={14} /> Lab Sheet</button>
-                                   </div>
-                                </div>
+                                )}
                              </div>
-                          </div>
-                       )}
+                          ) : (
+                             <div className="text-sm font-bold text-slate-300 italic py-2">No consultation notes recorded yet.</div>
+                          )}
+                       </div>
                     </div>
                   )) : (
-                    <div className="py-20 text-center flex flex-col items-center justify-center gap-4">
-                       <div className="w-16 h-16 bg-slate-100 text-slate-300 rounded-full flex items-center justify-center">
-                          <History size={32} />
-                       </div>
-                       <div className="font-black text-slate-300 uppercase tracking-widest text-sm">Empty Clinical Archive</div>
-                    </div>
+                    <div className="py-20 text-center font-bold text-slate-300">No medical history found for this UHID.</div>
                   )}
                </div>
             </div>

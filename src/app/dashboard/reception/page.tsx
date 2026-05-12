@@ -148,6 +148,13 @@ export default function ReceptionDashboard() {
     } catch (err) {}
   };
 
+  // Reset expanded visit when modal closes
+  useEffect(() => {
+    if (!showHistoryModal) {
+      setExpandedVisitId(null);
+    }
+  }, [showHistoryModal]);
+
   useEffect(() => {
     if (formData.phone.length === 10) {
       fetchPatients(formData.phone);
@@ -759,7 +766,7 @@ export default function ReceptionDashboard() {
                          onClick={() => setExpandedVisitId(expandedVisitId === v.id ? null : v.id)}
                          style={{ 
                            width: '100%', 
-                           padding: '30px', 
+                           padding: '35px 40px', 
                            display: 'flex', 
                            justifyContent: 'space-between', 
                            alignItems: 'center', 
@@ -770,44 +777,47 @@ export default function ReceptionDashboard() {
                            outline: 'none'
                          }}
                        >
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
                              <div style={{ 
-                               width: '60px', 
-                               height: '60px', 
-                               borderRadius: '18px', 
+                               width: '64px', 
+                               height: '64px', 
+                               borderRadius: '50%', 
                                background: expandedVisitId === v.id ? '#0A4D68' : '#f8fafc',
                                color: expandedVisitId === v.id ? 'white' : '#94a3b8',
                                display: 'flex', 
                                flexDirection: 'column', 
                                alignItems: 'center', 
                                justifyContent: 'center',
-                               transition: 'all 0.3s ease'
+                               transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+                               boxShadow: expandedVisitId === v.id ? '0 10px 15px -3px rgba(10, 77, 104, 0.2)' : 'none',
+                               flexShrink: 0,
+                               aspectRatio: '1/1'
                              }}>
-                                <span style={{ fontSize: '9px', fontWeight: '900', textTransform: 'uppercase', marginBottom: '2px' }}>Visit</span>
-                                <span style={{ fontSize: '20px', fontWeight: '900' }}>{historyData.history.length - idx}</span>
+                                <span style={{ fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', marginBottom: '2px' }}>Visit</span>
+                                <span style={{ fontSize: '22px', fontWeight: '900', lineHeight: '1' }}>{historyData.history.length - idx}</span>
                              </div>
                              <div>
-                                <div style={{ fontSize: '18px', fontWeight: '900', color: '#1e293b', marginBottom: '6px', letterSpacing: '-0.5px' }}>{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</div>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                                   <span style={{ background: '#f1f5f9', color: '#64748b', padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Token #{v.tokenNumber}</span>
-                                   <div style={{ color: '#059669', fontWeight: '900', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1.5px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                                      <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#059669' }}></div> Verified Record
+                                <div style={{ fontSize: '22px', fontWeight: '900', color: '#0A4D68', marginBottom: '8px', letterSpacing: '-0.5px' }}>{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                                   <span style={{ background: '#f1f5f9', color: '#64748b', padding: '6px 14px', borderRadius: '12px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Token #{v.tokenNumber}</span>
+                                   <div style={{ color: '#059669', fontWeight: '900', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669' }}></div> Verified Record
                                    </div>
                                 </div>
                              </div>
                           </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
-                             <div style={{ textAlign: 'right', display: 'none', sm: 'block' } as any}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#0A4D68', marginBottom: '2px', justifyContent: 'flex-end' }}>
-                                   <Stethoscope size={18} />
-                                   <span style={{ fontSize: '15px', fontWeight: '900', textTransform: 'uppercase' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
+                             <div style={{ textAlign: 'right' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#0A4D68', marginBottom: '4px', justifyContent: 'flex-end' }}>
+                                   <Stethoscope size={22} />
+                                   <span style={{ fontSize: '18px', fontWeight: '900', textTransform: 'uppercase' }}>
                                       {v.doctor?.name ? (v.doctor.name.toLowerCase().startsWith('dr') ? v.doctor.name : `Dr. ${v.doctor.name}`) : 'Specialist'}
                                    </span>
                                 </div>
-                                <span style={{ fontSize: '10px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Primary Consultant</span>
+                                <span style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '2px' }}>Primary Consultant</span>
                              </div>
-                             <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: expandedVisitId === v.id ? '#0A4D68/10' : '#f8fafc', color: expandedVisitId === v.id ? '#0A4D68' : '#cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease', transform: expandedVisitId === v.id ? 'rotate(180deg)' : 'rotate(0deg)' }}>
-                                <ChevronDown size={20} />
+                             <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: expandedVisitId === v.id ? '#0A4D68' : '#f8fafc', color: expandedVisitId === v.id ? 'white' : '#cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.4s ease', transform: expandedVisitId === v.id ? 'rotate(180deg)' : 'rotate(0deg)', border: 'none' }}>
+                                <ChevronDown size={28} />
                              </div>
                           </div>
                        </button>

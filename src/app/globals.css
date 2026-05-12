@@ -520,3 +520,17 @@ p { color: var(--text-muted); }
   from { width: 100%; }
   to { width: 0%; }
 }
+
+/* Modal Overlay Fix */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(10, 77, 104, 0.4);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 2rem;
+  animation: fadeIn 0.3s ease-out;
+}

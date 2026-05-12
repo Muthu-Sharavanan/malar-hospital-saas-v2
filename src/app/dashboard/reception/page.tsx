@@ -24,7 +24,8 @@ import {
   ChevronRight,
   X,
   CreditCard,
-  FileText
+  FileText,
+  ChevronDown
 } from 'lucide-react';
 
 export default function ReceptionDashboard() {
@@ -47,6 +48,7 @@ export default function ReceptionDashboard() {
   const [billingForm, setBillingForm] = useState({ discount: 0, paymentMode: 'CASH', waiverReason: '', authorizingDoc: '' });
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [historyData, setHistoryData] = useState<{patient: any, history: any[]}|null>(null);
+  const [expandedVisitId, setExpandedVisitId] = useState<string | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successInfo, setSuccessInfo] = useState<{title: string, message: string, token: string, uhid?: string, whatsappSent?: boolean}|null>(null);
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
@@ -772,11 +774,11 @@ export default function ReceptionDashboard() {
           </div>
         )}
 
-        {/* Visit History Modal (Premium Admin Design) */}
+        {/* Visit History Modal (Premium Accordion Design) */}
         {showHistoryModal && historyData && (
           <div
             style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
-            onClick={() => setShowHistoryModal(false)}
+            onClick={() => { setShowHistoryModal(false); setExpandedVisitId(null); }}
           >
             <div
               className="glass-card !max-w-[680px] w-full !p-0 overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 bg-white border-2 border-white shadow-2xl"
@@ -798,7 +800,7 @@ export default function ReceptionDashboard() {
                     </div>
                   </div>
                 </div>
-                <button onClick={() => setShowHistoryModal(false)} className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-colors">
+                <button onClick={() => { setShowHistoryModal(false); setExpandedVisitId(null); }} className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-colors">
                   <X size={20} />
                 </button>
               </div>
@@ -823,9 +825,12 @@ export default function ReceptionDashboard() {
                 ) : historyData.history.length === 0 ? (
                   <div style={{ textAlign: 'center', padding: '40px', color: '#94A3B8', fontStyle: 'italic' }}>No medical records found for this patient.</div>
                 ) : historyData.history.map((v: any, idx: number) => (
-                  <div key={v.id} style={{ border: '1px solid #E2E8F0', borderRadius: '12px', overflow: 'hidden' }}>
-                    {/* Visit Header */}
-                    <div style={{ padding: '14px 18px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div key={v.id} style={{ border: '1px solid #E2E8F0', borderRadius: '12px', overflow: 'hidden' }} className="transition-all">
+                    {/* Visit Header (Clickable) */}
+                    <div 
+                      style={{ padding: '14px 18px', background: expandedVisitId === v.id ? '#F0F9FF' : '#F8FAFC', borderBottom: expandedVisitId === v.id ? '1px solid #BAE6FD' : '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }}
+                      onClick={() => setExpandedVisitId(expandedVisitId === v.id ? null : v.id)}
+                    >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                         <span style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#0A4D68', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 'bold', flexShrink: 0 }}>
                           {historyData.history.length - idx}
@@ -837,45 +842,66 @@ export default function ReceptionDashboard() {
                           <div style={{ fontSize: '12px', color: '#64748B' }}>Token #{v.tokenNumber}</div>
                         </div>
                       </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        <Stethoscope size={13} color="#64748B" />
-                        <span style={{ fontSize: '12px', fontWeight: '600', color: '#0A4D68' }}>
-                          Dr. {v.doctor?.name?.trim().replace(/^(dr\.?\s*)+/i, '') || 'Unknown'}
-                        </span>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                          <Stethoscope size={13} color="#64748B" />
+                          <span style={{ fontSize: '12px', fontWeight: '600', color: '#0A4D68' }}>
+                            Dr. {v.doctor?.name?.trim().replace(/^(dr\.?\s*)+/i, '') || 'Unknown'}
+                          </span>
+                        </div>
+                        <div className={`transition-transform duration-300 ${expandedVisitId === v.id ? 'rotate-180' : ''}`}>
+                          <ChevronDown size={18} className="text-slate-400" />
+                        </div>
                       </div>
                     </div>
-                    {/* Visit Body */}
-                    <div style={{ padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: '8px', background: 'white' }}>
-                      {v.chiefComplaints ? (
-                        <div style={{ fontSize: '13px', color: '#374151' }}>
-                          <span style={{ fontWeight: '700', color: '#64748B', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.05em' }}>Chief Complaints</span>
-                          <p style={{ margin: '4px 0 0 0', color: '#1E293B' }}>{v.chiefComplaints}</p>
-                        </div>
-                      ) : null}
-                      {v.diagnosis ? (
-                        <div style={{ fontSize: '13px', color: '#374151', marginTop: v.chiefComplaints ? '6px' : 0 }}>
-                          <span style={{ fontWeight: '700', color: '#64748B', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.05em' }}>Diagnosis</span>
-                          <p style={{ margin: '4px 0 0 0', color: '#1E293B', fontWeight: '600' }}>{v.diagnosis}</p>
-                        </div>
-                      ) : null}
-                      {!v.chiefComplaints && !v.diagnosis && (
-                        <p style={{ fontSize: '13px', color: '#94A3B8', fontStyle: 'italic', margin: 0 }}>No consultation notes recorded yet.</p>
-                      )}
-                      {(v.prescriptions?.length > 0 || v.labOrders?.length > 0) && (
-                        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #F1F5F9' }}>
-                          {v.prescriptions?.length > 0 && (
-                            <span style={{ fontSize: '11px', background: '#F0FDF4', color: '#15803D', padding: '3px 10px', borderRadius: '20px', fontWeight: '600' }}>
-                              💊 {v.prescriptions.length} Med{v.prescriptions.length > 1 ? 's' : ''}: {v.prescriptions.slice(0, 3).map((p: any) => p.drugName).join(', ')}{v.prescriptions.length > 3 ? '...' : ''}
-                            </span>
-                          )}
-                          {v.labOrders?.length > 0 && (
-                            <span style={{ fontSize: '11px', background: '#FFF7ED', color: '#C2410C', padding: '3px 10px', borderRadius: '20px', fontWeight: '600' }}>
-                              🧪 {v.labOrders.length} Lab Test{v.labOrders.length > 1 ? 's' : ''}: {v.labOrders.slice(0, 2).map((l: any) => l.testName).join(', ')}{v.labOrders.length > 2 ? '...' : ''}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
+                    {/* Visit Body (Expanded Only) */}
+                    {expandedVisitId === v.id && (
+                      <div style={{ padding: '18px', display: 'flex', flexDirection: 'column', gap: '12px', background: 'white' }} className="animate-in slide-in-from-top-2">
+                        {v.chiefComplaints ? (
+                          <div style={{ fontSize: '13px', color: '#374151' }}>
+                            <span style={{ fontWeight: '700', color: '#64748B', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.05em' }}>Chief Complaints</span>
+                            <p style={{ margin: '4px 0 0 0', color: '#1E293B' }}>{v.chiefComplaints}</p>
+                          </div>
+                        ) : null}
+                        {v.diagnosis ? (
+                          <div style={{ fontSize: '13px', color: '#374151' }}>
+                            <span style={{ fontWeight: '700', color: '#64748B', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.05em' }}>Diagnosis</span>
+                            <p style={{ margin: '4px 0 0 0', color: '#1E293B', fontWeight: '600' }}>{v.diagnosis}</p>
+                          </div>
+                        ) : null}
+                        {!v.chiefComplaints && !v.diagnosis && (
+                          <p style={{ fontSize: '13px', color: '#94A3B8', fontStyle: 'italic', margin: 0 }}>No consultation notes recorded yet.</p>
+                        )}
+                        {(v.prescriptions?.length > 0 || v.labOrders?.length > 0) && (
+                          <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '8px', paddingTop: '12px', borderTop: '1px solid #F1F5F9' }}>
+                            {v.prescriptions?.length > 0 && (
+                              <div style={{ width: '100%' }}>
+                                <span style={{ fontWeight: '700', color: '#64748B', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>Medications</span>
+                                <div className="flex flex-wrap gap-2">
+                                  {v.prescriptions.map((p: any) => (
+                                    <span key={p.id} style={{ fontSize: '11px', background: '#F0FDF4', color: '#15803D', padding: '3px 10px', borderRadius: '8px', fontWeight: '600', border: '1px solid #DCFCE7' }}>
+                                      💊 {p.drugName} ({p.dosage})
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            {v.labOrders?.length > 0 && (
+                              <div style={{ width: '100%', marginTop: '8px' }}>
+                                <span style={{ fontWeight: '700', color: '#64748B', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.05em', display: 'block', marginBottom: '6px' }}>Diagnostic Tests</span>
+                                <div className="flex flex-wrap gap-2">
+                                  {v.labOrders.map((l: any) => (
+                                    <span key={l.id} style={{ fontSize: '11px', background: '#FFF7ED', color: '#C2410C', padding: '3px 10px', borderRadius: '8px', fontWeight: '600', border: '1px solid #FFEDD5' }}>
+                                      🧪 {l.testName}
+                                    </span>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

@@ -691,92 +691,130 @@ export default function ReceptionDashboard() {
                  </div>
                ) : (
                  <>
-               {/* Premium Header - Profile Style */}
-               <div className="p-8 pb-6 flex justify-between items-start border-b border-slate-50">
-                  <div className="flex gap-5 items-center">
-                     <div className="w-16 h-16 bg-[#0A4D68] text-white rounded-2xl flex items-center justify-center text-2xl font-black shadow-lg shadow-[#0A4D68]/20">
+               {/* Digital Identity Card Header */}
+               <div className="p-10 pb-8 bg-gradient-to-br from-white via-white to-slate-50/50 relative border-b border-slate-100">
+                  <div className="absolute top-0 right-0 p-8">
+                     <button onClick={() => setShowHistoryModal(false)} className="w-12 h-12 flex items-center justify-center rounded-2xl bg-white/80 backdrop-blur-md text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all border border-slate-100 shadow-sm focus:outline-none"><X size={20} /></button>
+                  </div>
+                  <div className="flex gap-8 items-center">
+                     <div className="w-24 h-24 bg-gradient-to-tr from-[#0A4D68] to-[#088395] text-white rounded-[2rem] flex items-center justify-center text-4xl font-black shadow-xl shadow-[#0A4D68]/30 border-4 border-white">
                         {historyData.patient.name.charAt(0)}
                      </div>
-                     <div>
-                        <h2 className="text-2xl font-black text-[#0A4D68] tracking-tight mb-1.5 uppercase">{historyData.patient.name}</h2>
-                        <div className="flex flex-wrap gap-2 items-center">
-                           <span className="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-lg text-[10px] font-black tracking-widest uppercase">{historyData.patient.uhid}</span>
-                           <span className="text-slate-400 font-bold text-xs">{historyData.patient.age}Y • {historyData.patient.gender}</span>
-                           <div className="flex items-center gap-1 text-rose-500 font-black text-xs ml-1">
-                              <Phone size={12} fill="currentColor" /> {historyData.patient.phone}
+                     <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                           <h2 className="text-3xl font-black text-[#0A4D68] tracking-tight uppercase leading-none">{historyData.patient.name}</h2>
+                           <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[10px] font-black tracking-widest uppercase border border-emerald-100/50">Active Patient</span>
+                        </div>
+                        <div className="flex flex-wrap gap-4 items-center">
+                           <div className="flex items-center gap-2 bg-blue-50/50 px-4 py-2 rounded-xl border border-blue-100/50">
+                              <span className="text-[10px] font-black text-blue-400 uppercase tracking-widest">UHID</span>
+                              <span className="text-sm font-black text-blue-600">{historyData.patient.uhid}</span>
+                           </div>
+                           <div className="flex items-center gap-2 bg-slate-50/50 px-4 py-2 rounded-xl border border-slate-100/50">
+                              <span className="text-sm font-bold text-slate-400">{historyData.patient.age}Y • {historyData.patient.gender}</span>
+                           </div>
+                           <div className="flex items-center gap-2 bg-rose-50/50 px-4 py-2 rounded-xl border border-rose-100/50 text-rose-500 font-black text-sm">
+                              <Phone size={14} fill="currentColor" /> {historyData.patient.phone}
                            </div>
                         </div>
                      </div>
                   </div>
-                  <button onClick={() => setShowHistoryModal(false)} className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all border-none focus:outline-none"><X size={18} /></button>
                </div>
 
-               {/* Stats Bar */}
-               <div className="px-10 py-5 border-y border-slate-50 bg-white flex items-center gap-10">
-                  <div className="flex items-center gap-3">
-                     <div className="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><Clock size={18} /></div>
-                     <span className="text-sm font-black text-[#0A4D68] uppercase tracking-tight">{historyData.history.length} Total Visits</span>
+               {/* Smart Stats Bar */}
+               <div className="px-10 py-6 bg-white/50 backdrop-blur-sm flex items-center justify-between border-b border-slate-50">
+                  <div className="flex items-center gap-8">
+                     <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-2xl bg-[#0A4D68] text-white flex items-center justify-center shadow-lg shadow-[#0A4D68]/20"><Clock size={18} /></div>
+                        <div>
+                           <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Total Care Visits</div>
+                           <div className="text-base font-black text-[#0A4D68] leading-none">{historyData.history.length} Clinical Records</div>
+                        </div>
+                     </div>
+                     <div className="h-8 w-px bg-slate-100"></div>
+                     <div>
+                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Latest Consultation</div>
+                        <div className="text-base font-black text-slate-800 leading-none">{historyData.history[0] ? new Date(historyData.history[0].visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'N/A'}</div>
+                     </div>
                   </div>
-                  <div className="text-sm font-bold text-slate-400 tracking-tight">
-                      Last visit: <span className="text-slate-800 font-black">{historyData.history[0] ? new Date(historyData.history[0].visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'No Record'}</span>
-                   </div>
-                </div>
-                
-               {/* Visit List */}
-               <div className="flex-1 overflow-y-auto p-10 bg-slate-50/20 flex flex-col gap-6">
+               </div>
+               
+               {/* Clinical Archive List */}
+               <div className="flex-1 overflow-y-auto p-10 bg-slate-50/40 flex flex-col gap-6 custom-scrollbar">
                  {historyData.history.length > 0 ? historyData.history.map((v, idx) => (
-                    <div key={v.id} className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden shrink-0 ${expandedVisitId === v.id ? 'border-primary shadow-lg' : 'border-slate-100 shadow-sm'}`}>
-                       {/* Visit Header - Clickable */}
+                    <div key={v.id} className={`group bg-white rounded-[2rem] transition-all duration-500 overflow-hidden shrink-0 border border-white shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_20px_40px_rgba(10,77,104,0.08)] ${expandedVisitId === v.id ? 'ring-2 ring-primary/10' : ''}`}>
+                       {/* Visit Header */}
                        <button 
                          onClick={() => setExpandedVisitId(expandedVisitId === v.id ? null : v.id)}
-                         className="w-full p-6 flex justify-between items-center text-left hover:bg-slate-50/50 transition-colors"
+                         className="w-full p-8 flex justify-between items-center text-left hover:bg-slate-50/30 transition-colors border-none focus:outline-none"
                        >
-                          <div className="flex items-center gap-5">
-                             <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm shadow-sm transition-colors ${expandedVisitId === v.id ? 'bg-primary text-white' : 'bg-[#0A4D68] text-white'}`}>
-                                {historyData.history.length - idx}
+                          <div className="flex items-center gap-8">
+                             <div className={`w-14 h-14 rounded-2xl flex flex-col items-center justify-center transition-all duration-500 shadow-lg ${expandedVisitId === v.id ? 'bg-primary text-white shadow-primary/20 scale-110' : 'bg-[#0A4D68]/5 text-[#0A4D68] shadow-slate-100'}`}>
+                                <span className="text-[10px] font-black uppercase leading-none mb-0.5 opacity-60">Visit</span>
+                                <span className="text-xl font-black leading-none">{historyData.history.length - idx}</span>
                              </div>
                              <div>
-                                <div className="text-lg font-black text-slate-800 leading-none">{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}</div>
-                                <div className="text-[10px] font-bold text-slate-400 mt-1.5 uppercase tracking-widest">Token #{v.tokenNumber}</div>
+                                <div className="text-xl font-black text-slate-800 leading-none tracking-tight mb-2 group-hover:text-primary transition-colors">{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                                <div className="flex items-center gap-3">
+                                   <span className="bg-slate-100 text-slate-500 px-2.5 py-1 rounded-lg text-[9px] font-black tracking-widest uppercase">Token #{v.tokenNumber}</span>
+                                   <div className="flex items-center gap-2 text-primary font-black text-[10px] uppercase tracking-widest">
+                                      <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></div> Verified Record
+                                   </div>
+                                </div>
                              </div>
                           </div>
-                          <div className="flex items-center gap-3">
-                             <div className="flex items-center gap-2 text-[#0A4D68]/60">
-                                <Stethoscope size={16} />
-                                <span className="text-xs font-black tracking-tight uppercase">Dr. {v.doctor?.name || 'Unknown'}</span>
+                          <div className="flex items-center gap-6">
+                             <div className="flex flex-col items-end">
+                                <div className="flex items-center gap-2 text-[#0A4D68] mb-1">
+                                   <Stethoscope size={16} />
+                                   <span className="text-sm font-black tracking-tight uppercase italic">Dr. {v.doctor?.name || 'Medical Specialist'}</span>
+                                </div>
+                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Primary Consultant</span>
                              </div>
-                             <div className={`transition-transform duration-300 ${expandedVisitId === v.id ? 'rotate-180 text-primary' : 'text-slate-300'}`}>
-                                <ChevronDown size={18} />
+                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 ${expandedVisitId === v.id ? 'rotate-180 bg-primary/10 text-primary' : 'bg-slate-50 text-slate-300'}`}>
+                                <ChevronDown size={20} />
                              </div>
                           </div>
                        </button>
 
-                       {/* Visit Details - Accordion Content */}
+                       {/* Visit Details */}
                        {expandedVisitId === v.id && (
-                          <div className="px-8 pb-8 pt-0 bg-white animate-in slide-in-from-top-2 duration-300">
-                             <div className="pt-6 border-t border-dashed border-slate-100 space-y-6">
-                                {v.chiefComplaints && (
-                                   <div>
-                                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5 block">Chief Complaints</span>
-                                      <p className="text-sm font-bold text-slate-700 leading-relaxed">{v.chiefComplaints}</p>
+                          <div className="px-10 pb-10 pt-0 bg-white animate-in fade-in zoom-in-95 duration-500">
+                             <div className="pt-8 border-t border-slate-50 space-y-8">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                   <div className="bg-[#F8FAFC] p-8 rounded-[1.5rem] border border-slate-100/50 relative overflow-hidden group/card">
+                                      <div className="absolute -top-4 -right-4 w-24 h-24 bg-blue-500/5 rounded-full blur-2xl group-hover/card:bg-blue-500/10 transition-colors"></div>
+                                      <div className="flex items-center gap-3 mb-4">
+                                         <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"><Clipboard size={16} /></div>
+                                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Chief Complaints</span>
+                                      </div>
+                                      <p className="text-base font-bold text-slate-700 leading-relaxed relative z-10">{v.chiefComplaints || 'Routine health checkup and follow-up'}</p>
                                    </div>
-                                )}
-                                {v.diagnosis && (
-                                   <div>
-                                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5 block">Clinical Diagnosis</span>
-                                      <p className="text-sm font-bold text-slate-700 italic leading-relaxed">{v.diagnosis}</p>
+                                   <div className="bg-[#FDF4FF] p-8 rounded-[1.5rem] border border-purple-100/30 relative overflow-hidden group/card">
+                                      <div className="absolute -top-4 -right-4 w-24 h-24 bg-purple-500/5 rounded-full blur-2xl group-hover/card:bg-purple-500/10 transition-colors"></div>
+                                      <div className="flex items-center gap-3 mb-4">
+                                         <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><Activity size={16} /></div>
+                                         <span className="text-[10px] font-black text-slate-400 uppercase tracking-[2px]">Encounter Diagnosis</span>
+                                      </div>
+                                      <p className="text-base font-bold text-slate-700 italic leading-relaxed relative z-10">{v.diagnosis || 'Clinical evaluation in progress'}</p>
                                    </div>
-                                )}
+                                </div>
                                 {!v.chiefComplaints && !v.diagnosis && (
-                                   <div className="text-sm font-bold text-slate-300 italic py-2 text-center bg-slate-50 rounded-xl border border-dashed border-slate-100">No consultation notes recorded yet.</div>
+                                   <div className="py-10 text-center bg-slate-50/50 rounded-[1.5rem] border-2 border-dashed border-slate-100">
+                                      <div className="text-slate-300 font-black uppercase tracking-widest text-[10px]">No Narrative Data Recorded</div>
+                                   </div>
                                 )}
                              </div>
                           </div>
                        )}
                     </div>
                   )) : (
-                    <div className="py-20 text-center font-bold text-slate-300">No medical history found for this UHID.</div>
+                    <div className="py-32 text-center">
+                       <div className="w-20 h-20 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300"><FileSearch size={40} /></div>
+                       <div className="text-slate-400 font-black uppercase tracking-[3px] text-xs">No historical clinical data available</div>
+                    </div>
                   )}
+               </div>
                </div>
                </>
                )}

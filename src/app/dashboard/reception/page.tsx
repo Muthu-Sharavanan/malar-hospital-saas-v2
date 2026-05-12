@@ -693,114 +693,120 @@ export default function ReceptionDashboard() {
                  </div>
                ) : (
                  <>
+               {/* Modal Close - FORCED TOP RIGHT */}
+               <button 
+                 onClick={() => setShowHistoryModal(false)} 
+                 style={{ position: 'absolute', top: '30px', right: '30px', width: '44px', height: '44px', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'transparent', border: 'none', cursor: 'pointer', color: '#94a3b8', zIndex: 1000, padding: 0 }}
+               >
+                 <X size={28} />
+               </button>
+
                {/* Premium Header */}
-               <div className="p-8 pb-6 relative border-b border-slate-50 bg-white">
-                  <button 
-                    onClick={() => setShowHistoryModal(false)} 
-                    className="absolute top-6 right-6 w-12 h-12 flex items-center justify-center rounded-2xl bg-slate-50 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all border-none shadow-sm z-10"
-                  >
-                    <X size={22} />
-                  </button>
-                  
-                  <div className="flex gap-6 items-center">
-                     <div className="w-20 h-20 bg-gradient-to-tr from-[#0A4D68] to-[#088395] text-white rounded-[1.5rem] flex items-center justify-center text-3xl font-black shadow-lg shadow-[#0A4D68]/20">
+               <div style={{ padding: '40px 40px 30px 40px', position: 'relative', borderBottom: '1px solid #f1f5f9', background: 'white' }}>
+                  <div style={{ display: 'flex', gap: '24px', alignItems: 'center' }}>
+                     <div style={{ width: '80px', height: '80px', background: 'linear-gradient(135deg, #0A4D68 0%, #088395 100%)', color: 'white', borderRadius: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '32px', fontWeight: '900', boxShadow: '0 12px 20px -5px rgba(10, 77, 104, 0.3)' }}>
                         {historyData.patient.name.charAt(0)}
                      </div>
-                     <div className="flex-1 pr-12">
-                        <div className="flex items-center gap-3 mb-2 flex-wrap">
-                           <h2 className="text-2xl font-black text-[#0A4D68] tracking-tight uppercase leading-none">{historyData.patient.name}</h2>
-                           <span className="bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full text-[9px] font-black tracking-widest uppercase border border-emerald-100/50">Active Patient</span>
+                     <div style={{ flex: 1, paddingRight: '60px' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '6px', flexWrap: 'wrap' }}>
+                           <h2 style={{ fontSize: '28px', fontWeight: '900', color: '#0A4D68', margin: 0, textTransform: 'uppercase', letterSpacing: '-0.5px' }}>{historyData.patient.name}</h2>
+                           <span style={{ background: '#ecfdf5', color: '#059669', padding: '5px 14px', borderRadius: '50px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1.5px', border: '1px solid rgba(5, 150, 105, 0.2)' }}>Active Patient</span>
                         </div>
-                        <div className="flex flex-wrap gap-x-6 gap-y-2 items-center">
-                           <div className="flex items-center gap-2">
-                              <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">UHID</span>
-                              <span className="text-sm font-black text-slate-600">{historyData.patient.uhid}</span>
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '30px', alignItems: 'center' }}>
+                           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                              <span style={{ fontSize: '11px', fontWeight: '900', color: '#cbd5e1', textTransform: 'uppercase', letterSpacing: '1.5px' }}>UHID</span>
+                              <span style={{ fontSize: '16px', fontWeight: '900', color: '#475569' }}>{historyData.patient.uhid}</span>
                            </div>
-                           <div className="flex items-center gap-2">
-                              <span className="text-sm font-bold text-slate-400">{historyData.patient.age}Y • {historyData.patient.gender}</span>
-                           </div>
-                           <div className="flex items-center gap-2 text-rose-500 font-black text-sm">
-                              <Phone size={14} fill="currentColor" /> {historyData.patient.phone}
+                           <div style={{ fontSize: '16px', fontWeight: '700', color: '#94a3b8' }}>{historyData.patient.age}Y • {historyData.patient.gender}</div>
+                           <div style={{ fontSize: '16px', fontWeight: '900', color: '#f43f5e', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                              <Phone size={16} fill="currentColor" /> {historyData.patient.phone}
                            </div>
                         </div>
                      </div>
                   </div>
                </div>
 
-               {/* Stats Bar - FIX OVERLAP */}
-               <div className="px-10 py-6 bg-slate-50/50 border-b border-slate-100 flex flex-wrap gap-10 items-center">
-                  <div className="flex items-center gap-4">
-                     <div className="w-10 h-10 rounded-xl bg-[#0A4D68] text-white flex items-center justify-center shadow-md shadow-[#0A4D68]/10"><Clock size={18} /></div>
-                     <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Total Care Visits</span>
-                        <span className="text-base font-black text-[#0A4D68]">{historyData.history.length} Clinical Records</span>
+               {/* Stats Bar - FORCED SPACING & NO OVERLAP */}
+               <div style={{ padding: '25px 40px', background: '#f8fafc', borderBottom: '1px solid #f1f5f9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                     <div style={{ width: '44px', height: '44px', borderRadius: '14px', background: '#0A4D68', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 8px 15px -3px rgba(10, 77, 104, 0.2)' }}><Clock size={20} /></div>
+                     <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '3px' }}>Total Care Visits</span>
+                        <span style={{ fontSize: '18px', fontWeight: '900', color: '#0A4D68' }}>{historyData.history.length} Clinical Records</span>
                      </div>
                   </div>
-                  <div className="h-8 w-px bg-slate-200 hidden md:block"></div>
-                  <div className="flex flex-col">
-                     <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Latest Consultation</span>
-                     <span className="text-base font-black text-slate-800">{historyData.history[0] ? new Date(historyData.history[0].visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'N/A'}</span>
+                  <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
+                     <span style={{ fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1.5px', marginBottom: '3px' }}>Latest Consultation</span>
+                     <span style={{ fontSize: '18px', fontWeight: '900', color: '#1e293b' }}>{historyData.history[0] ? new Date(historyData.history[0].visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' }) : 'N/A'}</span>
                   </div>
                </div>
                
                {/* Clinical Archive List */}
-               <div className="flex-1 overflow-y-auto p-10 bg-white/10 flex flex-col gap-6 custom-scrollbar">
+               <div className="flex-1 overflow-y-auto p-10 bg-white/10 flex flex-col gap-8 custom-scrollbar">
                  {historyData.history.length > 0 ? historyData.history.map((v, idx) => (
-                    <div key={v.id} className={`bg-white rounded-[1.5rem] transition-all duration-300 overflow-hidden shrink-0 border border-slate-100 shadow-sm hover:shadow-md ${expandedVisitId === v.id ? 'ring-2 ring-primary/10' : ''}`}>
+                    <div key={v.id} className={`bg-white rounded-[2rem] transition-all duration-300 overflow-hidden shrink-0 border border-slate-100 shadow-sm hover:shadow-md ${expandedVisitId === v.id ? 'ring-2 ring-primary/10' : ''}`}>
                        <button 
                          onClick={() => setExpandedVisitId(expandedVisitId === v.id ? null : v.id)}
-                         className="w-full p-8 flex justify-between items-center text-left hover:bg-slate-50/30 transition-colors border-none focus:outline-none"
+                         className="w-full p-10 flex justify-between items-center text-left border-none focus:outline-none"
+                         style={{ background: 'transparent', cursor: 'pointer' }}
                        >
-                          <div className="flex items-center gap-8">
-                             <div className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center ${expandedVisitId === v.id ? 'bg-primary text-white' : 'bg-slate-50 text-slate-400'}`}>
-                                <span className="text-[9px] font-black uppercase leading-none mb-0.5">Visit</span>
-                                <span className="text-lg font-black leading-none">{historyData.history.length - idx}</span>
+                          <div className="flex items-center gap-10">
+                             <div className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center shadow-lg transition-all ${expandedVisitId === v.id ? 'bg-primary text-white shadow-primary/20' : 'bg-slate-50 text-slate-400 shadow-none'}`}>
+                                <span className="text-[10px] font-black uppercase leading-none mb-1">Visit</span>
+                                <span className="text-2xl font-black leading-none">{historyData.history.length - idx}</span>
                              </div>
                              <div>
-                                <div className="text-lg font-black text-slate-800 leading-none mb-2">{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</div>
-                                <div className="flex items-center gap-4">
-                                   <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[10px] font-black tracking-widest uppercase">Token #{v.tokenNumber}</span>
-                                   <div className="text-emerald-600 font-black text-[10px] uppercase tracking-widest">Verified Record</div>
+                                <div className="text-2xl font-black text-slate-800 leading-none mb-3 tracking-tight">{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                                <div className="flex items-center gap-6">
+                                   <span style={{ background: '#f1f5f9', color: '#64748b', padding: '6px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Token #{v.tokenNumber}</span>
+                                   <div style={{ color: '#059669', fontWeight: '900', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1.5px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669' }}></div> Verified Record
+                                   </div>
                                 </div>
                              </div>
                           </div>
-                          <div className="flex items-center gap-8">
+                          <div className="flex items-center gap-10">
                              <div className="text-right hidden sm:block">
-                                <div className="flex items-center gap-2 text-[#0A4D68] mb-0.5 justify-end">
-                                   <Stethoscope size={16} />
-                                   <span className="text-sm font-black tracking-tight uppercase">Dr. {v.doctor?.name || 'Specialist'}</span>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#0A4D68', marginBottom: '2px', justifyContent: 'flex-end' }}>
+                                   <Stethoscope size={20} />
+                                   <span style={{ fontSize: '16px', fontWeight: '900', textTransform: 'uppercase' }}>
+                                      {v.doctor?.name ? (v.doctor.name.toLowerCase().startsWith('dr') ? v.doctor.name : `Dr. ${v.doctor.name}`) : 'Specialist'}
+                                   </span>
                                 </div>
-                                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Primary Consultant</span>
+                                <span style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Primary Consultant</span>
                              </div>
-                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${expandedVisitId === v.id ? 'rotate-180 bg-primary/10 text-primary' : 'bg-slate-50 text-slate-300'}`}>
-                                <ChevronDown size={20} />
+                             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${expandedVisitId === v.id ? 'rotate-180 bg-primary/10 text-primary' : 'bg-slate-50 text-slate-300'}`}>
+                                <ChevronDown size={24} />
                              </div>
                           </div>
                        </button>
 
                        {expandedVisitId === v.id && (
                           <div className="px-10 pb-10 pt-0 animate-in fade-in slide-in-from-top-2 duration-300">
-                             <div className="pt-8 border-t border-slate-50 grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="bg-slate-50/50 p-6 rounded-2xl border border-slate-100/50">
-                                   <div className="flex items-center gap-3 mb-3">
-                                      <div className="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center"><Clipboard size={16} /></div>
-                                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Chief Complaints</span>
+                             <div className="pt-10 border-t border-slate-50 grid grid-cols-1 md:grid-cols-2 gap-10">
+                                <div style={{ background: 'rgba(241, 245, 249, 0.5)', padding: '30px', borderRadius: '24px', border: '1px solid #f1f5f9' }}>
+                                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px' }}>
+                                      <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#dbeafe', color: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Clipboard size={18} /></div>
+                                      <span style={{ fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Chief Complaints</span>
                                    </div>
-                                   <p className="text-sm font-bold text-slate-700 leading-relaxed">{v.chiefComplaints || 'General checkup'}</p>
+                                   <p style={{ fontSize: '16px', fontWeight: '700', color: '#334155', margin: 0, lineHeight: '1.6' }}>{v.chiefComplaints || 'General checkup'}</p>
                                 </div>
-                                <div className="bg-purple-50/30 p-6 rounded-2xl border border-purple-100/30">
-                                   <div className="flex items-center gap-3 mb-3">
-                                      <div className="w-8 h-8 rounded-lg bg-purple-100 text-purple-600 flex items-center justify-center"><Activity size={16} /></div>
-                                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Encounter Diagnosis</span>
+                                <div style={{ background: 'rgba(250, 245, 255, 0.5)', padding: '30px', borderRadius: '24px', border: '1px solid #f3e8ff' }}>
+                                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px' }}>
+                                      <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#f3e8ff', color: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Activity size={18} /></div>
+                                      <span style={{ fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Encounter Diagnosis</span>
                                    </div>
-                                   <p className="text-sm font-bold text-slate-700 italic leading-relaxed">{v.diagnosis || 'Clinical evaluation in progress'}</p>
+                                   <p style={{ fontSize: '16px', fontWeight: '700', color: '#334155', fontStyle: 'italic', margin: 0, lineHeight: '1.6' }}>{v.diagnosis || 'Clinical evaluation in progress'}</p>
                                 </div>
                              </div>
                           </div>
                        )}
                     </div>
                   )) : (
-                    <div className="py-20 text-center text-slate-300 font-black uppercase tracking-[3px] text-xs">No clinical records found</div>
+                    <div className="py-32 text-center">
+                       <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#cbd5e1' }}><FileSearch size={40} /></div>
+                       <div style={{ fontSize: '12px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '3px' }}>No clinical records available</div>
+                    </div>
                   )}
                </div>
                </>

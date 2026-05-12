@@ -116,7 +116,9 @@ export async function POST(req: Request) {
       });
 
       if (activeVisit) {
-        throw new Error(`Patient is already in the queue today with Token #${activeVisit.tokenNumber}.`);
+        const error: any = new Error(`Patient is already in the queue today with Token #${activeVisit.tokenNumber}.`);
+        error.status = 400;
+        throw error;
       }
 
       const lastVisit = await tx.visit.findFirst({

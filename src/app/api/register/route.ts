@@ -33,25 +33,20 @@ export async function POST(req: Request) {
           data: { name, age, gender, address, phone, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
         });
       } else {
-        // 1. Check for EXACT duplicate (Name + Phone)
-        const trimmedName = name.trim();
+        // 1. Check for Duplicate (Phone is the primary identifier for returning patients)
         const trimmedPhone = phone.trim();
         const existing = await tx.patient.findFirst({
           where: {
-            AND: [
-              { name: { equals: trimmedName, mode: 'insensitive' } },
-              { phone: { equals: trimmedPhone } },
-              { name: { not: "" } },
-              { phone: { not: "" } }
-            ]
+            phone: { equals: trimmedPhone },
+            phone: { not: "" }
           }
         });
 
         if (existing) {
-          // AUTO-HEAL: If an exact match exists, just use it instead of erroring
+          // SILENT AUTO-LINK: If same phone exists, use it and update details
           patient = await tx.patient.update({
             where: { id: existing.id },
-            data: { age, gender, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted) }
+            data: { name, age, gender, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted) }
           });
         } else {
           isNewPatient = true;

@@ -249,9 +249,6 @@ export default function ReceptionDashboard() {
         clearPatient();
         if (formData.visitDate) { setActiveTab('future'); fetchFutureQueue(); } 
         else { setActiveTab('queue'); fetchQueue(); }
-      } else if (res.status === 409) {
-        setDuplicateInfo({ name: formData.name, uhid: data.uhid, existingName: data.existingName, existingId: data.existingId });
-        setShowDuplicateModal(true);
       } else {
         alert("Registration failed: " + data.error);
       }
@@ -846,35 +843,6 @@ export default function ReceptionDashboard() {
           </div>
         )}
 
-        {/* Duplicate Modal */}
-        {showDuplicateModal && (
-          <div className="modal-overlay">
-            <div className="glass-card !p-12 bg-white border-2 border-white text-center animate-in zoom-in-95">
-               <div className="w-20 h-20 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center mx-auto mb-8">
-                  <AlertCircle size={40} />
-               </div>
-               <h2 className="text-2xl font-black text-slate-800 mb-4">Patient Integrity Conflict</h2>
-               <p className="text-slate-500 font-medium mb-10 leading-relaxed">
-                 The patient <strong>{duplicateInfo?.name}</strong> matches an existing record: 
-                 <br/><span className="text-xs text-slate-400 font-bold uppercase mt-2 block">Database Match: {duplicateInfo?.existingName || duplicateInfo?.name}</span>
-                 <br/>Registered under UHID: <strong>{duplicateInfo?.uhid || 'MH-PENDING'}</strong>
-               </p>
-               <div className="flex flex-col gap-3">
-                 <button 
-                   className="btn btn-primary w-full h-14 !rounded-xl !bg-emerald-600 hover:!bg-emerald-700 !border-none text-lg font-black" 
-                   onClick={() => {
-                     const existingPatient = { id: (duplicateInfo as any).existingId, name: (duplicateInfo as any).existingName, phone: formData.phone, uhid: (duplicateInfo as any).uhid, age: formData.age, gender: formData.gender };
-                     selectPatient(existingPatient);
-                     setShowDuplicateModal(false);
-                   }}
-                 >
-                   Use Existing & Continue
-                 </button>
-                 <button className="btn btn-outline w-full h-12 !rounded-xl border-slate-200 text-slate-400" onClick={() => setShowDuplicateModal(false)}>Cancel & Edit</button>
-               </div>
-            </div>
-          </div>
-        )}
       </main>
     </div>
   );

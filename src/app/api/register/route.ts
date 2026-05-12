@@ -60,22 +60,42 @@ export async function POST(req: Request) {
           });
         } else {
           isNewPatient = true;
-          const lastPatient = await tx.patient.findFirst({
-            orderBy: { uhid: 'desc' }
+          // Robust numeric UHID generation
+          const allPatients = await tx.patient.findMany({
+            select: { uhid: true }
           });
           
-          let nextUhidNum = 10001;
-          if (lastPatient && lastPatient.uhid && lastPatient.uhid.includes('-')) {
-            const parts = lastPatient.uhid.split('-');
-            const lastNum = parseInt(parts[parts.length - 1]);
-            if (!isNaN(lastNum)) {
-              nextUhidNum = lastNum + 1;
+          let maxId = 10000;
+          allPatients.forEach(p => {
+            if (p.uhid && p.uhid.includes('-')) {
+              const num = parseInt(p.uhid.split('-').pop() || "0");
+              if (!isNaN(num) && num > maxId) maxId = num;
             }
+          });
+          
+          let nextUhidNum = maxId + 1;
+          let uhid = `MH-${nextUhidNum}`;
+          
+          // Safety check: Ensure the generated UHID isn't actually taken (rare race condition)
+          let collision = await tx.patient.findUnique({ where: { uhid } });
+          while (collision) {
+            nextUhidNum++;
+            uhid = `MH-${nextUhidNum}`;
+            collision = await tx.patient.findUnique({ where: { uhid } });
           }
           
-          const uhid = `MH-${nextUhidNum}`;
           patient = await tx.patient.create({
-            data: { uhid, name: trimmedName, age: Number(age), gender, phone: trimmedPhone, address, abhaId: abhaId || null, consentGranted: Boolean(consentGranted), consentDate: consentGranted ? new Date() : null }
+            data: { 
+              uhid, 
+              name: trimmedName, 
+              age: Number(age), 
+              gender, 
+              phone: trimmedPhone, 
+              address, 
+              abhaId: abhaId || null, 
+              consentGranted: Boolean(consentGranted), 
+              consentDate: consentGranted ? new Date() : null 
+            }
           });
         }
       }

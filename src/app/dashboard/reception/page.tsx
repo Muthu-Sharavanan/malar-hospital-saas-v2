@@ -609,7 +609,7 @@ export default function ReceptionDashboard() {
 
         {/* Success Modal */}
         {showSuccessModal && (
-          <div className="modal-overlay">
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
             <div className="glass-card !p-12 !max-w-md bg-white border-2 border-white text-center animate-in zoom-in-95">
                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl shadow-emerald-100">
                   <CheckCircle2 size={40} />
@@ -642,7 +642,7 @@ export default function ReceptionDashboard() {
 
         {/* History Modal */}
         {showHistoryModal && historyData && (
-          <div className="modal-overlay">
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setShowHistoryModal(false)}>
             <div className="glass-card !max-w-3xl !max-h-[85vh] bg-white border-2 border-white overflow-hidden flex flex-col animate-in slide-in-from-bottom-5">
                <div className="p-8 border-b border-slate-50 flex justify-between items-center">
                   <div>
@@ -694,7 +694,7 @@ export default function ReceptionDashboard() {
 
         {/* Bill Modal */}
         {showBillModal && selectedBill && (
-          <div className="modal-overlay">
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
             <div className="glass-card !p-10 !max-w-md bg-white border-2 border-white animate-in zoom-in-95">
                <h2 className="text-2xl font-black text-slate-800 mb-2">Payment Collection</h2>
                <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-8">Ref: {selectedBill.visit.patient.name} | ₹{selectedBill.finalAmount}</p>
@@ -722,7 +722,7 @@ export default function ReceptionDashboard() {
 
         {/* Stats Modal - COMPACT CENTERED */}
         {showStatsModal && statsModalData && (
-          <div className="modal-overlay" onClick={() => setShowStatsModal(false)}>
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setShowStatsModal(false)}>
             <div className="glass-card !p-0 overflow-hidden bg-white animate-in zoom-in-95 rounded-[1.5rem]" style={{ width: '450px', maxWidth: '90vw', maxHeight: '70vh' }} onClick={e => e.stopPropagation()}>
               <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                 <h3 className="text-xl font-black text-slate-800 uppercase tracking-tight">{statsModalData.title}</h3>

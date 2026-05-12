@@ -309,6 +309,7 @@ export default function ReceptionDashboard() {
             value={queue.length} 
             icon={<Users size={22} />} 
             theme="blue"
+            trend="+8%"
             onClick={() => { setStatsModalData({ title: 'Token Activity', list: queue }); setShowStatsModal(true); }} 
           />
           <StatCard 
@@ -316,6 +317,7 @@ export default function ReceptionDashboard() {
             value={futureQueue.length} 
             icon={<CalendarCheck size={22} />} 
             theme="orange"
+            trend="~4%"
             onClick={() => { setStatsModalData({ title: 'Future Bookings', list: futureQueue }); setShowStatsModal(true); }} 
           />
           <StatCard 
@@ -791,7 +793,7 @@ function SidebarItem({ active, icon, label, onClick }: any) {
   );
 }
 
-function StatCard({ label, value, icon, theme, onClick }: any) {
+function StatCard({ label, value, icon, theme, trend, onClick }: any) {
   const themes: any = {
     blue: { bg: 'bg-blue-50', text: 'text-blue-600' },
     green: { bg: 'bg-emerald-50', text: 'text-emerald-600' },
@@ -809,7 +811,11 @@ function StatCard({ label, value, icon, theme, onClick }: any) {
           <div className={`w-14 h-14 rounded-2xl ${currentTheme.bg} flex items-center justify-center ${currentTheme.text} shadow-sm group-hover:scale-110 transition-transform`}>
             {icon}
           </div>
-          <div className="px-3 py-1 bg-slate-50 rounded-full text-[9px] font-black text-slate-300 uppercase tracking-widest">Live Metrics</div>
+          {trend && (
+            <div className="px-3 py-1 bg-slate-50 rounded-full text-[10px] font-bold text-slate-400 uppercase tracking-widest transition-all">
+              {trend}
+            </div>
+          )}
        </div>
        <div className="text-[10px] font-800 text-slate-400 uppercase tracking-[1.5px] mb-2" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{label}</div>
        <div className="text-4xl font-black text-slate-800 tracking-tighter" style={{ fontFamily: "'Plus Jakarta Sans', sans-serif" }}>{value}</div>

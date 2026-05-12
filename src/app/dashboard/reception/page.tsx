@@ -773,18 +773,20 @@ export default function ReceptionDashboard() {
           </div>
         )}
 
-        {/* Error / Conflict Modal */}
+        {/* Error / Conflict Modal - CENTERED */}
         {showErrorModal && errorModalData && (
-          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1200, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '120px 20px 20px 20px' }}>
-            <div className="glass-card !p-10 !max-w-md bg-white border-2 border-white text-center animate-in zoom-in-95 shadow-2xl">
-               <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1200, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
+            <div className="glass-card !p-10 !max-w-md bg-white border-2 border-white text-center animate-in zoom-in-95 shadow-2xl overflow-hidden flex flex-col">
+               <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6 shrink-0">
                   <AlertCircle size={32} />
                </div>
-               <h2 className="text-2xl font-black text-slate-800 mb-2">{errorModalData.title}</h2>
-               <p className="text-sm font-medium text-slate-500 mb-8 leading-relaxed">
-                 {errorModalData.message}
-               </p>
-               <button className="btn btn-primary w-full h-14 !rounded-xl !bg-amber-600 border-none font-black text-lg shadow-lg shadow-amber-200" onClick={() => setShowErrorModal(false)}>Acknowledge & Continue</button>
+               <div className="overflow-y-auto max-h-[40vh] mb-8 px-2">
+                  <h2 className="text-2xl font-black text-slate-800 mb-2">{errorModalData.title}</h2>
+                  <p className="text-sm font-medium text-slate-500 leading-relaxed">
+                    {errorModalData.message}
+                  </p>
+               </div>
+               <button className="btn btn-primary w-full h-14 !rounded-xl !bg-amber-600 border-none font-black text-lg shadow-lg shadow-amber-200 shrink-0" onClick={() => setShowErrorModal(false)}>Acknowledge & Continue</button>
             </div>
           </div>
         )}

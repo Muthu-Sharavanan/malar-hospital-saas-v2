@@ -50,7 +50,7 @@ export default function ReceptionDashboard() {
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successInfo, setSuccessInfo] = useState<{title: string, message: string, token: string, uhid?: string, whatsappSent?: boolean}|null>(null);
   const [showDuplicateModal, setShowDuplicateModal] = useState(false);
-  const [duplicateInfo, setDuplicateInfo] = useState<{name: string, uhid: string}|null>(null);
+  const [duplicateInfo, setDuplicateInfo] = useState<{name: string, uhid: string, existingName?: string}|null>(null);
 
   // Form
   const [formData, setFormData] = useState({
@@ -249,7 +249,7 @@ export default function ReceptionDashboard() {
         if (formData.visitDate) { setActiveTab('future'); fetchFutureQueue(); } 
         else { setActiveTab('queue'); fetchQueue(); }
       } else if (res.status === 409) {
-        setDuplicateInfo({ name: formData.name, uhid: data.uhid });
+        setDuplicateInfo({ name: formData.name, uhid: data.uhid, existingName: data.existingName });
         setShowDuplicateModal(true);
       } else {
         alert("Registration failed: " + data.error);
@@ -846,8 +846,15 @@ export default function ReceptionDashboard() {
                   <AlertCircle size={40} />
                </div>
                <h2 className="text-2xl font-black text-slate-800 mb-4">Patient Integrity Conflict</h2>
-               <p className="text-slate-500 font-medium mb-10 leading-relaxed">The patient <strong>{duplicateInfo?.name}</strong> is already registered under UHID: <strong>{duplicateInfo?.uhid}</strong>.</p>
-               <button className="btn btn-primary w-full h-14 !rounded-xl" onClick={() => setShowDuplicateModal(false)}>Acknowledge & Search</button>
+               <p className="text-slate-500 font-medium mb-10 leading-relaxed">
+                 The patient <strong>{duplicateInfo?.name}</strong> matches an existing record: 
+                 <br/><span className="text-xs text-slate-400 font-bold uppercase mt-2 block">Database Match: {duplicateInfo?.existingName || duplicateInfo?.name}</span>
+                 <br/>Registered under UHID: <strong>{duplicateInfo?.uhid || 'MH-PENDING'}</strong>
+               </p>
+               <div className="flex flex-col gap-3">
+                 <button className="btn btn-primary w-full h-14 !rounded-xl" onClick={() => setShowDuplicateModal(false)}>Acknowledge & Search</button>
+                 <p className="text-[10px] text-slate-400 font-bold">Search for this UHID to add a new visit instead of creating a new patient.</p>
+               </div>
             </div>
           </div>
         )}

@@ -22,18 +22,26 @@ export async function POST(req: Request) {
     const { name, phone, age, gender, address, doctorId, patientId, visitDate, visitTime, reason, abhaId, consentGranted } = validation.data;
 
     // 1. Check for EXACT duplicate (Name + Phone) if this is a manual entry (no patientId)
-    if (!patientId) {
+    if (!patientId && name && phone) {
+      const trimmedName = name.trim();
+      const trimmedPhone = phone.trim();
+
       const existing = await prisma.patient.findFirst({
         where: {
-          name: { equals: name }, // Case-insensitive handled by DB collation usually, but let's be safe if needed
-          phone: phone
+          AND: [
+            { name: { equals: trimmedName, mode: 'insensitive' } },
+            { phone: { equals: trimmedPhone } },
+            { name: { not: "" } },
+            { phone: { not: "" } }
+          ]
         }
       });
       if (existing) {
         return NextResponse.json({ 
           success: false, 
           error: "Patient already exists with this name and number", 
-          uhid: existing.uhid 
+          uhid: existing.uhid || "MH-EXISTING",
+          existingName: existing.name
         }, { status: 409 });
       }
     }

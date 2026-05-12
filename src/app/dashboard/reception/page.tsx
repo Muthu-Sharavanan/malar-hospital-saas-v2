@@ -464,10 +464,10 @@ export default function ReceptionDashboard() {
           )}
         </div>
 
-        {/* Modals - ALL CENTERED & ELEGANT */}
+        {/* Success Modal - COMPACT CENTERED */}
         {showSuccessModal && (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-            <div className="glass-card-jakarta !p-10 !max-w-sm text-center animate-in zoom-in-95 rounded-[2rem]">
+            <div className="glass-card-jakarta !p-10 text-center animate-in zoom-in-95 rounded-[2rem]" style={{ width: '400px', maxWidth: '90vw' }}>
               <div className="w-16 h-16 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-6"><CheckCircle2 size={32} /></div>
               <h2 className="jakarta-font text-xl font-800 text-[#0A4D68] uppercase mb-2 tracking-tight">{successInfo?.title}</h2>
               <p className="text-slate-500 font-600 text-sm mb-8 leading-snug">{successInfo?.message}</p>
@@ -482,7 +482,7 @@ export default function ReceptionDashboard() {
 
         {showHistoryModal && historyData && (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => { setShowHistoryModal(false); setExpandedVisitId(null); }}>
-            <div className="glass-card-jakarta !max-w-[600px] w-full !p-0 overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 rounded-[1.5rem]" style={{ maxHeight: '80vh' }} onClick={e => e.stopPropagation()}>
+            <div className="glass-card-jakarta !p-0 overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 rounded-[1.5rem]" style={{ width: '600px', maxWidth: '95vw', maxHeight: '80vh' }} onClick={e => e.stopPropagation()}>
               <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                 <div className="flex gap-4 items-center">
                   <div className="w-10 h-10 rounded-lg bg-[#0A4D68] text-white flex items-center justify-center text-lg font-800">{historyData.patient.name.charAt(0)}</div>
@@ -519,7 +519,7 @@ export default function ReceptionDashboard() {
 
         {showStatsModal && statsModalData && (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }} onClick={() => setShowStatsModal(false)}>
-            <div className="glass-card-jakarta !max-w-[450px] w-full !p-0 overflow-hidden bg-white animate-in zoom-in-95 rounded-[1.5rem]" style={{ maxHeight: '70vh' }} onClick={e => e.stopPropagation()}>
+            <div className="glass-card-jakarta !p-0 overflow-hidden bg-white animate-in zoom-in-95 rounded-[1.5rem]" style={{ width: '450px', maxWidth: '90vw', maxHeight: '70vh' }} onClick={e => e.stopPropagation()}>
               <div className="p-6 border-b border-slate-100 flex justify-between items-center bg-slate-50"><h3 className="jakarta-font font-800 text-slate-800 uppercase text-base tracking-tight">{statsModalData.title}</h3><button onClick={() => setShowStatsModal(false)} className="text-slate-400"><X size={18} /></button></div>
               <div className="p-4 overflow-y-auto">{statsModalData.list.length === 0 ? <div className="py-12 text-center label-style opacity-50 italic uppercase font-800 tracking-widest">Empty Audit Trail</div> : <div className="flex flex-col gap-2">{statsModalData.list.map((v: any) => (
                 <div key={v.id} className="p-4 rounded-xl bg-slate-50 border border-slate-100 flex justify-between items-center hover:bg-white transition-colors cursor-default">
@@ -536,7 +536,7 @@ export default function ReceptionDashboard() {
 
         {showBillModal && selectedBill && (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1100, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}>
-            <div className="glass-card-jakarta !p-10 !max-w-sm text-center animate-in zoom-in-95 rounded-[2rem]">
+            <div className="glass-card-jakarta !p-10 text-center animate-in zoom-in-95 rounded-[2rem]" style={{ width: '400px', maxWidth: '90vw' }}>
               <h2 className="jakarta-font text-xl font-800 text-[#0A4D68] mb-8 uppercase tracking-tight">Collection Hub</h2>
               <div className="flex flex-col gap-5 text-left">
                 <div className="form-group"><label className="label-style block mb-2">Instrument</label><select className="input-style !w-full !text-sm" value={billingForm.paymentMode} onChange={e => setBillingForm({...billingForm, paymentMode: e.target.value})}><option>CASH ON COUNTER</option><option>UPI / QR SCAN</option></select></div>

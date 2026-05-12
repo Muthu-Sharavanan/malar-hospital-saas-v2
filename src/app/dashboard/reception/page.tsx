@@ -722,46 +722,57 @@ export default function ReceptionDashboard() {
                    </div>
                 </div>
                 
-                {/* Visit List */}
-                <div className="flex-1 overflow-y-auto p-10 bg-slate-50/20 flex flex-col gap-6">
+               {/* Visit List */}
+               <div className="flex-1 overflow-y-auto p-10 bg-slate-50/20 flex flex-col gap-6">
                  {historyData.history.length > 0 ? historyData.history.map((v, idx) => (
-                    <div key={v.id} className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
-                       <div className="p-6 flex justify-between items-center border-b border-slate-50">
+                    <div key={v.id} className={`bg-white rounded-2xl border transition-all duration-300 overflow-hidden shrink-0 ${expandedVisitId === v.id ? 'border-primary shadow-lg' : 'border-slate-100 shadow-sm'}`}>
+                       {/* Visit Header - Clickable */}
+                       <button 
+                         onClick={() => setExpandedVisitId(expandedVisitId === v.id ? null : v.id)}
+                         className="w-full p-6 flex justify-between items-center text-left hover:bg-slate-50/50 transition-colors"
+                       >
                           <div className="flex items-center gap-5">
-                             <div className="w-10 h-10 rounded-full bg-[#0A4D68] text-white flex items-center justify-center font-black text-sm shadow-md shadow-[#0A4D68]/10">
+                             <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-sm shadow-sm transition-colors ${expandedVisitId === v.id ? 'bg-primary text-white' : 'bg-[#0A4D68] text-white'}`}>
                                 {historyData.history.length - idx}
                              </div>
                              <div>
-                                <div className="text-base font-black text-slate-800">{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}</div>
-                                <div className="text-[10px] font-bold text-slate-400 mt-0.5 uppercase tracking-widest">Token #{v.tokenNumber}</div>
+                                <div className="text-lg font-black text-slate-800 leading-none">{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'short', day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                                <div className="text-[10px] font-bold text-slate-400 mt-1.5 uppercase tracking-widest">Token #{v.tokenNumber}</div>
                              </div>
                           </div>
-                          <div className="flex items-center gap-2 text-[#0A4D68]">
-                             <Stethoscope size={16} />
-                             <span className="text-xs font-black tracking-tight">Dr. {v.doctor?.name || 'Unknown'}</span>
+                          <div className="flex items-center gap-3">
+                             <div className="flex items-center gap-2 text-[#0A4D68]/60">
+                                <Stethoscope size={16} />
+                                <span className="text-xs font-black tracking-tight uppercase">Dr. {v.doctor?.name || 'Unknown'}</span>
+                             </div>
+                             <div className={`transition-transform duration-300 ${expandedVisitId === v.id ? 'rotate-180 text-primary' : 'text-slate-300'}`}>
+                                <ChevronDown size={18} />
+                             </div>
                           </div>
-                       </div>
+                       </button>
 
-                       <div className="px-8 py-6 bg-white">
-                          {v.diagnosis || v.chiefComplaints ? (
-                             <div className="space-y-4">
+                       {/* Visit Details - Accordion Content */}
+                       {expandedVisitId === v.id && (
+                          <div className="px-8 pb-8 pt-0 bg-white animate-in slide-in-from-top-2 duration-300">
+                             <div className="pt-6 border-t border-dashed border-slate-100 space-y-6">
                                 {v.chiefComplaints && (
                                    <div>
-                                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1 block">Chief Complaints</span>
-                                      <p className="text-sm font-bold text-slate-700">{v.chiefComplaints}</p>
+                                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5 block">Chief Complaints</span>
+                                      <p className="text-sm font-bold text-slate-700 leading-relaxed">{v.chiefComplaints}</p>
                                    </div>
                                 )}
                                 {v.diagnosis && (
                                    <div>
-                                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1 block">Diagnosis</span>
-                                      <p className="text-sm font-bold text-slate-700 italic">{v.diagnosis}</p>
+                                      <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest mb-1.5 block">Clinical Diagnosis</span>
+                                      <p className="text-sm font-bold text-slate-700 italic leading-relaxed">{v.diagnosis}</p>
                                    </div>
                                 )}
+                                {!v.chiefComplaints && !v.diagnosis && (
+                                   <div className="text-sm font-bold text-slate-300 italic py-2 text-center bg-slate-50 rounded-xl border border-dashed border-slate-100">No consultation notes recorded yet.</div>
+                                )}
                              </div>
-                          ) : (
-                             <div className="text-sm font-bold text-slate-300 italic py-2">No consultation notes recorded yet.</div>
-                          )}
-                       </div>
+                          </div>
+                       )}
                     </div>
                   )) : (
                     <div className="py-20 text-center font-bold text-slate-300">No medical history found for this UHID.</div>

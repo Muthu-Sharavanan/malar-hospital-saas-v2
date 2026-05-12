@@ -52,6 +52,8 @@ export default function ReceptionDashboard() {
   const [successInfo, setSuccessInfo] = useState<{title: string, message: string, token: string, uhid?: string, whatsappSent?: boolean}|null>(null);
   const [showStatsModal, setShowStatsModal] = useState(false);
   const [statsModalData, setStatsModalData] = useState<{title: string, list: any[]}|null>(null);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorModalData, setErrorModalData] = useState<{title: string, message: string}|null>(null);
 
   // Form
   const [formData, setFormData] = useState({
@@ -217,7 +219,15 @@ export default function ReceptionDashboard() {
         if (formData.visitDate) { setActiveTab('future'); fetchFutureQueue(); } 
         else { setActiveTab('queue'); fetchQueue(); }
       } else {
-        alert("Registration failed: " + data.error);
+        if (data.error && data.error.includes("already in the queue")) {
+          setErrorModalData({
+            title: "Patient Already Registered",
+            message: data.error
+          });
+          setShowErrorModal(true);
+        } else {
+          alert("Registration failed: " + data.error);
+        }
       }
     } catch (err) { alert("An error occurred"); } finally { setLoading(false); }
   };
@@ -714,6 +724,22 @@ export default function ReceptionDashboard() {
                     <div className="py-20 text-center font-bold text-slate-300">No medical history found for this UHID.</div>
                   )}
                </div>
+            </div>
+          </div>
+        )}
+
+        {/* Error / Conflict Modal */}
+        {showErrorModal && errorModalData && (
+          <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1200, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '120px 20px 20px 20px' }}>
+            <div className="glass-card !p-10 !max-w-md bg-white border-2 border-white text-center animate-in zoom-in-95 shadow-2xl">
+               <div className="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <AlertCircle size={32} />
+               </div>
+               <h2 className="text-2xl font-black text-slate-800 mb-2">{errorModalData.title}</h2>
+               <p className="text-sm font-medium text-slate-500 mb-8 leading-relaxed">
+                 {errorModalData.message}
+               </p>
+               <button className="btn btn-primary w-full h-14 !rounded-xl !bg-amber-600 border-none font-black text-lg shadow-lg shadow-amber-200" onClick={() => setShowErrorModal(false)}>Acknowledge & Continue</button>
             </div>
           </div>
         )}

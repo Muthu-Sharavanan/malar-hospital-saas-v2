@@ -48,7 +48,7 @@ export default function ReceptionDashboard() {
   const [billingForm, setBillingForm] = useState({ discount: 0, paymentMode: 'CASH', waiverReason: '', authorizingDoc: '' });
   const [showHistoryModal, setShowHistoryModal] = useState(false);
   const [historyData, setHistoryData] = useState<{patient: any, history: any[]}|null>(null);
-  const [selectedHistoryVisit, setSelectedHistoryVisit] = useState<any>(null);
+  const [expandedVisitId, setExpandedVisitId] = useState<string | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [successInfo, setSuccessInfo] = useState<{title: string, message: string, token: string, uhid?: string, whatsappSent?: boolean}|null>(null);
   const [showStatsModal, setShowStatsModal] = useState(false);
@@ -160,7 +160,7 @@ export default function ReceptionDashboard() {
       const data = await res.json();
       if (data.success) {
         setHistoryData({ patient: data.patient, history: data.history });
-        setSelectedHistoryVisit(data.history[0] || null);
+        setExpandedVisitId(data.history[0]?.id || null);
         setShowHistoryModal(true);
       }
     } catch (err) {} finally { setLoading(false); }
@@ -678,90 +678,104 @@ export default function ReceptionDashboard() {
           </div>
         )}
 
-        {/* History Modal - ADMIN SPLIT VIEW */}
+        {/* History Modal - ACCORDION VIEW */}
         {showHistoryModal && historyData && (
           <div style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.5)', backdropFilter: 'blur(10px)', zIndex: 1100, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '120px 20px 20px 20px' }} onClick={() => setShowHistoryModal(false)}>
-            <div className="glass-card !max-w-5xl !w-full !max-h-[75vh] bg-white border-2 border-white overflow-hidden flex flex-col animate-in slide-in-from-bottom-5" onClick={e => e.stopPropagation()}>
-               <div className="p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/50">
-                  <div>
-                    <h2 className="text-2xl font-black text-slate-800 tracking-tight">Clinical Archive <span className="text-primary/30 ml-2">v4.0</span></h2>
-                    <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">{historyData.patient.name} | {historyData.patient.uhid}</p>
+            <div className="glass-card !max-w-4xl !w-full !max-h-[75vh] bg-white border-2 border-white overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 shadow-2xl" onClick={e => e.stopPropagation()}>
+               <div className="p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                  <div className="flex items-center gap-6">
+                    <div className="w-14 h-14 bg-primary text-white rounded-2xl flex items-center justify-center shadow-lg shadow-primary/20">
+                       <History size={28} />
+                    </div>
+                    <div>
+                      <h2 className="text-2xl font-black text-slate-800 tracking-tight">Clinical Encounter History</h2>
+                      <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">{historyData.patient.name} • {historyData.patient.uhid}</p>
+                    </div>
                   </div>
-                  <button onClick={() => setShowHistoryModal(false)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm border border-slate-100 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all"><X size={20} /></button>
+                  <div className="flex items-center gap-4">
+                     <div className="text-right mr-4 hidden md:block">
+                        <div className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Total Records</div>
+                        <div className="text-sm font-black text-primary">{historyData.history.length} Visits</div>
+                     </div>
+                     <button onClick={() => setShowHistoryModal(false)} className="w-10 h-10 flex items-center justify-center rounded-full bg-white shadow-sm border border-slate-100 text-slate-400 hover:bg-rose-50 hover:text-rose-500 transition-all"><X size={20} /></button>
+                  </div>
                </div>
                
-               <div className="flex-1 flex overflow-hidden">
-                  {/* Sidebar Timeline */}
-                  <div className="w-72 border-r border-slate-100 bg-slate-50/30 overflow-y-auto p-4 flex flex-col gap-3">
-                     <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-2 px-2">Visit Timeline</div>
-                     {historyData.history.length > 0 ? historyData.history.map(v => (
-                        <button 
-                          key={v.id} 
-                          onClick={() => setSelectedHistoryVisit(v)}
-                          className={`w-full p-4 rounded-xl text-left transition-all border ${selectedHistoryVisit?.id === v.id ? 'bg-white border-primary shadow-sm' : 'border-transparent hover:bg-white hover:border-slate-200'}`}
-                        >
-                           <div className={`text-[10px] font-black uppercase tracking-wider mb-1 ${selectedHistoryVisit?.id === v.id ? 'text-primary' : 'text-slate-400'}`}>
-                              {new Date(v.visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}
-                           </div>
-                           <div className="text-xs font-bold text-slate-700 truncate">Dr. {v.doctor?.name || 'Consultant'}</div>
-                        </button>
-                     )) : <div className="text-[10px] text-slate-300 italic p-2">No records found</div>}
-                  </div>
+               <div className="flex-1 overflow-y-auto p-8 bg-slate-50/30 flex flex-col gap-4">
+                  {historyData.history.length > 0 ? historyData.history.map((v, idx) => (
+                    <div key={v.id} className={`group bg-white rounded-2xl border transition-all duration-300 overflow-hidden ${expandedVisitId === v.id ? 'border-primary shadow-xl ring-4 ring-primary/5' : 'border-slate-100 hover:border-primary/30 shadow-sm'}`}>
+                       {/* Accordion Header */}
+                       <button 
+                         onClick={() => setExpandedVisitId(expandedVisitId === v.id ? null : v.id)}
+                         className="w-full p-6 flex justify-between items-center text-left"
+                       >
+                          <div className="flex items-center gap-6">
+                             <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-xs transition-colors ${expandedVisitId === v.id ? 'bg-primary text-white' : 'bg-slate-100 text-slate-400'}`}>
+                                {historyData.history.length - idx}
+                             </div>
+                             <div>
+                                <div className="text-sm font-black text-slate-800">{new Date(v.visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Consultant: Dr. {v.doctor?.name || 'Unknown'}</div>
+                             </div>
+                          </div>
+                          <div className="flex items-center gap-4">
+                             {v.diagnosis && <span className="hidden sm:block text-[9px] font-black bg-emerald-50 text-emerald-600 px-3 py-1 rounded-full uppercase tracking-wider">Record Updated</span>}
+                             <div className={`transition-transform duration-300 ${expandedVisitId === v.id ? 'rotate-180 text-primary' : 'text-slate-300'}`}>
+                                <ChevronDown size={20} />
+                             </div>
+                          </div>
+                       </button>
 
-                  {/* Detail Pane */}
-                  <div className="flex-1 overflow-y-auto bg-white p-10">
-                     {selectedHistoryVisit ? (
-                        <div className="animate-in fade-in slide-in-from-right-4">
-                           <div className="flex justify-between items-center mb-8 pb-8 border-b border-dashed border-slate-100">
-                              <div>
-                                 <span className="text-[10px] font-black text-primary uppercase tracking-[2px] mb-2 block">Patient Encounter Summary</span>
-                                 <h3 className="text-3xl font-black text-slate-800 tracking-tight">{new Date(selectedHistoryVisit.visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</h3>
-                              </div>
-                              <div className="text-right">
-                                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-[2px] mb-2 block">Consulting Specialist</span>
-                                 <div className="px-4 py-2 bg-primary text-white rounded-xl text-xs font-black shadow-lg shadow-primary/20">Dr. {selectedHistoryVisit.doctor?.name || 'Unknown'}</div>
-                              </div>
-                           </div>
-
-                           <div className="grid grid-cols-1 gap-10">
-                              <div className="grid grid-cols-2 gap-10">
-                                 <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
-                                    <span className="block font-black text-slate-300 uppercase tracking-widest mb-3 text-[10px]">Chief Complaints</span>
-                                    <div className="text-sm font-bold text-slate-700 leading-relaxed">{selectedHistoryVisit.chiefComplaints || 'General checkup/evaluation'}</div>
-                                 </div>
-                                 <div className="p-6 rounded-2xl bg-slate-50 border border-slate-100">
-                                    <span className="block font-black text-slate-300 uppercase tracking-widest mb-3 text-[10px]">Clinical Diagnosis</span>
-                                    <div className="text-sm font-bold text-slate-700 leading-relaxed italic">{selectedHistoryVisit.diagnosis || 'Diagnosis pending clinical results'}</div>
-                                 </div>
-                              </div>
-
-                              {selectedHistoryVisit.prescriptions?.length > 0 && (
-                                 <div className="p-8 rounded-2xl bg-emerald-50/50 border border-emerald-100">
-                                    <span className="block font-black text-emerald-600/40 uppercase tracking-[2px] mb-6 text-[10px]">Medication Protocol</span>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                       {selectedHistoryVisit.prescriptions.map((p:any) => (
-                                          <div key={p.id} className="flex items-center gap-4 bg-white p-4 rounded-xl border border-emerald-100 shadow-tiny">
-                                             <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-xs">Rx</div>
-                                             <div>
-                                                <div className="text-sm font-black text-slate-800">{p.drugName}</div>
-                                                <div className="text-[10px] font-bold text-emerald-600 uppercase tracking-widest">{p.dosage}</div>
-                                             </div>
-                                          </div>
-                                       ))}
-                                    </div>
-                                 </div>
-                              )}
-
-                              <div className="flex gap-4 mt-4">
-                                 <button className="btn btn-outline border-slate-200 text-slate-500 h-12 px-6" onClick={() => window.print()}><Printer size={16} className="mr-2" /> Export PDF</button>
-                                 <button className="btn btn-outline border-slate-200 text-slate-500 h-12 px-6"><FileText size={16} className="mr-2" /> Lab Results</button>
-                              </div>
-                           </div>
-                        </div>
-                     ) : (
-                        <div className="h-full flex items-center justify-center text-slate-300 font-bold italic">Select a visit from the timeline to view details</div>
-                     )}
-                  </div>
+                       {/* Accordion Content */}
+                       {expandedVisitId === v.id && (
+                          <div className="p-8 pt-0 border-t border-dashed border-slate-100 animate-in slide-in-from-top-4 duration-300">
+                             <div className="grid grid-cols-1 md:grid-cols-2 gap-10 mt-8">
+                                <div className="space-y-6">
+                                   <div>
+                                      <span className="block font-black text-slate-300 uppercase tracking-widest mb-2 text-[9px]">Chief Complaints</span>
+                                      <p className="text-sm font-bold text-slate-700 leading-relaxed bg-slate-50 p-4 rounded-xl border border-slate-100">{v.chiefComplaints || 'General checkup/evaluation'}</p>
+                                   </div>
+                                   <div>
+                                      <span className="block font-black text-slate-300 uppercase tracking-widest mb-2 text-[9px]">Clinical Diagnosis</span>
+                                      <p className="text-sm font-bold text-slate-700 leading-relaxed italic bg-slate-50 p-4 rounded-xl border border-slate-100">{v.diagnosis || 'Diagnosis pending clinical results'}</p>
+                                   </div>
+                                </div>
+                                <div className="space-y-6">
+                                   <div>
+                                      <span className="block font-black text-slate-300 uppercase tracking-widest mb-4 text-[9px]">Prescribed Medications</span>
+                                      {v.prescriptions?.length > 0 ? (
+                                         <div className="grid grid-cols-1 gap-3">
+                                            {v.prescriptions.map((p:any) => (
+                                               <div key={p.id} className="flex items-center gap-4 bg-emerald-50/50 p-3 rounded-xl border border-emerald-100 shadow-tiny">
+                                                  <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-600 flex items-center justify-center font-black text-[10px]">Rx</div>
+                                                  <div>
+                                                     <div className="text-xs font-black text-slate-800">{p.drugName}</div>
+                                                     <div className="text-[9px] font-bold text-emerald-600 uppercase tracking-widest">{p.dosage}</div>
+                                                  </div>
+                                               </div>
+                                            ))}
+                                         </div>
+                                      ) : (
+                                         <div className="text-[10px] text-slate-300 italic p-4 bg-slate-50 rounded-xl border border-slate-100 border-dashed">No medications recorded for this visit.</div>
+                                      )}
+                                   </div>
+                                   <div className="flex gap-3 pt-2">
+                                      <button className="h-10 px-4 rounded-lg border border-slate-200 text-slate-500 text-[10px] font-black uppercase tracking-wider hover:bg-slate-50 transition-colors flex items-center gap-2"><Printer size={14} /> Print Case</button>
+                                      <button className="h-10 px-4 rounded-lg border border-slate-200 text-slate-500 text-[10px] font-black uppercase tracking-wider hover:bg-slate-50 transition-colors flex items-center gap-2"><FileText size={14} /> Lab Sheet</button>
+                                   </div>
+                                </div>
+                             </div>
+                          </div>
+                       )}
+                    </div>
+                  )) : (
+                    <div className="py-20 text-center flex flex-col items-center justify-center gap-4">
+                       <div className="w-16 h-16 bg-slate-100 text-slate-300 rounded-full flex items-center justify-center">
+                          <History size={32} />
+                       </div>
+                       <div className="font-black text-slate-300 uppercase tracking-widest text-sm">Empty Clinical Archive</div>
+                    </div>
+                  )}
                </div>
             </div>
           </div>

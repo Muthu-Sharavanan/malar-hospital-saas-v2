@@ -34,6 +34,7 @@ export async function POST(req: Request) {
         });
       } else {
         // 1. Check for Duplicate (Phone is the primary identifier for returning patients)
+        const trimmedName = name.trim();
         const trimmedPhone = phone.trim();
         const existing = await tx.patient.findFirst({
           where: {

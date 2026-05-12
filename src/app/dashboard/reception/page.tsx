@@ -589,7 +589,7 @@ export default function ReceptionDashboard() {
                         </div>
                       </td>
                       <td className="p-4 bg-slate-50 rounded-r-2xl border-y border-r border-slate-100 text-right">
-                         <button className="btn btn-outline h-9 px-4 text-[10px]" onClick={() => fetchHistory(v.patientId)}>History</button>
+                         <button className="btn btn-outline h-9 px-4 text-[10px] active:scale-90" onClick={() => fetchHistory(v.patientId)}>History</button>
                       </td>
                     </tr>
                   )) : (
@@ -643,7 +643,7 @@ export default function ReceptionDashboard() {
                         </div>
                       </td>
                       <td className="p-4 bg-slate-50 rounded-r-2xl border-y border-r border-slate-100 text-right">
-                         <button className="btn btn-primary h-10 px-6 text-[10px] !bg-emerald-500 !shadow-lg shadow-emerald-200/50 !rounded-xl" onClick={() => {
+                         <button className="btn btn-primary h-10 px-6 text-[10px] !bg-emerald-500 !shadow-lg shadow-emerald-200/50 !rounded-xl active:scale-95" onClick={() => {
                             const formattedDate = new Date(v.visitDate).toLocaleDateString('en-IN', { day: '2-digit', month: 'long', year: 'numeric' });
                             const time = new Date(v.visitDate).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true });
                             const msg = `*REMAINDER - MALAR HOSPITAL*\n\nPatient: ${v.patient.name}\nDate: ${formattedDate}\nTime: ${time}\nDoctor: Dr. ${v.doctor?.name}\n${v.chiefComplaints ? `Reason: ${v.chiefComplaints}\n` : ''}\nWe look forward to seeing you.`;
@@ -946,9 +946,10 @@ function SidebarItem({ active, icon, label, onClick }: any) {
   return (
     <button 
       onClick={onClick}
-      style={{ width: '100%', padding: '15px 30px', display: 'flex', alignItems: 'center', gap: '15px', background: active ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', textAlign: 'left', cursor: 'pointer', transition: '0.3s' }}
+      style={{ width: '100%', padding: '15px 30px', display: 'flex', alignItems: 'center', gap: '15px', background: active ? 'rgba(255,255,255,0.1)' : 'transparent', border: 'none', color: 'white', textAlign: 'left', cursor: 'pointer', transition: '0.1s ease', userSelect: 'none' }}
+      className="active:scale-95"
     >
-      <div style={{ opacity: active ? 1 : 0.4 }}>{icon}</div>
+      <div style={{ opacity: active ? 1 : 0.4, transition: '0.1s' }}>{icon}</div>
       <span style={{ fontWeight: active ? '800' : '400', fontSize: '15px', letterSpacing: active ? '0.5px' : '0' }}>{label}</span>
     </button>
   );

@@ -781,7 +781,7 @@ export default function DoctorDashboard() {
                    allAppointments.filter(v => v.isReview).map((v: any) => (
                      <div 
                        key={v.id} 
-                       className="glass-card !p-6 cursor-pointer bg-white border-2 border-transparent hover:border-[#088395]/30 transition-all duration-300 group shadow-sm hover:shadow-xl"
+                       className="glass-card !p-6 cursor-pointer bg-white border-2 border-transparent hover:border-[#088395]/30 transition-all duration-100 group shadow-sm hover:shadow-xl active:scale-95"
                        onClick={() => selectVisit(v)}
                      >
                        <div className="flex justify-between items-start mb-2">
@@ -842,7 +842,7 @@ export default function DoctorDashboard() {
                    allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).map((v: any) => (
                       <div 
                         key={v.id} 
-                        className="relative overflow-hidden cursor-pointer bg-white border-2 border-transparent hover:border-emerald-500/30 transition-all duration-500 group rounded-[2rem] p-6 shadow-sm hover:shadow-2xl hover:-translate-y-2"
+                        className="relative overflow-hidden cursor-pointer bg-white border-2 border-transparent hover:border-emerald-500/30 transition-all duration-100 group rounded-[2rem] p-6 shadow-sm hover:shadow-2xl hover:-translate-y-2 active:scale-95"
                         onClick={() => selectVisit(v)}
                       >
                         <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
@@ -1087,7 +1087,7 @@ export default function DoctorDashboard() {
                                          <button 
                                            key={opt.val} type="button" 
                                            onClick={() => setCurrentDrug({...currentDrug, instructions: opt.val})} 
-                                           className={`btn !px-5 !py-2.5 !text-[10px] font-black tracking-widest flex items-center gap-2 transition-all ${currentDrug.instructions === opt.val ? 'btn-primary shadow-lg scale-105' : 'bg-white text-slate-500 border border-slate-200 hover:border-[#088395] hover:text-[#088395]'}`}>
+                                           className={`btn !px-5 !py-2.5 !text-[10px] font-black tracking-widest flex items-center gap-2 transition-all duration-75 active:scale-95 ${currentDrug.instructions === opt.val ? 'btn-primary shadow-lg scale-105' : 'bg-white text-slate-500 border border-slate-200 hover:border-[#088395] hover:text-[#088395]'}`}>
                                            {opt.icon}
                                            {opt.label}
                                          </button>

@@ -407,7 +407,7 @@ export default function NursingDashboard() {
                         <input type="text" className="form-input !h-12 !bg-primary/[0.03] border-dashed !text-primary !font-black" readOnly value={vitals.bmi} />
                       </div>
 
-                      <button type="submit" className="btn btn-primary !h-14 !rounded-2xl shadow-lg shadow-primary/20 text-md font-black" disabled={loading}>
+                      <button type="submit" className="btn btn-primary !h-14 !rounded-2xl shadow-lg shadow-primary/20 text-md font-black active:scale-95 transition-all duration-100" disabled={loading}>
                         {loading ? "SAVING..." : "SUBMIT TO DOCTOR"}
                       </button>
                    </form>

@@ -78,22 +78,29 @@ p { color: var(--text-muted); }
   border-radius: 50px;
   border: none;
   cursor: pointer;
-  transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   font-family: inherit;
   gap: 0.5rem;
+  user-select: none;
+  touch-action: manipulation;
+}
+
+.btn:active {
+  transform: scale(0.96) translateY(0);
+  opacity: 0.9;
 }
 
 .btn-primary {
   background-color: var(--secondary);
   color: var(--white);
-  box-shadow: 0 4px 15px rgba(8, 131, 149, 0.3);
+  box-shadow: 0 4px 12px rgba(8, 131, 149, 0.2);
 }
 
 .btn-primary:hover {
   background-color: var(--primary);
   color: var(--white);
-  box-shadow: 0 6px 20px rgba(10, 77, 104, 0.23);
-  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(10, 77, 104, 0.2);
+  transform: translateY(-1px);
 }
 
 .btn-accent {

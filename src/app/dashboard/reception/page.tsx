@@ -772,62 +772,113 @@ export default function ReceptionDashboard() {
           </div>
         )}
 
-        {/* History Modal */}
+        {/* Visit History Modal (Premium Admin Design) */}
         {showHistoryModal && historyData && (
-          <div className="modal-overlay">
-            <div className="glass-card !max-w-3xl !max-h-[85vh] bg-white border-2 border-white overflow-hidden flex flex-col animate-in slide-in-from-bottom-5">
-               <div className="p-8 border-b border-slate-50 flex justify-between items-center">
-                  <div>
-                    <h2 className="text-2xl font-black text-slate-800 tracking-tight">Digital Clinical Records</h2>
-                    <p className="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest">{historyData.patient.name} | {historyData.patient.uhid}</p>
+          <div
+            style={{ position: 'fixed', inset: 0, background: 'rgba(10, 77, 104, 0.4)', backdropFilter: 'blur(8px)', zIndex: 1000, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '20px' }}
+            onClick={() => setShowHistoryModal(false)}
+          >
+            <div
+              className="glass-card !max-w-[680px] w-full !p-0 overflow-hidden flex flex-col animate-in slide-in-from-bottom-5 bg-white border-2 border-white shadow-2xl"
+              style={{ maxHeight: '85vh' }}
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Modal Header */}
+              <div style={{ padding: '24px 28px', borderBottom: '1px solid #F1F5F9', display: 'flex', justifyContent: 'space-between', alignItems: 'center', position: 'sticky', top: 0, background: 'white', zIndex: 10 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+                  <div style={{ width: '44px', height: '44px', borderRadius: '12px', background: '#0A4D68', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '18px', fontWeight: 'bold' }}>
+                    {historyData.patient.name.charAt(0)}
                   </div>
-                  <button className="h-12 w-12 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400" onClick={() => setShowHistoryModal(false)}><X size={20} /></button>
-               </div>
-               <div className="flex-1 overflow-y-auto p-8 flex flex-col gap-6 bg-slate-50/50">
-                  {historyData.history.length > 0 ? historyData.history.map(v => (
-                    <div key={v.id} className="bg-white rounded-2xl p-6 border border-slate-100 shadow-sm">
-                       <div className="flex justify-between items-start mb-6 pb-6 border-b border-dashed border-slate-100">
-                          <div className="flex flex-col">
-                             <span className="text-xs font-black text-slate-300 uppercase tracking-widest mb-1">Visit Narrative</span>
-                             <span className="text-lg font-black text-slate-800">{new Date(v.visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })}</span>
-                          </div>
-                          <div className="px-4 py-2 bg-primary/5 text-primary rounded-xl text-xs font-black border border-primary/10">Dr. {v.doctor?.name || 'Consultant'}</div>
-                       </div>
-                       <div className="grid grid-cols-2 gap-8 text-xs font-medium">
-                          <div className="flex flex-col gap-4">
-                             <div>
-                                <span className="block font-black text-slate-300 uppercase tracking-widest mb-1.5">Diagnosis</span>
-                                <div className="text-sm font-bold text-slate-700">{v.diagnosis || 'Clinical evaluation pending'}</div>
-                             </div>
-                             <div>
-                                <span className="block font-black text-slate-300 uppercase tracking-widest mb-1.5">Complaints</span>
-                                <div className="text-sm font-bold text-slate-700">{v.chiefComplaints || 'Standard Checkup'}</div>
-                             </div>
-                          </div>
-                          <div className="flex flex-col gap-4">
-                             {v.prescriptions?.length > 0 && (
-                               <div>
-                                  <span className="block font-black text-slate-300 uppercase tracking-widest mb-1.5">Medications</span>
-                                  <div className="flex flex-wrap gap-2">
-                                     {v.prescriptions.map((p:any) => <span key={p.id} className="bg-emerald-50 text-emerald-700 px-3 py-1 rounded-lg font-black border border-emerald-100">{p.drugName} ({p.dosage})</span>)}
-                                  </div>
-                               </div>
-                             )}
-                             {v.labOrders?.length > 0 && (
-                               <div>
-                                  <span className="block font-black text-slate-300 uppercase tracking-widest mb-1.5">Diagnostic Orders</span>
-                                  <div className="flex flex-wrap gap-2">
-                                     {v.labOrders.map((l:any) => <span key={l.id} className="bg-primary/5 text-primary px-3 py-1 rounded-lg font-black border border-primary/10">{l.testName}</span>)}
-                                  </div>
-                               </div>
-                             )}
-                          </div>
-                       </div>
+                  <div>
+                    <div style={{ fontWeight: '800', fontSize: '16px', color: '#0F172A' }}>{historyData.patient.name}</div>
+                    <div style={{ fontSize: '12px', color: '#64748B', display: 'gap: 10px', marginTop: '2px', display: 'flex', gap: '10px' }}>
+                      <span style={{ background: '#EFF6FF', color: '#1D4ED8', padding: '1px 7px', borderRadius: '4px', fontFamily: 'monospace', fontWeight: 'bold' }}>{historyData.patient.uhid}</span>
+                      <span>{historyData.patient.age}Y · {historyData.patient.gender}</span>
+                      {historyData.patient.phone && <span>📞 {historyData.patient.phone}</span>}
                     </div>
-                  )) : (
-                    <div className="py-20 text-center font-bold text-slate-300">No medical history found for this UHID.</div>
-                  )}
-               </div>
+                  </div>
+                </div>
+                <button onClick={() => setShowHistoryModal(false)} className="h-10 w-10 flex items-center justify-center rounded-xl bg-slate-50 text-slate-400 hover:bg-slate-100 transition-colors">
+                  <X size={20} />
+                </button>
+              </div>
+
+              {/* Summary Strip */}
+              <div style={{ padding: '16px 28px', background: '#F8FAFC', borderBottom: '1px solid #F1F5F9', display: 'flex', gap: '24px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <Clock size={15} color="#0A4D68" />
+                  <span style={{ fontSize: '13px', fontWeight: '700', color: '#0A4D68' }}>{loading ? '...' : historyData.history.length} Total Visit{historyData.history.length !== 1 ? 's' : ''}</span>
+                </div>
+                {historyData.history.length > 0 && (
+                  <div style={{ fontSize: '13px', color: '#64748B' }}>
+                    Last visit: <strong>{new Date(historyData.history[0].visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' })}</strong>
+                  </div>
+                )}
+              </div>
+
+              {/* Visit List */}
+              <div style={{ padding: '20px 28px', display: 'flex', flexDirection: 'column', gap: '16px', overflowY: 'auto', background: 'white' }}>
+                {loading ? (
+                  <div style={{ textAlign: 'center', padding: '40px', color: '#94A3B8', fontStyle: 'italic' }}>Loading visit history...</div>
+                ) : historyData.history.length === 0 ? (
+                  <div style={{ textAlign: 'center', padding: '40px', color: '#94A3B8', fontStyle: 'italic' }}>No medical records found for this patient.</div>
+                ) : historyData.history.map((v: any, idx: number) => (
+                  <div key={v.id} style={{ border: '1px solid #E2E8F0', borderRadius: '12px', overflow: 'hidden' }}>
+                    {/* Visit Header */}
+                    <div style={{ padding: '14px 18px', background: '#F8FAFC', borderBottom: '1px solid #E2E8F0', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span style={{ width: '24px', height: '24px', borderRadius: '50%', background: '#0A4D68', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 'bold', flexShrink: 0 }}>
+                          {historyData.history.length - idx}
+                        </span>
+                        <div>
+                          <div style={{ fontWeight: '700', fontSize: '14px', color: '#1E293B' }}>
+                            {new Date(v.visitDate).toLocaleDateString('en-GB', { weekday: 'short', day: '2-digit', month: 'short', year: 'numeric' })}
+                          </div>
+                          <div style={{ fontSize: '12px', color: '#64748B' }}>Token #{v.tokenNumber}</div>
+                        </div>
+                      </div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Stethoscope size={13} color="#64748B" />
+                        <span style={{ fontSize: '12px', fontWeight: '600', color: '#0A4D68' }}>
+                          Dr. {v.doctor?.name?.trim().replace(/^(dr\.?\s*)+/i, '') || 'Unknown'}
+                        </span>
+                      </div>
+                    </div>
+                    {/* Visit Body */}
+                    <div style={{ padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: '8px', background: 'white' }}>
+                      {v.chiefComplaints ? (
+                        <div style={{ fontSize: '13px', color: '#374151' }}>
+                          <span style={{ fontWeight: '700', color: '#64748B', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.05em' }}>Chief Complaints</span>
+                          <p style={{ margin: '4px 0 0 0', color: '#1E293B' }}>{v.chiefComplaints}</p>
+                        </div>
+                      ) : null}
+                      {v.diagnosis ? (
+                        <div style={{ fontSize: '13px', color: '#374151', marginTop: v.chiefComplaints ? '6px' : 0 }}>
+                          <span style={{ fontWeight: '700', color: '#64748B', textTransform: 'uppercase', fontSize: '10px', letterSpacing: '0.05em' }}>Diagnosis</span>
+                          <p style={{ margin: '4px 0 0 0', color: '#1E293B', fontWeight: '600' }}>{v.diagnosis}</p>
+                        </div>
+                      ) : null}
+                      {!v.chiefComplaints && !v.diagnosis && (
+                        <p style={{ fontSize: '13px', color: '#94A3B8', fontStyle: 'italic', margin: 0 }}>No consultation notes recorded yet.</p>
+                      )}
+                      {(v.prescriptions?.length > 0 || v.labOrders?.length > 0) && (
+                        <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '8px', paddingTop: '8px', borderTop: '1px solid #F1F5F9' }}>
+                          {v.prescriptions?.length > 0 && (
+                            <span style={{ fontSize: '11px', background: '#F0FDF4', color: '#15803D', padding: '3px 10px', borderRadius: '20px', fontWeight: '600' }}>
+                              💊 {v.prescriptions.length} Med{v.prescriptions.length > 1 ? 's' : ''}: {v.prescriptions.slice(0, 3).map((p: any) => p.drugName).join(', ')}{v.prescriptions.length > 3 ? '...' : ''}
+                            </span>
+                          )}
+                          {v.labOrders?.length > 0 && (
+                            <span style={{ fontSize: '11px', background: '#FFF7ED', color: '#C2410C', padding: '3px 10px', borderRadius: '20px', fontWeight: '600' }}>
+                              🧪 {v.labOrders.length} Lab Test{v.labOrders.length > 1 ? 's' : ''}: {v.labOrders.slice(0, 2).map((l: any) => l.testName).join(', ')}{v.labOrders.length > 2 ? '...' : ''}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         )}

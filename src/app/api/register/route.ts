@@ -37,8 +37,10 @@ export async function POST(req: Request) {
         const trimmedPhone = phone.trim();
         const existing = await tx.patient.findFirst({
           where: {
-            phone: { equals: trimmedPhone },
-            phone: { not: "" }
+            phone: { 
+              equals: trimmedPhone,
+              not: "" 
+            }
           }
         });
 

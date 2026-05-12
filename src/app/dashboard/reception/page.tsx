@@ -25,7 +25,9 @@ import {
   X,
   CreditCard,
   FileText,
-  ChevronDown
+  ChevronDown,
+  Clipboard,
+  FileSearch
 } from 'lucide-react';
 
 export default function ReceptionDashboard() {

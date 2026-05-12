@@ -172,7 +172,6 @@ export default function ReceptionDashboard() {
       const data = await res.json();
       if (data.success) {
         setHistoryData({ patient: data.patient, history: data.history });
-        setExpandedVisitId(data.history[0]?.id || null);
       }
     } catch (err) {} finally { setLoadingHistory(false); }
   };
@@ -804,9 +803,9 @@ export default function ReceptionDashboard() {
                                 </div>
                              </div>
                           </div>
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '80px' }}>
                              <div style={{ textAlign: 'right' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#0A4D68', justifyContent: 'flex-end' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px', color: '#0A4D68', justifyContent: 'flex-end' }}>
                                    <Stethoscope size={22} />
                                    <span style={{ fontSize: '18px', fontWeight: '600', textTransform: 'uppercase' }}>
                                       {v.doctor?.name ? (v.doctor.name.toLowerCase().startsWith('dr') ? v.doctor.name : `Dr. ${v.doctor.name}`) : 'Specialist'}

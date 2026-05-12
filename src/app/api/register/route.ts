@@ -75,20 +75,24 @@ export async function POST(req: Request) {
         }
       }
 
-      // Calculate NEXT GLOBAL TOKEN
-      let visitDateObj: Date;
-      if (visitDate && visitTime) {
-        visitDateObj = new Date(`${visitDate}T${visitTime}:00+05:30`);
-      } else if (visitDate) {
-        visitDateObj = new Date(`${visitDate}T00:00:00+05:30`);
-      } else {
-        visitDateObj = new Date();
-      }
-      
+      // 2. Prevent Double-Queueing for the same patient on the same day
+      const visitDateObj = visitDate ? new Date(visitDate) : new Date();
       const tokenDateStart = new Date(visitDateObj);
       tokenDateStart.setHours(0, 0, 0, 0);
       const tokenDateEnd = new Date(visitDateObj);
       tokenDateEnd.setHours(23, 59, 59, 999);
+
+      const activeVisit = await tx.visit.findFirst({
+        where: {
+          patientId: patient.id,
+          visitDate: { gte: tokenDateStart, lte: tokenDateEnd },
+          status: { not: 'COMPLETED' }
+        }
+      });
+
+      if (activeVisit) {
+        throw new Error(`Patient is already in the queue today with Token #${activeVisit.tokenNumber}.`);
+      }
 
       const lastVisit = await tx.visit.findFirst({
         where: { visitDate: { gte: tokenDateStart, lte: tokenDateEnd } },
@@ -99,7 +103,7 @@ export async function POST(req: Request) {
       const selectedDoc = await tx.user.findUnique({ where: { id: doctorId } });
       const assignedDoctorName = selectedDoc?.name || 'Unknown';
 
-      // 2. Create Visit
+      // 3. Create Visit
       const visit = await tx.visit.create({
         data: {
           patientId: patient.id,
@@ -113,7 +117,7 @@ export async function POST(req: Request) {
         include: { patient: true, doctor: true }
       });
 
-      // 3. Create Initial Bill
+      // 4. Create Initial Bill
       await tx.bill.create({
         data: {
           visitId: visit.id,

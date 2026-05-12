@@ -731,16 +731,23 @@ export default function ReceptionDashboard() {
                <div className="w-20 h-20 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl shadow-emerald-100">
                   <CheckCircle2 size={40} />
                </div>
-               <h2 className="text-3xl font-black text-slate-800 mb-4">{successInfo?.title}</h2>
-               <p className="text-slate-500 font-medium mb-10 leading-relaxed">{successInfo?.message}</p>
+               <h2 className={`text-3xl font-black mb-4 ${successInfo?.title.includes('New') ? 'text-emerald-600' : 'text-primary'}`}>
+                 {successInfo?.title.includes('New') ? "New Patient Registered!" : "Returning Patient Detected"}
+               </h2>
+               <p className="text-slate-500 font-medium mb-10 leading-relaxed">
+                 {successInfo?.title.includes('New') 
+                   ? `Permanent ID created for ${formData.name}.` 
+                   : `Existing record found for ${formData.name}. New clinical token generated.`}
+               </p>
                
                <div className="bg-slate-50 rounded-2xl p-8 mb-10 border border-slate-100">
-                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-2">Clinical Token ID</div>
-                  <div className="text-5xl font-black text-primary">{successInfo?.token}</div>
+                  <div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-2">OPD Clinical Token</div>
+                  <div className="text-5xl font-black text-primary">#{successInfo?.token}</div>
                   {successInfo?.uhid && (
                     <div className="mt-8 pt-8 border-t border-dashed border-slate-200">
-                       <div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-2">Hospital Universal ID (UHID)</div>
+                       <div className="text-[10px] font-black text-slate-400 uppercase tracking-[2px] mb-2">Universal Hospital ID (UHID)</div>
                        <div className="text-2xl font-black text-slate-800">{successInfo.uhid}</div>
+                       {!successInfo?.title.includes('New') && <div className="text-[9px] font-black text-emerald-600 uppercase mt-2">Verified Existing Record</div>}
                     </div>
                   )}
                </div>

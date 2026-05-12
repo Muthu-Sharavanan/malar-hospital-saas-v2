@@ -797,7 +797,7 @@ export default function ReceptionDashboard() {
                                 <span style={{ fontSize: '22px', fontWeight: '900', lineHeight: '1' }}>{historyData.history.length - idx}</span>
                              </div>
                              <div>
-                                <div style={{ fontSize: '22px', fontWeight: '900', color: '#0A4D68', marginBottom: '8px', letterSpacing: '-0.5px' }}>{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                                <div style={{ fontSize: '22px', fontWeight: '600', color: '#0A4D68', marginBottom: '8px', letterSpacing: '-0.5px' }}>{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                                    <span style={{ background: '#f1f5f9', color: '#64748b', padding: '6px 14px', borderRadius: '12px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Token #{v.tokenNumber}</span>
                                    <div style={{ color: '#059669', fontWeight: '900', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -810,7 +810,7 @@ export default function ReceptionDashboard() {
                              <div style={{ textAlign: 'right' }}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#0A4D68', marginBottom: '4px', justifyContent: 'flex-end' }}>
                                    <Stethoscope size={22} />
-                                   <span style={{ fontSize: '18px', fontWeight: '900', textTransform: 'uppercase' }}>
+                                   <span style={{ fontSize: '18px', fontWeight: '600', textTransform: 'uppercase' }}>
                                       {v.doctor?.name ? (v.doctor.name.toLowerCase().startsWith('dr') ? v.doctor.name : `Dr. ${v.doctor.name}`) : 'Specialist'}
                                    </span>
                                 </div>

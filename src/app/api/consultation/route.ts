@@ -26,6 +26,7 @@ export async function POST(req: Request) {
     // Validate Input
     const validation = consultationSchema.safeParse(body);
     if (!validation.success) {
+      console.error("Consultation Validation Failed:", validation.error.format());
       return NextResponse.json({ success: false, error: "Validation Failed", details: validation.error.format() }, { status: 400 });
     }
 

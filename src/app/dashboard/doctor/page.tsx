@@ -273,10 +273,18 @@ export default function DoctorDashboard() {
     }
     setLoading(true);
     try {
+      // Normalize drugs array for Zod validation (ensure 'name' field exists)
+      const normalizedDrugs = drugs.map((d: any) => ({
+        name: d.name || d.drugName || '',
+        dosage: d.dosage || '',
+        duration: d.duration || '',
+        instructions: d.instructions || ''
+      }));
+
       const res = await fetch('/api/consultation', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...consultation, drugs, visitId: selectedVisit.id })
+        body: JSON.stringify({ ...consultation, drugs: normalizedDrugs, visitId: selectedVisit.id })
       });
       const data = await res.json();
       if (data.success) {
@@ -292,7 +300,8 @@ export default function DoctorDashboard() {
         fetchDoctorQueue();
         fetchAllAppointments();
       } else {
-        alert("❌ Failed to save consultation: " + (data.error || "Unknown Error"));
+        const errorDetails = data.details ? JSON.stringify(data.details, null, 2) : "";
+        alert(`❌ Failed to save consultation: ${data.error}\n${errorDetails}`);
       }
     } catch (err) {
       alert("Failed to save consultation");

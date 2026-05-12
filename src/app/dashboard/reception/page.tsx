@@ -160,9 +160,25 @@ export default function ReceptionDashboard() {
       if (data.success) {
         setSearchResults(data.patients);
         setShowSearchResults(true);
+        
+        // If exactly one match found for phone search, auto-select for history reference
+        if (data.patients.length === 1) {
+           const match = data.patients[0];
+           if (query === match.phone) {
+              setSelectedPatient(match);
+           }
+        }
       }
     } catch (err) {}
   };
+
+  useEffect(() => {
+    if (formData.phone.length === 10) {
+      fetchPatients(formData.phone);
+    } else if (formData.phone.length === 0) {
+      setSelectedPatient(null);
+    }
+  }, [formData.phone]);
 
   const fetchHistory = async (patientId: string) => {
     try {

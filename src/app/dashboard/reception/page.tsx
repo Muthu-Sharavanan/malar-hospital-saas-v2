@@ -800,21 +800,18 @@ export default function ReceptionDashboard() {
                                 <div style={{ fontSize: '22px', fontWeight: '600', color: '#0A4D68', marginBottom: '8px', letterSpacing: '-0.5px' }}>{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</div>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
                                    <span style={{ background: '#f1f5f9', color: '#64748b', padding: '6px 14px', borderRadius: '12px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Token #{v.tokenNumber}</span>
-                                   <div style={{ color: '#059669', fontWeight: '900', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '2px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669' }}></div> Verified Record
-                                   </div>
+                                   <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669', boxShadow: '0 0 10px rgba(5, 150, 105, 0.3)' }}></div>
                                 </div>
                              </div>
                           </div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
                              <div style={{ textAlign: 'right' }}>
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#0A4D68', marginBottom: '4px', justifyContent: 'flex-end' }}>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', color: '#0A4D68', justifyContent: 'flex-end' }}>
                                    <Stethoscope size={22} />
                                    <span style={{ fontSize: '18px', fontWeight: '600', textTransform: 'uppercase' }}>
                                       {v.doctor?.name ? (v.doctor.name.toLowerCase().startsWith('dr') ? v.doctor.name : `Dr. ${v.doctor.name}`) : 'Specialist'}
                                    </span>
                                 </div>
-                                <span style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '2px' }}>Primary Consultant</span>
                              </div>
                              <div style={{ width: '50px', height: '50px', borderRadius: '50%', background: '#f8fafc', color: '#cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.4s ease', transform: expandedVisitId === v.id ? 'rotate(180deg)' : 'rotate(0deg)', border: 'none' }}>
                                 <ChevronDown size={28} />

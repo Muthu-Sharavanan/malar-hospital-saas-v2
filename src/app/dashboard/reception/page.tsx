@@ -742,70 +742,101 @@ export default function ReceptionDashboard() {
                </div>
                
                {/* Clinical Archive List */}
-               <div className="flex-1 overflow-y-auto p-10 bg-white/10 flex flex-col gap-8 custom-scrollbar">
+               <div className="flex-1 overflow-y-auto p-10 bg-[#f8fafc]/50 flex flex-col gap-6 custom-scrollbar" style={{ backdropFilter: 'blur(10px)' }}>
                  {historyData.history.length > 0 ? historyData.history.map((v, idx) => (
-                    <div key={v.id} className={`bg-white rounded-[2rem] transition-all duration-300 overflow-hidden shrink-0 border border-slate-100 shadow-sm hover:shadow-md ${expandedVisitId === v.id ? 'ring-2 ring-primary/10' : ''}`}>
+                    <div 
+                      key={v.id} 
+                      style={{ 
+                        background: 'white', 
+                        borderRadius: '24px', 
+                        overflow: 'hidden', 
+                        border: '1px solid #f1f5f9', 
+                        boxShadow: expandedVisitId === v.id ? '0 20px 40px -12px rgba(10, 77, 104, 0.15)' : '0 4px 6px -1px rgba(0, 0, 0, 0.02)',
+                        transition: 'all 0.3s ease'
+                      }}
+                    >
                        <button 
                          onClick={() => setExpandedVisitId(expandedVisitId === v.id ? null : v.id)}
-                         className="w-full p-10 flex justify-between items-center text-left border-none focus:outline-none"
-                         style={{ background: 'transparent', cursor: 'pointer' }}
+                         style={{ 
+                           width: '100%', 
+                           padding: '30px', 
+                           display: 'flex', 
+                           justifyContent: 'space-between', 
+                           alignItems: 'center', 
+                           textAlign: 'left', 
+                           background: 'transparent', 
+                           border: 'none', 
+                           cursor: 'pointer',
+                           outline: 'none'
+                         }}
                        >
-                          <div className="flex items-center gap-10">
-                             <div className={`w-16 h-16 rounded-2xl flex flex-col items-center justify-center shadow-lg transition-all ${expandedVisitId === v.id ? 'bg-primary text-white shadow-primary/20' : 'bg-slate-50 text-slate-400 shadow-none'}`}>
-                                <span className="text-[10px] font-black uppercase leading-none mb-1">Visit</span>
-                                <span className="text-2xl font-black leading-none">{historyData.history.length - idx}</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+                             <div style={{ 
+                               width: '60px', 
+                               height: '60px', 
+                               borderRadius: '18px', 
+                               background: expandedVisitId === v.id ? '#0A4D68' : '#f8fafc',
+                               color: expandedVisitId === v.id ? 'white' : '#94a3b8',
+                               display: 'flex', 
+                               flexDirection: 'column', 
+                               alignItems: 'center', 
+                               justifyContent: 'center',
+                               transition: 'all 0.3s ease'
+                             }}>
+                                <span style={{ fontSize: '9px', fontWeight: '900', textTransform: 'uppercase', marginBottom: '2px' }}>Visit</span>
+                                <span style={{ fontSize: '20px', fontWeight: '900' }}>{historyData.history.length - idx}</span>
                              </div>
                              <div>
-                                <div className="text-2xl font-black text-slate-800 leading-none mb-3 tracking-tight">{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</div>
-                                <div className="flex items-center gap-6">
-                                   <span style={{ background: '#f1f5f9', color: '#64748b', padding: '6px 12px', borderRadius: '10px', fontSize: '11px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Token #{v.tokenNumber}</span>
-                                   <div style={{ color: '#059669', fontWeight: '900', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1.5px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                                      <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#059669' }}></div> Verified Record
+                                <div style={{ fontSize: '18px', fontWeight: '900', color: '#1e293b', marginBottom: '6px', letterSpacing: '-0.5px' }}>{new Date(v.visitDate).toLocaleDateString('en-US', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' })}</div>
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                   <span style={{ background: '#f1f5f9', color: '#64748b', padding: '4px 10px', borderRadius: '8px', fontSize: '10px', fontWeight: '900', textTransform: 'uppercase', letterSpacing: '1px' }}>Token #{v.tokenNumber}</span>
+                                   <div style={{ color: '#059669', fontWeight: '900', fontSize: '10px', textTransform: 'uppercase', letterSpacing: '1.5px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                                      <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#059669' }}></div> Verified Record
                                    </div>
                                 </div>
                              </div>
                           </div>
-                          <div className="flex items-center gap-10">
-                             <div className="text-right hidden sm:block">
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '30px' }}>
+                             <div style={{ textAlign: 'right', display: 'none', sm: 'block' } as any}>
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#0A4D68', marginBottom: '2px', justifyContent: 'flex-end' }}>
-                                   <Stethoscope size={20} />
-                                   <span style={{ fontSize: '16px', fontWeight: '900', textTransform: 'uppercase' }}>
+                                   <Stethoscope size={18} />
+                                   <span style={{ fontSize: '15px', fontWeight: '900', textTransform: 'uppercase' }}>
                                       {v.doctor?.name ? (v.doctor.name.toLowerCase().startsWith('dr') ? v.doctor.name : `Dr. ${v.doctor.name}`) : 'Specialist'}
                                    </span>
                                 </div>
-                                <span style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Primary Consultant</span>
+                                <span style={{ fontSize: '10px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Primary Consultant</span>
                              </div>
-                             <div className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${expandedVisitId === v.id ? 'rotate-180 bg-primary/10 text-primary' : 'bg-slate-50 text-slate-300'}`}>
-                                <ChevronDown size={24} />
+                             <div style={{ width: '40px', height: '40px', borderRadius: '12px', background: expandedVisitId === v.id ? '#0A4D68/10' : '#f8fafc', color: expandedVisitId === v.id ? '#0A4D68' : '#cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease', transform: expandedVisitId === v.id ? 'rotate(180deg)' : 'rotate(0deg)' }}>
+                                <ChevronDown size={20} />
                              </div>
                           </div>
                        </button>
 
                        {expandedVisitId === v.id && (
-                          <div className="px-10 pb-10 pt-0 animate-in fade-in slide-in-from-top-2 duration-300">
-                             <div className="pt-10 border-t border-slate-50 grid grid-cols-1 md:grid-cols-2 gap-10">
-                                <div style={{ background: 'rgba(241, 245, 249, 0.5)', padding: '30px', borderRadius: '24px', border: '1px solid #f1f5f9' }}>
-                                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px' }}>
-                                      <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#dbeafe', color: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Clipboard size={18} /></div>
-                                      <span style={{ fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Chief Complaints</span>
+                          <div style={{ padding: '0 30px 30px 30px', animation: 'fadeIn 0.3s ease' }}>
+                             <div style={{ paddingTop: '30px', borderTop: '1px solid #f1f5f9', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '20px' }}>
+                                <div style={{ background: '#f8fafc', padding: '24px', borderRadius: '20px', border: '1px solid #f1f5f9' }}>
+                                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                                      <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#dbeafe', color: '#2563eb', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Clipboard size={16} /></div>
+                                      <span style={{ fontSize: '10px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>Chief Complaints</span>
                                    </div>
-                                   <p style={{ fontSize: '16px', fontWeight: '700', color: '#334155', margin: 0, lineHeight: '1.6' }}>{v.chiefComplaints || 'General checkup'}</p>
+                                   <p style={{ fontSize: '14px', fontWeight: '700', color: '#334155', margin: 0, lineHeight: '1.6' }}>{v.chiefComplaints || 'General checkup'}</p>
                                 </div>
-                                <div style={{ background: 'rgba(250, 245, 255, 0.5)', padding: '30px', borderRadius: '24px', border: '1px solid #f3e8ff' }}>
-                                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '15px' }}>
-                                      <div style={{ width: '36px', height: '36px', borderRadius: '10px', background: '#f3e8ff', color: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Activity size={18} /></div>
-                                      <span style={{ fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1.5px' }}>Encounter Diagnosis</span>
+                                <div style={{ background: '#fdf4ff', padding: '24px', borderRadius: '20px', border: '1px solid #f3e8ff' }}>
+                                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
+                                      <div style={{ width: '32px', height: '32px', borderRadius: '8px', background: '#f3e8ff', color: '#9333ea', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><Activity size={16} /></div>
+                                      <span style={{ fontSize: '10px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '1px' }}>Encounter Diagnosis</span>
                                    </div>
-                                   <p style={{ fontSize: '16px', fontWeight: '700', color: '#334155', fontStyle: 'italic', margin: 0, lineHeight: '1.6' }}>{v.diagnosis || 'Clinical evaluation in progress'}</p>
+                                   <p style={{ fontSize: '14px', fontWeight: '700', color: '#334155', fontStyle: 'italic', margin: 0, lineHeight: '1.6' }}>{v.diagnosis || 'Clinical evaluation in progress'}</p>
                                 </div>
                              </div>
                           </div>
                        )}
                     </div>
                   )) : (
-                    <div className="py-32 text-center">
+                    <div style={{ padding: '80px 0', textAlign: 'center' }}>
                        <div style={{ width: '80px', height: '80px', borderRadius: '50%', background: '#f1f5f9', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 20px', color: '#cbd5e1' }}><FileSearch size={40} /></div>
-                       <div style={{ fontSize: '12px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '3px' }}>No clinical records available</div>
+                       <div style={{ fontSize: '11px', fontWeight: '900', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '3px' }}>No clinical records available</div>
                     </div>
                   )}
                </div>

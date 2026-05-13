@@ -529,7 +529,7 @@ export default function DoctorDashboard() {
   }, [allAppointments]);
 
   const finishedToday = useMemo(() => stats.completedToday, [stats]);
-  const reviewCases = useMemo(() => queue.filter((v: any) => v.isReview), [queue]);
+  const reviewCases = useMemo(() => queue.filter((v: any) => v.isReview && v.status !== 'COMPLETED'), [queue]);
 
   const calendarDays = useMemo(() => {
     const start = startOfWeek(startOfMonth(currentMonth));
@@ -569,8 +569,8 @@ export default function DoctorDashboard() {
           >
             <Activity size={18} /> 
             <span style={{ fontWeight: currentView === 'reviews' ? '700' : '400' }}>Review Cases</span>
-            {queue.filter(v => v.isReview).length > 0 && (
-              <span className="ml-auto bg-[#F59E0B] text-[#0A4D68] text-[9px] font-black px-1.5 py-0.5 rounded">{queue.filter(v => v.isReview).length}</span>
+            {reviewCases.length > 0 && (
+              <span className="ml-auto bg-[#F59E0B] text-[#0A4D68] text-[9px] font-black px-1.5 py-0.5 rounded">{reviewCases.length}</span>
             )}
           </button>
 

@@ -891,11 +891,11 @@ export default function DoctorDashboard() {
                      <h3 className="text-lg font-bold flex items-center gap-2 text-[#0A4D68]">
                        <Clock size={20} /> Shift Waiting List
                      </h3>
-                     <span className="badge bg-[#088395] text-white border-none font-bold px-4 py-3">{queue.length} Ready</span>
+                     <span className="badge bg-[#088395] text-white border-none font-bold px-4 py-3">{queue.filter((v: any) => v.status !== 'COMPLETED').length} Ready</span>
                   </div>
-
+  
                   <div className="flex flex-col gap-4 overflow-y-auto pr-2" style={{ maxHeight: '45vh' }}>
-                    {queue.length > 0 ? queue.map((v: any) => (
+                    {queue.filter((v: any) => v.status !== 'COMPLETED').length > 0 ? queue.filter((v: any) => v.status !== 'COMPLETED').map((v: any) => (
                       <div 
                         key={v.id} 
                         className={`glass-card !p-5 cursor-pointer group hover-scale-102 ${selectedVisit?.id === v.id ? '!border-secondary !shadow-lg bg-secondary/5' : 'bg-white'}`}

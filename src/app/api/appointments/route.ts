@@ -12,10 +12,12 @@ export async function GET(req: Request) {
     let sessionName = '';
     let sessionRole = '';
     
+    let session: any = null;
+    
     // Attempt to get doctor filter from session
     if (sessionCookie) {
       try {
-        const session = JSON.parse(decodeURIComponent(sessionCookie.value));
+        session = JSON.parse(decodeURIComponent(sessionCookie.value));
         sessionRole = session.role || '';
         sessionName = (session.name || '').toLowerCase().trim().replace(/^(dr\.?\s*)+/i, '');
       } catch (e) {
@@ -25,7 +27,7 @@ export async function GET(req: Request) {
 
     // Determine query filtering based on session (only show mapped doctor's visits)
     // If no session passed or admin/receptionist, show all, but doctor dashboard requires session filter.
-    const whereClause = (sessionRole === 'DOCTOR' && session.id) ? {
+    const whereClause = (sessionRole === 'DOCTOR' && session?.id) ? {
       doctorId: session.id
     } : {};
 

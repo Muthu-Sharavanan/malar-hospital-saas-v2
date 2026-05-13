@@ -204,7 +204,7 @@ export default function PrescriptionPrint() {
 
          <div style={{ textAlign: 'center', borderTop: '1px solid #000', width: '240px', paddingTop: '5px', position: 'relative' }}>
             {isSigned && (
-              <div style={{ position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '-5px', pointerEvents: 'none' }}>
+              <div style={{ position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '5px', pointerEvents: 'none' }}>
                  <img 
                     src="/signature.png" 
                     alt="Signature" 

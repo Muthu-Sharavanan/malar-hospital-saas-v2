@@ -451,24 +451,24 @@ export default function ReceptionDashboard() {
                 {formData.visitDate && (
                   <div className="form-group animate-in slide-in-from-right-4">
                     <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">TimeSlot</label>
-                    <div className="flex gap-2">
+                    <div className="flex items-center gap-4">
                        <input 
                          type="time" 
-                         className="form-input !bg-slate-50 !h-14 font-bold border-none flex-1" 
+                         className="form-input !bg-slate-50 !h-16 font-black border-none flex-1 !text-lg !px-6 shadow-sm rounded-2xl" 
                          required 
                          value={formData.visitTime} 
                          onChange={e => setFormData({...formData, visitTime: e.target.value})} 
                        />
-                       <div className="flex bg-slate-100 p-1 rounded-xl">
+                       <div className="flex bg-slate-200/50 p-1.5 rounded-2xl h-16 w-44 shadow-inner">
                           <button 
                             type="button"
                             onClick={() => setFormData({...formData, timeSession: 'AM'})}
-                            className={`px-4 rounded-lg font-black text-[10px] transition-all ${formData.timeSession === 'AM' ? 'bg-white text-primary shadow-sm' : 'text-slate-400'}`}
+                            className={`flex-1 rounded-xl font-black text-xs transition-all duration-300 ${formData.timeSession === 'AM' ? 'bg-white text-primary shadow-md scale-105' : 'text-slate-400 hover:text-slate-500'}`}
                           >AM</button>
                           <button 
                             type="button"
                             onClick={() => setFormData({...formData, timeSession: 'PM'})}
-                            className={`px-4 rounded-lg font-black text-[10px] transition-all ${formData.timeSession === 'PM' ? 'bg-white text-primary shadow-sm' : 'text-slate-400'}`}
+                            className={`flex-1 rounded-xl font-black text-xs transition-all duration-300 ${formData.timeSession === 'PM' ? 'bg-white text-primary shadow-md scale-105' : 'text-slate-400 hover:text-slate-500'}`}
                           >PM</button>
                        </div>
                     </div>

@@ -451,40 +451,64 @@ export default function ReceptionDashboard() {
                 {formData.visitDate && (
                   <div className="form-group animate-in slide-in-from-right-4 mb-10">
                     <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Scheduled Time Slot</label>
-                    <div className="flex items-center gap-4">
-                       {/* Hour Typing Input - MATCHING DATE STYLE */}
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                       {/* Hour Typing Input - Hardcoded size to prevent stretching */}
                        <input 
                          type="text" 
-                         className="form-input !bg-slate-50 !h-14 !w-20 text-center font-bold border-none shadow-sm rounded-xl"
+                         style={{ flex: 'none', width: '80px', maxWidth: '80px', minWidth: '80px', height: '56px', backgroundColor: '#f8fafc', borderRadius: '12px', border: 'none', outline: 'none', textAlign: 'center', fontSize: '20px', fontWeight: 'bold', color: '#1e293b', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}
                          placeholder="10"
                          maxLength={2}
                          value={formData.hour}
                          onChange={e => setFormData({...formData, hour: e.target.value.replace(/\D/g, '').slice(0,2)})}
                        />
                        
-                       <span className="text-xl font-black text-slate-300">:</span>
+                       <span style={{ fontSize: '24px', fontWeight: '900', color: '#cbd5e1', flex: 'none' }}>:</span>
 
-                       {/* Minute Typing Input - MATCHING DATE STYLE */}
+                       {/* Minute Typing Input - Hardcoded size to prevent stretching */}
                        <input 
                          type="text" 
-                         className="form-input !bg-slate-50 !h-14 !w-20 text-center font-bold border-none shadow-sm rounded-xl"
+                         style={{ flex: 'none', width: '80px', maxWidth: '80px', minWidth: '80px', height: '56px', backgroundColor: '#f8fafc', borderRadius: '12px', border: 'none', outline: 'none', textAlign: 'center', fontSize: '20px', fontWeight: 'bold', color: '#1e293b', boxShadow: '0 1px 2px 0 rgba(0, 0, 0, 0.05)' }}
                          placeholder="30"
                          maxLength={2}
                          value={formData.minute}
                          onChange={e => setFormData({...formData, minute: e.target.value.replace(/\D/g, '').slice(0,2)})}
                        />
 
-                       {/* AM/PM TOGGLE - REFINED SCALE */}
-                       <div className="flex bg-slate-100/50 p-1 rounded-xl h-14 w-52 shadow-inner ml-2">
+                       {/* AM/PM MEGA TOGGLE - Restored to the previous beautiful teal design */}
+                       <div style={{ display: 'flex', backgroundColor: '#f1f5f9', padding: '6px', borderRadius: '50px', height: '56px', width: '220px', marginLeft: '10px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)' }}>
                           <button 
                             type="button"
                             onClick={() => setFormData({...formData, timeSession: 'AM'})}
-                            className={`flex-1 rounded-lg font-black text-xs transition-all duration-300 ${formData.timeSession === 'AM' ? 'bg-[#088395] text-white shadow-md' : 'text-slate-400'}`}
+                            style={{ 
+                              flex: 1, 
+                              borderRadius: '50px', 
+                              border: 'none', 
+                              fontSize: '16px', 
+                              fontWeight: '900', 
+                              transition: 'all 0.3s',
+                              cursor: 'pointer',
+                              background: formData.timeSession === 'AM' ? '#088395' : 'transparent',
+                              color: formData.timeSession === 'AM' ? 'white' : '#94a3b8',
+                              boxShadow: formData.timeSession === 'AM' ? '0 10px 15px -3px rgba(8,131,149,0.4)' : 'none',
+                              transform: formData.timeSession === 'AM' ? 'scale(1.05)' : 'scale(1)'
+                            }}
                           >AM</button>
                           <button 
                             type="button"
                             onClick={() => setFormData({...formData, timeSession: 'PM'})}
-                            className={`flex-1 rounded-lg font-black text-xs transition-all duration-300 ${formData.timeSession === 'PM' ? 'bg-[#088395] text-white shadow-md' : 'text-slate-400'}`}
+                            style={{ 
+                              flex: 1, 
+                              borderRadius: '50px', 
+                              border: 'none', 
+                              fontSize: '16px', 
+                              fontWeight: '900', 
+                              transition: 'all 0.3s',
+                              cursor: 'pointer',
+                              background: formData.timeSession === 'PM' ? '#088395' : 'transparent',
+                              color: formData.timeSession === 'PM' ? 'white' : '#94a3b8',
+                              boxShadow: formData.timeSession === 'PM' ? '0 10px 15px -3px rgba(8,131,149,0.4)' : 'none',
+                              transform: formData.timeSession === 'PM' ? 'scale(1.05)' : 'scale(1)'
+                            }}
                           >PM</button>
                        </div>
                     </div>

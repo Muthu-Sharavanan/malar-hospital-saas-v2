@@ -6,6 +6,7 @@ export default function PrescriptionPrint() {
   const { visitId } = useParams();
   const [visit, setVisit] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isSigned, setIsSigned] = useState(false);
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -189,8 +190,24 @@ export default function PrescriptionPrint() {
       )}
 
       {/* Signature Area */}
-      <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end', paddingTop: '20px' }}>
+      <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: '20px' }}>
+         <div className="no-print" style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <input 
+              type="checkbox" 
+              id="sign-check" 
+              checked={isSigned} 
+              onChange={(e) => setIsSigned(e.target.checked)}
+              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+            />
+            <label htmlFor="sign-check" style={{ fontSize: '13px', fontWeight: 600, color: '#0A4D68', cursor: 'pointer' }}>Digitally Sign Prescription</label>
+         </div>
+
          <div style={{ textAlign: 'center', borderTop: '1px solid #000', width: '220px', paddingTop: '5px' }}>
+            {isSigned && (
+              <div style={{ marginBottom: '-10px', marginTop: '-60px' }}>
+                 <img src="/signature.png" alt="Signature" style={{ width: '120px', height: 'auto', display: 'block', margin: '0 auto' }} />
+              </div>
+            )}
             <p style={{ fontWeight: 700, margin: 0, fontSize: '15px' }}>{visit.doctor.name.includes('Aravind') ? 'Dr.Aravind MD, DrNB(MGE)' : visit.doctor.name}</p>
             <small style={{ color: '#64748B', display: 'block', fontSize: '12px' }}>Reg No: {visit.doctor.name.includes('Aravind') ? 'TNMC No: 122757' : (visit.doctor.regNo || 'MC-12345')}</small>
          </div>

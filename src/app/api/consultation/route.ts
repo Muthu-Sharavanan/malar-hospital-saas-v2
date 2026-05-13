@@ -11,7 +11,16 @@ export async function PATCH(req: Request) {
     const { cookies } = await import('next/headers');
     const sessionCookie = (await cookies()).get('session');
     if (!sessionCookie) return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
-    const session = JSON.parse(sessionCookie.value);
+    let session: any;
+    try {
+      session = JSON.parse(decodeURIComponent(sessionCookie.value));
+    } catch (e) {
+      return NextResponse.json({ success: false, error: 'Invalid session' }, { status: 401 });
+    }
+
+    if (!session?.id) {
+      return NextResponse.json({ success: false, error: 'Session ID missing' }, { status: 401 });
+    }
 
     const { visitId, status } = await req.json();
 
@@ -51,7 +60,16 @@ export async function POST(req: Request) {
     const { cookies } = await import('next/headers');
     const sessionCookie = (await cookies()).get('session');
     if (!sessionCookie) return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
-    const session = JSON.parse(sessionCookie.value);
+    let session: any;
+    try {
+      session = JSON.parse(decodeURIComponent(sessionCookie.value));
+    } catch (e) {
+      return NextResponse.json({ success: false, error: 'Invalid session' }, { status: 401 });
+    }
+
+    if (!session?.id) {
+      return NextResponse.json({ success: false, error: 'Session ID missing' }, { status: 401 });
+    }
 
     const visitSearch = await prisma.visit.findUnique({ where: { id: visitId } });
     if (!visitSearch) throw new Error("Visit not found");
@@ -111,7 +129,17 @@ export async function GET(req: Request) {
       return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
     }
 
-    const session = JSON.parse(sessionCookie.value);
+    let session: any;
+    try {
+      session = JSON.parse(decodeURIComponent(sessionCookie.value));
+    } catch (e) {
+      return NextResponse.json({ success: false, error: 'Invalid session' }, { status: 401 });
+    }
+
+    if (!session?.id) {
+      return NextResponse.json({ success: false, error: 'Session ID missing' }, { status: 401 });
+    }
+
     const sessionName = (session.name || '').toLowerCase().trim().replace(/^(dr\.?\s*)+/, '');
 
     const url = new URL(req.url);

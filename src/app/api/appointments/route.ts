@@ -18,15 +18,17 @@ export async function GET(req: Request) {
     if (sessionCookie) {
       try {
         session = JSON.parse(decodeURIComponent(sessionCookie.value));
-        sessionRole = session.role || '';
-        sessionName = (session.name || '').toLowerCase().trim().replace(/^(dr\.?\s*)+/i, '');
+        if (session) {
+          sessionRole = session.role || '';
+          sessionName = (session.name || '').toLowerCase().trim().replace(/^(dr\.?\s*)+/i, '');
+        }
       } catch (e) {
         console.error("Session parse error", e);
       }
     }
 
     // Determine query filtering based on session (only show mapped doctor's visits)
-    // Hardened: Strictly filter by session.id for clinical isolation, even for ADMINs viewing the dashboard.
+    // Hardened: If it's a clinical portal context, we REQUIRE a valid doctorId.
     const whereClause = (session?.id && sessionRole !== 'RECEPTIONIST') ? {
       doctorId: session.id
     } : {};

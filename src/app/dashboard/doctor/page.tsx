@@ -698,7 +698,15 @@ export default function DoctorDashboard() {
                 </div>
 
                 {/* Day Grid */}
-                <div className="grid grid-cols-7 gap-1 flex-1">
+                <div 
+                  style={{ 
+                    display: 'grid', 
+                    gridTemplateColumns: 'repeat(7, 1fr)', 
+                    flex: 1, 
+                    overflowY: 'auto',
+                    minHeight: 0
+                  }}
+                >
                    {calendarDays.map((day, idx) => {
                       const dayVisits = allAppointments.filter(v => isSameDay(new Date(v.visitDate), day));
                       const isToday = isSameDay(day, new Date());

@@ -451,42 +451,62 @@ export default function ReceptionDashboard() {
                 {formData.visitDate && (
                   <div className="form-group animate-in slide-in-from-right-4 mb-10">
                     <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-6 block">Scheduled Time Slot</label>
-                    <div className="flex items-center gap-6">
-                       {/* Hour Select - MEGA PILL */}
-                       <div className="relative">
-                         <select 
-                           className="appearance-none bg-white border border-slate-100 rounded-full h-20 w-28 pl-8 pr-6 font-black text-slate-800 text-2xl shadow-sm focus:ring-4 focus:ring-primary/10 outline-none transition-all"
-                           value={formData.hour}
-                           onChange={e => setFormData({...formData, hour: e.target.value})}
-                         >
-                            {['01','02','03','04','05','06','07','08','09','10','11','12'].map(h => <option key={h} value={h}>{h}</option>)}
-                         </select>
-                         <ChevronDown size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                       </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+                       {/* Hour Typing Input */}
+                       <input 
+                         type="text" 
+                         className="text-center bg-white border border-slate-100 rounded-full h-16 w-24 font-black text-slate-800 text-2xl shadow-sm focus:ring-4 focus:ring-primary/10 outline-none transition-all"
+                         placeholder="10"
+                         maxLength={2}
+                         value={formData.hour}
+                         onChange={e => setFormData({...formData, hour: e.target.value.replace(/\D/g, '').slice(0,2)})}
+                       />
+                       
+                       <span className="text-2xl font-black text-slate-300">:</span>
 
-                       {/* Minute Select - MEGA PILL */}
-                       <div className="relative">
-                         <select 
-                           className="appearance-none bg-white border border-slate-100 rounded-full h-20 w-28 pl-8 pr-6 font-black text-slate-800 text-2xl shadow-sm focus:ring-4 focus:ring-primary/10 outline-none transition-all"
-                           value={formData.minute}
-                           onChange={e => setFormData({...formData, minute: e.target.value})}
-                         >
-                            {['00','15','30','45'].map(m => <option key={m} value={m}>{m}</option>)}
-                         </select>
-                         <ChevronDown size={20} className="absolute right-6 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
-                       </div>
+                       {/* Minute Typing Input */}
+                       <input 
+                         type="text" 
+                         className="text-center bg-white border border-slate-100 rounded-full h-16 w-24 font-black text-slate-800 text-2xl shadow-sm focus:ring-4 focus:ring-primary/10 outline-none transition-all"
+                         placeholder="30"
+                         maxLength={2}
+                         value={formData.minute}
+                         onChange={e => setFormData({...formData, minute: e.target.value.replace(/\D/g, '').slice(0,2)})}
+                       />
 
-                       {/* AM/PM MEGA TOGGLE - TEAL COLOR AS PER IMAGE 1 */}
-                       <div className="flex bg-slate-100/80 p-2 rounded-full h-20 w-80 shadow-inner ml-4">
+                       {/* AM/PM MEGA TOGGLE - TEAL COLOR AS PER IMAGE 2 */}
+                       <div style={{ display: 'flex', backgroundColor: '#f1f5f9', padding: '6px', borderRadius: '50px', height: '64px', width: '280px', marginLeft: '10px', boxShadow: 'inset 0 2px 4px rgba(0,0,0,0.05)' }}>
                           <button 
                             type="button"
                             onClick={() => setFormData({...formData, timeSession: 'AM'})}
-                            className={`flex-1 rounded-full font-black text-xl transition-all duration-300 ${formData.timeSession === 'AM' ? 'bg-[#088395] text-white shadow-[0_10px_25px_-5px_rgba(8,131,149,0.5)] scale-105' : 'text-slate-400 hover:text-slate-500'}`}
+                            style={{ 
+                              flex: 1, 
+                              borderRadius: '50px', 
+                              border: 'none', 
+                              fontSize: '16px', 
+                              fontWeight: '900', 
+                              transition: '0.3s',
+                              cursor: 'pointer',
+                              background: formData.timeSession === 'AM' ? '#088395' : 'transparent',
+                              color: formData.timeSession === 'AM' ? 'white' : '#94a3b8',
+                              boxShadow: formData.timeSession === 'AM' ? '0 10px 15px -3px rgba(8,131,149,0.4)' : 'none'
+                            }}
                           >AM</button>
                           <button 
                             type="button"
                             onClick={() => setFormData({...formData, timeSession: 'PM'})}
-                            className={`flex-1 rounded-full font-black text-xl transition-all duration-300 ${formData.timeSession === 'PM' ? 'bg-[#088395] text-white shadow-[0_10px_25px_-5px_rgba(8,131,149,0.5)] scale-105' : 'text-slate-400 hover:text-slate-500'}`}
+                            style={{ 
+                              flex: 1, 
+                              borderRadius: '50px', 
+                              border: 'none', 
+                              fontSize: '16px', 
+                              fontWeight: '900', 
+                              transition: '0.3s',
+                              cursor: 'pointer',
+                              background: formData.timeSession === 'PM' ? '#088395' : 'transparent',
+                              color: formData.timeSession === 'PM' ? 'white' : '#94a3b8',
+                              boxShadow: formData.timeSession === 'PM' ? '0 10px 15px -3px rgba(8,131,149,0.4)' : 'none'
+                            }}
                           >PM</button>
                        </div>
                     </div>

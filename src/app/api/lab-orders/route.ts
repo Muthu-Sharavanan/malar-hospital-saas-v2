@@ -6,7 +6,20 @@ export const dynamic = 'force-dynamic';
 
 export async function POST(req: Request) {
   try {
+    const { cookies } = await import('next/headers');
+    const sessionCookie = (await cookies()).get('session');
+    if (!sessionCookie) return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
+    const session = JSON.parse(sessionCookie.value);
+
     const { visitId, tests } = await req.json(); // tests is an array of { name, price, category }
+
+    // Verification: Ensure this visit belongs to the logged-in doctor
+    if (session.role === 'DOCTOR') {
+      const visitCheck = await prisma.visit.findUnique({ where: { id: visitId } });
+      if (visitCheck && visitCheck.doctorId !== session.id) {
+        return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
+      }
+    }
 
     // 1. Create LabOrders
     const orders = await Promise.all(tests.map((test: any) => 

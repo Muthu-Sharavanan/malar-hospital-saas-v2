@@ -8,7 +8,21 @@ export const revalidate = 0;
 
 export async function PATCH(req: Request) {
   try {
+    const { cookies } = await import('next/headers');
+    const sessionCookie = (await cookies()).get('session');
+    if (!sessionCookie) return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
+    const session = JSON.parse(sessionCookie.value);
+
     const { visitId, status } = await req.json();
+
+    // Verification: Ensure this visit belongs to the logged-in doctor
+    if (session.role === 'DOCTOR') {
+      const visitCheck = await prisma.visit.findUnique({ where: { id: visitId } });
+      if (visitCheck && visitCheck.doctorId !== session.id) {
+        return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
+      }
+    }
+
     const visit = await prisma.visit.update({
       where: { id: visitId },
       data: { status }
@@ -34,8 +48,18 @@ export async function POST(req: Request) {
       visitId, chiefComplaints, history, examination, diagnosis, investigationAdvised, nextReview, isReview, drugs 
     } = validation.data;
 
+    const { cookies } = await import('next/headers');
+    const sessionCookie = (await cookies()).get('session');
+    if (!sessionCookie) return NextResponse.json({ success: false, error: 'Not authenticated' }, { status: 401 });
+    const session = JSON.parse(sessionCookie.value);
+
     const visitSearch = await prisma.visit.findUnique({ where: { id: visitId } });
     if (!visitSearch) throw new Error("Visit not found");
+
+    // Verification: Ensure this visit belongs to the logged-in doctor
+    if (session.role === 'DOCTOR' && visitSearch.doctorId !== session.id) {
+      return NextResponse.json({ success: false, error: 'Unauthorized' }, { status: 403 });
+    }
 
     const result = await prisma.$transaction(async (tx) => {
       // 1. Clear existing prescriptions if any (to support "Rewrite")
@@ -111,22 +135,7 @@ export async function GET(req: Request) {
           gte: todayStart,
           lte: todayEnd
         },
-        OR: [
-          {
-            assignedDoctorName: {
-              contains: sessionName,
-              mode: 'insensitive'
-            }
-          },
-          {
-            doctor: {
-              name: {
-                contains: sessionName,
-                mode: 'insensitive'
-              }
-            }
-          }
-        ],
+        doctorId: session.id,
         status: { in: ['VITALS_DONE', 'CONSULTING'] }
       },
       include: {

@@ -25,23 +25,8 @@ export async function GET(req: Request) {
 
     // Determine query filtering based on session (only show mapped doctor's visits)
     // If no session passed or admin/receptionist, show all, but doctor dashboard requires session filter.
-    const whereClause = (sessionRole === 'DOCTOR' && sessionName) ? {
-      OR: [
-        {
-          assignedDoctorName: {
-            contains: sessionName,
-            mode: 'insensitive' as const
-          }
-        },
-        {
-          doctor: {
-            name: {
-              contains: sessionName,
-              mode: 'insensitive' as const
-            }
-          }
-        }
-      ]
+    const whereClause = (sessionRole === 'DOCTOR' && session.id) ? {
+      doctorId: session.id
     } : {};
 
     // Get all visits (past, present, future) for the calendar

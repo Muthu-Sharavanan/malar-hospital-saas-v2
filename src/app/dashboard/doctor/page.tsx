@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, format, isSameDay, isSameMonth, addMonths, subMonths } from 'date-fns';
 import LogoutButton from '@/components/LogoutButton';
 import { 
@@ -605,7 +605,7 @@ export default function DoctorDashboard() {
               label="Active Queue" 
               value={queue.length} 
               icon={<Users style={{ color: '#0A4D68' }} />} 
-              trend={Math.floor(Math.random() * 10) + 5}
+              trend={12}
               isPositive={false}
               onClick={() => setStatModalState({ title: 'Active Queue', list: queue })}
           />
@@ -620,22 +620,16 @@ export default function DoctorDashboard() {
           />
           <StatCard 
               label="Completed Today" 
-              value={allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).length} 
+              value={stats.completedToday.length} 
               icon={<CheckCircle2 style={{ color: '#14B8A6' }} />} 
               isPositive={true}
-              onClick={() => {
-                const list = allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date()));
-                setStatModalState({ title: 'Completed Today', list });
-              }}
+              onClick={() => setStatModalState({ title: 'Completed Today', list: stats.completedToday })}
           />
           <StatCard 
               label="Advanced Bookings" 
-              value={allAppointments.filter(v => new Date(v.visitDate) > new Date()).length} 
+              value={stats.advancedBookings.length} 
               icon={<Calendar style={{ color: '#F59E0B' }} />} 
-              onClick={() => {
-                const list = allAppointments.filter(v => new Date(v.visitDate) > new Date());
-                setStatModalState({ title: 'Advanced Bookings', list });
-              }}
+              onClick={() => setStatModalState({ title: 'Advanced Bookings', list: stats.advancedBookings })}
           />
         </div>
 
@@ -683,14 +677,11 @@ export default function DoctorDashboard() {
                 </div>
 
                 {/* Day Grid */}
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', flex: 1, overflowY: 'auto' }}>
-                   {(() => {
-                      const start = startOfWeek(startOfMonth(currentMonth));
-                      const end = endOfWeek(endOfMonth(currentMonth));
-                      return eachDayOfInterval({ start, end }).map((day, idx) => {
-                         const dayVisits = allAppointments.filter(v => isSameDay(new Date(v.visitDate), day));
-                         const isCurrentMonth = isSameMonth(day, currentMonth);
-                         const isToday = isSameDay(day, new Date());
+                <div className="grid grid-cols-7 gap-1 flex-1">
+                   {calendarDays.map((day, idx) => {
+                      const dayVisits = allAppointments.filter(v => isSameDay(new Date(v.visitDate), day));
+                      const isToday = isSameDay(day, new Date());
+                      const isCurrentMonth = isSameMonth(day, currentMonth);
 
                          return (
                             <div 
@@ -757,8 +748,7 @@ export default function DoctorDashboard() {
                                </div>
                             </div>
                          );
-                      });
-                   })()}
+                   })}
                 </div>
              </div>
           </div>
@@ -767,52 +757,45 @@ export default function DoctorDashboard() {
              <div className="flex items-center justify-between mb-8">
                 <div>
                    <h3 className="text-2xl font-black text-slate-800 flex items-center gap-3">
-                      <Activity className="text-[#088395]" size={32} /> Review Case Queue
+                      <Stethoscope className="text-primary" size={32} /> Review Follow-ups
                    </h3>
-                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Follow-up Patients Awaiting Consultation</p>
+                   <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Patients tagged for clinical review</p>
                 </div>
-                <div className="bg-[#088395]/10 text-[#088395] px-6 py-2 rounded-full font-black text-sm">
-                   {allAppointments.filter(v => v.isReview).length} TOTAL REVIEWS
+                <div className="bg-primary/5 text-primary px-6 py-2 rounded-full font-black text-sm">
+                   {reviewCases.length} PENDING
                 </div>
              </div>
 
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {allAppointments.filter(v => v.isReview).length > 0 ? (
-                   allAppointments.filter(v => v.isReview).map((v: any) => (
-                     <div 
-                       key={v.id} 
-                       className="glass-card !p-6 cursor-pointer bg-white border-2 border-transparent hover:border-[#088395]/30 transition-all duration-100 group shadow-sm hover:shadow-xl active:scale-95"
-                       onClick={() => selectVisit(v)}
-                     >
-                       <div className="flex justify-between items-start mb-2">
-                          <div className="flex flex-col">
-                            <span className="text-[10px] font-black text-[#088395] uppercase tracking-widest mb-1">Token {v.tokenNumber}</span>
-                            <h4 className="text-lg font-bold text-slate-800">{v.patient.name}</h4>
-                          </div>
-                          <div className={`px-3 py-1 rounded-full text-[9px] font-black uppercase ${v.status === 'COMPLETED' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'}`}>
-                             {v.status === 'COMPLETED' ? 'Consulted' : 'Awaiting'}
-                          </div>
-                       </div>
+                {reviewCases.length > 0 ? (
+                   reviewCases.map((v: any) => (
+                      <div 
+                        key={v.id} 
+                        className="relative overflow-hidden cursor-pointer bg-white border-2 border-transparent hover:border-emerald-500/30 transition-all duration-100 group rounded-[2rem] p-6 shadow-sm hover:shadow-2xl hover:-translate-y-2 active:scale-95"
+                        onClick={() => selectVisit(v)}
+                      >
+                        <div className="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/5 rounded-full group-hover:scale-150 transition-transform duration-700"></div>
+                        
+                        <div className="relative flex justify-between items-start mb-6">
+                           <div className="flex flex-col">
+                             <div className="flex items-center gap-2 mb-1">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span className="text-[10px] font-black text-emerald-600 uppercase tracking-widest">Token {v.tokenNumber}</span>
+                             </div>
+                             <h4 className="text-xl font-black text-slate-800 group-hover:text-emerald-700 transition-colors uppercase tracking-tight leading-none">{v.patient.name}</h4>
+                           </div>
+                           <div className="w-12 h-12 rounded-2xl bg-emerald-500 flex items-center justify-center text-white shadow-lg shadow-emerald-200 group-hover:rotate-12 transition-transform">
+                             <CheckCircle2 size={24} strokeWidth={3} />
+                           </div>
+                        </div>
 
-                       {/* Clinical Note / Follow-up Instructions */}
-                       <div className="bg-[#088395]/5 p-3 rounded-xl mb-4 border border-[#088395]/10">
-                          <p className="text-[10px] font-black text-[#088395] uppercase mb-1">Follow-up Note</p>
-                          <p className="text-xs font-bold text-slate-600 italic">
-                             "{v.nextReview || 'No specific notes'}"
-                          </p>
-                       </div>
-
-                       <div className="flex items-center gap-4 pt-3 border-t border-slate-50">
-                          <div className="flex flex-col">
-                             <span className="text-[10px] font-black text-slate-400 uppercase">Age/Gender</span>
-                             <span className="text-xs font-bold text-slate-600">{v.patient.age}Y | {v.patient.gender}</span>
-                          </div>
-                          <div className="flex flex-col ml-auto text-right">
-                             <span className="text-[10px] font-black text-slate-400 uppercase">Visit Date</span>
-                             <span className="text-xs font-bold text-[#088395]">{new Date(v.visitDate).toLocaleDateString('en-GB', { day: '2-digit', month: 'short' })}</span>
-                          </div>
-                       </div>
-                     </div>
+                        <div className="flex items-center justify-between pt-5 border-t border-slate-50">
+                           <div className="flex flex-col ml-auto text-right">
+                              <span className="text-[10px] font-black text-slate-400 uppercase tracking-tighter">Consulted At</span>
+                              <span className="text-sm font-black text-slate-600 italic">{new Date(v.visitDate).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
+                           </div>
+                        </div>
+                      </div>
                    ))
                 ) : (
                    <div className="col-span-full py-20 text-center flex flex-col items-center">
@@ -833,13 +816,13 @@ export default function DoctorDashboard() {
                    <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mt-1">Successfully Completed Visits Today</p>
                 </div>
                 <div className="bg-emerald-50 text-emerald-600 px-6 py-2 rounded-full font-black text-sm">
-                   {allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).length} DONE
+                   {finishedToday.length} DONE
                 </div>
              </div>
 
              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).length > 0 ? (
-                   allAppointments.filter(v => v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), new Date())).map((v: any) => (
+                {finishedToday.length > 0 ? (
+                   finishedToday.map((v: any) => (
                       <div 
                         key={v.id} 
                         className="relative overflow-hidden cursor-pointer bg-white border-2 border-transparent hover:border-emerald-500/30 transition-all duration-100 group rounded-[2rem] p-6 shadow-sm hover:shadow-2xl hover:-translate-y-2 active:scale-95"

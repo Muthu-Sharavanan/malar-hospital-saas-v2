@@ -190,8 +190,8 @@ export default function PrescriptionPrint() {
       )}
 
       {/* Signature Area */}
-      <div style={{ marginTop: '50px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: '20px' }}>
-         <div className="no-print" style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+      <div style={{ marginTop: '80px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: '20px' }}>
+         <div className="no-print" style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
             <input 
               type="checkbox" 
               id="sign-check" 
@@ -202,10 +202,20 @@ export default function PrescriptionPrint() {
             <label htmlFor="sign-check" style={{ fontSize: '13px', fontWeight: 600, color: '#0A4D68', cursor: 'pointer' }}>Digitally Sign Prescription</label>
          </div>
 
-         <div style={{ textAlign: 'center', borderTop: '1px solid #000', width: '220px', paddingTop: '5px' }}>
+         <div style={{ textAlign: 'center', borderTop: '1px solid #000', width: '240px', paddingTop: '5px', position: 'relative' }}>
             {isSigned && (
-              <div style={{ marginBottom: '-10px', marginTop: '-60px' }}>
-                 <img src="/signature.png" alt="Signature" style={{ width: '120px', height: 'auto', display: 'block', margin: '0 auto' }} />
+              <div style={{ position: 'absolute', bottom: '100%', left: '50%', transform: 'translateX(-50%)', marginBottom: '-5px', pointerEvents: 'none' }}>
+                 <img 
+                    src="/signature.png" 
+                    alt="Signature" 
+                    style={{ 
+                      width: '160px', 
+                      height: 'auto', 
+                      display: 'block', 
+                      mixBlendMode: 'multiply',
+                      filter: 'contrast(1.1)' 
+                    }} 
+                 />
               </div>
             )}
             <p style={{ fontWeight: 700, margin: 0, fontSize: '15px' }}>{visit.doctor.name.includes('Aravind') ? 'Dr.Aravind MD, DrNB(MGE)' : visit.doctor.name}</p>

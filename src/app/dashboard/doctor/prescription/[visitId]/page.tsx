@@ -223,7 +223,7 @@ export default function PrescriptionPrint() {
          </div>
       </div>
 
-      {/* Print Button - Hidden on Print */}
+      {/* Print & Share Buttons - Hidden on Print */}
       <style>{`
         @media print {
           @page { margin: 0; }
@@ -239,13 +239,27 @@ export default function PrescriptionPrint() {
         }
         .typing-orders:focus { border-color: #0A4D68 !important; }
       `}</style>
-      <div className="no-print" style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000 }}>
+      <div className="no-print" style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000, display: 'flex', gap: '10px' }}>
+         {visit.patient.phone && (
+           <button 
+             className="btn btn-success" 
+             onClick={() => {
+               const phone = visit.patient.phone.replace(/\D/g, '');
+               const formattedPhone = phone.length === 10 ? `91${phone}` : phone;
+               const message = `Hello ${visit.patient.name}, your prescription from Malar Hospital is ready. View it here: ${window.location.href}`;
+               window.open(`https://wa.me/${formattedPhone}?text=${encodeURIComponent(message)}`, '_blank');
+             }}
+             style={{ padding: '15px 25px', borderRadius: '50px', background: '#25D366', color: 'white', border: 'none', fontWeight: 'bold', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', gap: '8px' }}
+           >
+             <i className="fa-brands fa-whatsapp" style={{ fontSize: '20px' }}></i> Share via WhatsApp
+           </button>
+         )}
          <button 
            className="btn btn-primary" 
            onClick={() => window.print()}
-           style={{ padding: '15px 30px', borderRadius: '50px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)' }}
+           style={{ padding: '15px 30px', borderRadius: '50px', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', gap: '8px' }}
          >
-           <i className="fa-solid fa-print mr-2"></i> Print Prescription
+           <i className="fa-solid fa-print"></i> Print Prescription
          </button>
       </div>
     </div>

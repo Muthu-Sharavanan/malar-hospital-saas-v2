@@ -516,6 +516,27 @@ export default function DoctorDashboard() {
     }, 20);
   };
 
+  const stats = useMemo(() => {
+    const today = new Date();
+    return {
+      completedToday: allAppointments.filter((v: any) => 
+        v.status === 'COMPLETED' && isSameDay(new Date(v.visitDate), today)
+      ),
+      advancedBookings: allAppointments.filter((v: any) => 
+        new Date(v.visitDate) > today && v.status === 'READY'
+      )
+    };
+  }, [allAppointments]);
+
+  const finishedToday = useMemo(() => stats.completedToday, [stats]);
+  const reviewCases = useMemo(() => queue.filter((v: any) => v.isReview), [queue]);
+
+  const calendarDays = useMemo(() => {
+    const start = startOfWeek(startOfMonth(currentMonth));
+    const end = endOfWeek(endOfMonth(currentMonth));
+    return eachDayOfInterval({ start, end });
+  }, [currentMonth]);
+
   return (
     <div style={{ display: 'flex', minHeight: '100vh', backgroundColor: '#F0F2F5' }}>
       {/* Sidebar - Standardized Premium Format */}

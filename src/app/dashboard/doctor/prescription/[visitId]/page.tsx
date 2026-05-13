@@ -55,7 +55,7 @@ export default function PrescriptionPrint() {
          </div>
          <div>
             <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>Date</small>
-            <span style={{ fontWeight: 600 }}>{new Date(visit.createdAt).toLocaleDateString()}</span>
+            <span style={{ fontWeight: 600 }}>{new Date(visit.createdAt).toLocaleDateString('en-GB')}</span>
          </div>
          <div>
             <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>Token Number</small>
@@ -66,8 +66,8 @@ export default function PrescriptionPrint() {
             <span style={{ fontWeight: 600 }}>{visit.patientId.slice(-6).toUpperCase()}</span>
          </div>
          <div>
-            <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>Consulting Doctor</small>
-            <span style={{ fontWeight: 600 }}>{visit.doctor.name}</span>
+            <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>Consultant</small>
+            <span style={{ fontWeight: 600 }}>{visit.doctor.name.includes('Aravind') ? 'Dr.Aravind MD, DrNB(MGE)' : visit.doctor.name}</span>
          </div>
       </div>
 
@@ -191,7 +191,7 @@ export default function PrescriptionPrint() {
       {/* Signature Area */}
       <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end', paddingTop: '20px' }}>
          <div style={{ textAlign: 'center', borderTop: '1px solid #000', width: '220px', paddingTop: '5px' }}>
-            <p style={{ fontWeight: 700, margin: 0, fontSize: '15px' }}>{visit.doctor.name}</p>
+            <p style={{ fontWeight: 700, margin: 0, fontSize: '15px' }}>{visit.doctor.name.includes('Aravind') ? 'Dr.Aravind MD, DrNB(MGE)' : visit.doctor.name}</p>
             <small style={{ color: '#64748B', display: 'block', fontSize: '12px' }}>Reg No: {visit.doctor.name.includes('Aravind') ? 'TNMC no:127757' : (visit.doctor.regNo || 'MC-12345')}</small>
          </div>
       </div>

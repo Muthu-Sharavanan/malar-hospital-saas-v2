@@ -26,8 +26,8 @@ export async function GET(req: Request) {
     }
 
     // Determine query filtering based on session (only show mapped doctor's visits)
-    // If no session passed or admin/receptionist, show all, but doctor dashboard requires session filter.
-    const whereClause = (sessionRole === 'DOCTOR' && session?.id) ? {
+    // Hardened: Strictly filter by session.id for clinical isolation, even for ADMINs viewing the dashboard.
+    const whereClause = (session?.id && sessionRole !== 'RECEPTIONIST') ? {
       doctorId: session.id
     } : {};
 

@@ -136,7 +136,7 @@ export async function GET(req: Request) {
           lte: todayEnd
         },
         doctorId: session.id,
-        status: { in: ['VITALS_DONE', 'CONSULTING'] }
+        status: { in: ['READY', 'VITALS_DONE', 'CONSULTING', 'COMPLETED'] }
       },
       include: {
         patient: true,

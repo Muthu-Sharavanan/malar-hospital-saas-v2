@@ -61,7 +61,7 @@ export default function ReceptionDashboard() {
 
   // Form
   const [formData, setFormData] = useState({
-    name: '', phone: '', age: '', gender: 'Male', address: '', doctorId: '', patientId: '', visitDate: '', visitTime: '', timeSession: 'AM', reason: '', abhaId: '', consentGranted: false
+    name: '', phone: '', age: '', gender: 'Male', address: '', doctorId: '', patientId: '', visitDate: '', visitTime: '', hour: '10', minute: '30', timeSession: 'AM', reason: '', abhaId: '', consentGranted: false
   });
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<any[]>([]);
@@ -197,7 +197,7 @@ export default function ReceptionDashboard() {
 
   const clearPatient = () => {
     setSelectedPatient(null);
-    setFormData({ name: '', phone: '', age: '', gender: 'Male', address: '', doctorId: doctors[0]?.id || '', patientId: '', visitDate: '', visitTime: '', timeSession: 'AM', reason: '', abhaId: '', consentGranted: false });
+    setFormData({ name: '', phone: '', age: '', gender: 'Male', address: '', doctorId: doctors[0]?.id || '', patientId: '', visitDate: '', visitTime: '', hour: '10', minute: '30', timeSession: 'AM', reason: '', abhaId: '', consentGranted: false });
     setSearchQuery('');
   };
 
@@ -217,7 +217,7 @@ export default function ReceptionDashboard() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ 
           ...formData, 
-          visitTime: formData.visitTime ? `${formData.visitTime} ${formData.timeSession}` : '' 
+          visitTime: formData.visitDate ? `${formData.hour}:${formData.minute} ${formData.timeSession}` : '' 
         })
       });
       const data = await res.json();
@@ -450,25 +450,43 @@ export default function ReceptionDashboard() {
                 </div>
                 {formData.visitDate && (
                   <div className="form-group animate-in slide-in-from-right-4">
-                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-2 block">TimeSlot</label>
-                    <div className="flex items-center gap-4">
-                       <input 
-                         type="time" 
-                         className="form-input !bg-slate-50 !h-16 font-black border-none flex-1 !text-lg !px-6 shadow-sm rounded-2xl" 
-                         required 
-                         value={formData.visitTime} 
-                         onChange={e => setFormData({...formData, visitTime: e.target.value})} 
-                       />
-                       <div className="flex bg-slate-200/50 p-1.5 rounded-2xl h-16 w-44 shadow-inner">
+                    <label className="text-[11px] font-black text-slate-400 uppercase tracking-widest mb-4 block">Scheduled Time Slot</label>
+                    <div className="flex items-center gap-3">
+                       {/* Hour Select */}
+                       <div className="relative">
+                         <select 
+                           className="appearance-none bg-white border border-slate-100 rounded-full h-14 w-20 pl-5 pr-4 font-black text-slate-800 text-lg shadow-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                           value={formData.hour}
+                           onChange={e => setFormData({...formData, hour: e.target.value})}
+                         >
+                            {['01','02','03','04','05','06','07','08','09','10','11','12'].map(h => <option key={h} value={h}>{h}</option>)}
+                         </select>
+                         <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                       </div>
+
+                       {/* Minute Select */}
+                       <div className="relative">
+                         <select 
+                           className="appearance-none bg-white border border-slate-100 rounded-full h-14 w-20 pl-5 pr-4 font-black text-slate-800 text-lg shadow-sm focus:ring-2 focus:ring-primary/20 outline-none"
+                           value={formData.minute}
+                           onChange={e => setFormData({...formData, minute: e.target.value})}
+                         >
+                            {['00','15','30','45'].map(m => <option key={m} value={m}>{m}</option>)}
+                         </select>
+                         <ChevronDown size={14} className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                       </div>
+
+                       {/* AM/PM Toggle - TEAL COLOR AS PER IMAGE 2 */}
+                       <div className="flex bg-slate-100/50 p-1 rounded-full h-14 w-48 shadow-inner ml-2">
                           <button 
                             type="button"
                             onClick={() => setFormData({...formData, timeSession: 'AM'})}
-                            className={`flex-1 rounded-xl font-black text-xs transition-all duration-300 ${formData.timeSession === 'AM' ? 'bg-white text-primary shadow-md scale-105' : 'text-slate-400 hover:text-slate-500'}`}
+                            className={`flex-1 rounded-full font-black text-sm transition-all duration-300 ${formData.timeSession === 'AM' ? 'bg-[#088395] text-white shadow-lg' : 'text-slate-400'}`}
                           >AM</button>
                           <button 
                             type="button"
                             onClick={() => setFormData({...formData, timeSession: 'PM'})}
-                            className={`flex-1 rounded-xl font-black text-xs transition-all duration-300 ${formData.timeSession === 'PM' ? 'bg-white text-primary shadow-md scale-105' : 'text-slate-400 hover:text-slate-500'}`}
+                            className={`flex-1 rounded-full font-black text-sm transition-all duration-300 ${formData.timeSession === 'PM' ? 'bg-[#088395] text-white shadow-lg' : 'text-slate-400'}`}
                           >PM</button>
                        </div>
                     </div>

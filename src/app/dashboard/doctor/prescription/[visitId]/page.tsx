@@ -192,7 +192,7 @@ export default function PrescriptionPrint() {
       <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end', paddingTop: '20px' }}>
          <div style={{ textAlign: 'center', borderTop: '1px solid #000', width: '220px', paddingTop: '5px' }}>
             <p style={{ fontWeight: 700, margin: 0, fontSize: '15px' }}>{visit.doctor.name.includes('Aravind') ? 'Dr.Aravind MD, DrNB(MGE)' : visit.doctor.name}</p>
-            <small style={{ color: '#64748B', display: 'block', fontSize: '12px' }}>Reg No: {visit.doctor.name.includes('Aravind') ? 'TNMC no:127757' : (visit.doctor.regNo || 'MC-12345')}</small>
+            <small style={{ color: '#64748B', display: 'block', fontSize: '12px' }}>Reg No: {visit.doctor.name.includes('Aravind') ? 'TNMC No: 122757' : (visit.doctor.regNo || 'MC-12345')}</small>
          </div>
       </div>
 

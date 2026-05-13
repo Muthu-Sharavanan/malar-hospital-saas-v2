@@ -197,7 +197,7 @@ export default function ReceptionDashboard() {
 
   const clearPatient = () => {
     setSelectedPatient(null);
-    setFormData({ name: '', phone: '', age: '', gender: 'Male', address: '', doctorId: doctors[0]?.id || '', patientId: '', visitDate: '', visitTime: '', reason: '', abhaId: '', consentGranted: false });
+    setFormData({ name: '', phone: '', age: '', gender: 'Male', address: '', doctorId: doctors[0]?.id || '', patientId: '', visitDate: '', visitTime: '', timeSession: 'AM', reason: '', abhaId: '', consentGranted: false });
     setSearchQuery('');
   };
 

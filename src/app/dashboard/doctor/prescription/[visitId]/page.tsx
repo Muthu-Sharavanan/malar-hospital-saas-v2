@@ -247,7 +247,7 @@ export default function PrescriptionPrint() {
                const phone = visit.patient.phone.replace(/\D/g, '');
                const formattedPhone = phone.length === 10 ? `91${phone}` : phone;
                const message = `Hello ${visit.patient.name}, your prescription from Malar Hospital is ready. View it here: ${window.location.href}`;
-               window.open(`https://api.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
+               window.open(`https://web.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
              }}
              style={{ padding: '15px 25px', borderRadius: '50px', background: '#25D366', color: 'white', border: 'none', fontWeight: 'bold', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', gap: '8px' }}
            >

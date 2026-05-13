@@ -6,9 +6,17 @@ export default function PrescriptionPrint() {
   const { visitId } = useParams();
   const searchParams = useSearchParams();
   const isPatientView = searchParams.get('view') === 'patient';
+  const urlAdvice = searchParams.get('advice');
+  const urlSigned = searchParams.get('signed') === 'true';
+
   const [visit, setVisit] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isSigned, setIsSigned] = useState(false);
+  const [isSigned, setIsSigned] = useState(urlSigned);
+  const [advice, setAdvice] = useState('');
+
+  useEffect(() => {
+    if (urlAdvice) setAdvice(urlAdvice);
+  }, [urlAdvice]);
 
   useEffect(() => {
     const fetchSummary = async () => {
@@ -155,6 +163,7 @@ export default function PrescriptionPrint() {
         <div
           contentEditable={!isPatientView}
           suppressContentEditableWarning
+          onInput={(e: any) => setAdvice(e.currentTarget.innerText)}
           className="typing-orders"
           style={{
             minHeight: '70px',
@@ -168,7 +177,9 @@ export default function PrescriptionPrint() {
             whiteSpace: 'pre-wrap',
           }}
           data-placeholder={isPatientView ? '' : "e.g. Lifestyle advice given. Review on 23/5/26"}
-        />
+        >
+          {advice}
+        </div>
       </div>
 
       {/* Suggested Investigations Area */}
@@ -193,16 +204,18 @@ export default function PrescriptionPrint() {
 
       {/* Signature Area */}
       <div style={{ marginTop: '80px', display: 'flex', flexDirection: 'column', alignItems: 'flex-end', paddingTop: '20px' }}>
-         <div className="no-print" style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <input 
-              type="checkbox" 
-              id="sign-check" 
-              checked={isSigned} 
-              onChange={(e) => setIsSigned(e.target.checked)}
-              style={{ width: '18px', height: '18px', cursor: 'pointer' }}
-            />
-            <label htmlFor="sign-check" style={{ fontSize: '13px', fontWeight: 600, color: '#0A4D68', cursor: 'pointer' }}>Digitally Sign Prescription</label>
-         </div>
+         {!isPatientView && (
+           <div className="no-print" style={{ marginBottom: '15px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input 
+                type="checkbox" 
+                id="sign-check" 
+                checked={isSigned} 
+                onChange={(e) => setIsSigned(e.target.checked)}
+                style={{ width: '18px', height: '18px', cursor: 'pointer' }}
+              />
+              <label htmlFor="sign-check" style={{ fontSize: '13px', fontWeight: 600, color: '#0A4D68', cursor: 'pointer' }}>Digitally Sign Prescription</label>
+           </div>
+         )}
 
          <div style={{ textAlign: 'center', borderTop: '1px solid #000', width: '240px', paddingTop: '5px', position: 'relative' }}>
             {isSigned && (
@@ -248,7 +261,7 @@ export default function PrescriptionPrint() {
              onClick={() => {
                const phone = visit.patient.phone.replace(/\D/g, '');
                const formattedPhone = phone.length === 10 ? `91${phone}` : phone;
-               const shareUrl = `${window.location.origin}${window.location.pathname}?view=patient`;
+               const shareUrl = `${window.location.origin}${window.location.pathname}?view=patient&advice=${encodeURIComponent(advice)}&signed=${isSigned}`;
                const message = `Hello ${visit.patient.name}, your prescription from Malar Hospital is ready. View it here: ${shareUrl}`;
                window.open(`https://web.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
              }}

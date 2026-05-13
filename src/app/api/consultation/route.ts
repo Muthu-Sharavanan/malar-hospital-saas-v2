@@ -206,10 +206,13 @@ export async function GET(req: Request) {
       };
     }));
 
+    // Senior Audit: Redundant JS-layer force-filtering for absolute clinical isolation
+    const isolatedQueue = enrichedQueue.filter(v => v.doctorId === session.id);
+
     // Doctors should see the entire day's queue, ignoring session filters
     const filteredQueue = (session.role === 'DOCTOR' || !sessionType)
-      ? enrichedQueue
-      : enrichedQueue.filter(v => v.session === sessionType.toLowerCase());
+      ? isolatedQueue
+      : isolatedQueue.filter(v => v.session === sessionType.toLowerCase());
 
     return NextResponse.json({ success: true, queue: filteredQueue });
   } catch (error: any) {

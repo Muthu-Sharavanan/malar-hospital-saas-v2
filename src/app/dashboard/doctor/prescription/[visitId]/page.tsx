@@ -69,7 +69,7 @@ export default function PrescriptionPrint() {
             <span style={{ fontWeight: 600 }}>{new Date(visit.createdAt).toLocaleDateString('en-GB')}</span>
          </div>
          <div>
-            <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>Time of Summary Generation</small>
+            <small style={{ color: 'var(--text-muted)', display: 'block', fontSize: '10px', textTransform: 'uppercase' }}>Time</small>
             <span style={{ fontWeight: 600 }}>{new Date(visit.createdAt).toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', hour12: true })}</span>
          </div>
          <div>
@@ -234,7 +234,7 @@ export default function PrescriptionPrint() {
               </div>
             )}
             <p style={{ fontWeight: 700, margin: 0, fontSize: '15px' }}>{visit.doctor.name.includes('Aravind') ? 'Dr.Aravind MD, DrNB(MGE)' : visit.doctor.name}</p>
-            <small style={{ color: '#64748B', display: 'block', fontSize: '12px' }}>Reg No: {visit.doctor.name.includes('Aravind') ? 'TNMC No: 122757' : (visit.doctor.regNo || 'MC-12345')}</small>
+            <small style={{ color: '#64748B', display: 'block', fontSize: '12px' }}>{visit.doctor.name.includes('Aravind') ? 'TNMC Reg No: 122757' : (visit.doctor.regNo || 'Reg No: MC-12345')}</small>
          </div>
       </div>
 

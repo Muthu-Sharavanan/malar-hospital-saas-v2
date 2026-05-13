@@ -1,9 +1,11 @@
 'use client';
-import { useParams } from 'next/navigation';
+import { useParams, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 export default function PrescriptionPrint() {
   const { visitId } = useParams();
+  const searchParams = useSearchParams();
+  const isPatientView = searchParams.get('view') === 'patient';
   const [visit, setVisit] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [isSigned, setIsSigned] = useState(false);
@@ -151,12 +153,12 @@ export default function PrescriptionPrint() {
       <div className="mb-6" style={{ marginTop: '10px' }}>
         <h4 style={{ color: '#0A4D68', borderBottom: '1px solid #eee', paddingBottom: '3px', marginBottom: '10px', fontSize: '14px', textTransform: 'uppercase', letterSpacing: '1px' }}>Advice/Comments</h4>
         <div
-          contentEditable
+          contentEditable={!isPatientView}
           suppressContentEditableWarning
           className="typing-orders"
           style={{
             minHeight: '70px',
-            border: '1px dashed #cbd5e1',
+            border: isPatientView ? 'none' : '1px dashed #cbd5e1',
             borderRadius: '6px',
             padding: '10px 14px',
             fontSize: '14px',
@@ -165,7 +167,7 @@ export default function PrescriptionPrint() {
             color: '#1e293b',
             whiteSpace: 'pre-wrap',
           }}
-          data-placeholder="e.g. Lifestyle advice given. Review on 23/5/26"
+          data-placeholder={isPatientView ? '' : "e.g. Lifestyle advice given. Review on 23/5/26"}
         />
       </div>
 
@@ -240,13 +242,14 @@ export default function PrescriptionPrint() {
         .typing-orders:focus { border-color: #0A4D68 !important; }
       `}</style>
       <div className="no-print" style={{ position: 'fixed', bottom: '20px', right: '20px', zIndex: 1000, display: 'flex', gap: '10px' }}>
-         {visit.patient.phone && (
+         {visit.patient.phone && !isPatientView && (
            <button 
              className="btn btn-success" 
              onClick={() => {
                const phone = visit.patient.phone.replace(/\D/g, '');
                const formattedPhone = phone.length === 10 ? `91${phone}` : phone;
-               const message = `Hello ${visit.patient.name}, your prescription from Malar Hospital is ready. View it here: ${window.location.href}`;
+               const shareUrl = `${window.location.origin}${window.location.pathname}?view=patient`;
+               const message = `Hello ${visit.patient.name}, your prescription from Malar Hospital is ready. View it here: ${shareUrl}`;
                window.open(`https://web.whatsapp.com/send?phone=${formattedPhone}&text=${encodeURIComponent(message)}`, '_blank');
              }}
              style={{ padding: '15px 25px', borderRadius: '50px', background: '#25D366', color: 'white', border: 'none', fontWeight: 'bold', boxShadow: '0 4px 15px rgba(0,0,0,0.2)', display: 'flex', alignItems: 'center', gap: '8px' }}
